@@ -175,7 +175,27 @@ def generate_pdf_report(title, data, columns):
 if not check_password():
     st.stop()
 
-# Sidebar branding
+# ----------------------------------------------------------------------
+# Haitian flag and title (main area)
+# ----------------------------------------------------------------------
+col1, col2, col3 = st.columns([1, 2, 1])
+with col1:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Flag_of_Haiti.svg/320px-Flag_of_Haiti.svg.png", width=100)
+with col2:
+    st.markdown("<h1 style='text-align: center;'>Accountant Excel Advanced AI</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'><em>Professional Accounting & Loan Management Suite</em></p>", unsafe_allow_html=True)
+with col3:
+    st.markdown("""
+    <div style='text-align: right;'>
+        <b>GlobalInternet.py</b><br>
+        Owner: Gesner Deslandes<br>
+        📧 deslndes78@gmail.com<br>
+        📞 (509) 4738-5663
+    </div>
+    """, unsafe_allow_html=True)
+st.divider()
+
+# Sidebar branding (already has flag, keep as is)
 st.sidebar.image("https://flagcdn.com/w320/ht.png", width=100)
 st.sidebar.title("Accountant Excel Advanced AI")
 st.sidebar.markdown("**GlobalInternet.py**")
