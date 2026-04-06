@@ -14,14 +14,13 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 
 # ----------------------------------------------------------------------
-# Authentication with fallback if secret is missing
+# Helper to get password from secrets with fallback (no warning on login)
 # ----------------------------------------------------------------------
 def get_expected_password():
-    """Return the password from secrets or a default, with a warning."""
     try:
         return st.secrets["password"]
     except KeyError:
-        st.warning("⚠️ No password secret found. Using default password '20082010'. Please set the 'password' secret in Streamlit Cloud settings for better security.")
+        # Silent fallback – the warning will be shown in sidebar after login
         return "20082010"
 
 def check_password():
@@ -29,11 +28,28 @@ def check_password():
     def password_entered():
         if st.session_state["password"] == get_expected_password():
             st.session_state["authenticated"] = True
-            del st.session_state["password"]  # don't store password
+            del st.session_state["password"]
         else:
             st.session_state["authenticated"] = False
 
     if "authenticated" not in st.session_state:
+        # Display flag and title on login page
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            st.image("https://flagcdn.com/w320/ht.png", width=100)
+        with col2:
+            st.markdown("<h1 style='text-align: center;'>Accountant Excel Advanced AI</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center;'><em>Professional Accounting & Loan Management Suite</em></p>", unsafe_allow_html=True)
+        with col3:
+            st.markdown("""
+            <div style='text-align: right;'>
+                <b>GlobalInternet.py</b><br>
+                Gesner Deslandes<br>
+                Python Developer
+            </div>
+            """, unsafe_allow_html=True)
+        st.divider()
+        
         st.text_input("🔐 Enter password to unlock", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["authenticated"]:
@@ -44,13 +60,12 @@ def check_password():
         return True
 
 def logout():
-    """Log out by clearing the session state."""
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
 
 # ----------------------------------------------------------------------
-# Database setup
+# Database setup (unchanged)
 # ----------------------------------------------------------------------
 def init_db():
     conn = sqlite3.connect("accounting.db")
@@ -88,7 +103,7 @@ def init_db():
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions (unchanged)
+# Helper functions (same as before)
 # ----------------------------------------------------------------------
 def add_cash_transaction(date, trans_type, category, description, amount):
     conn = sqlite3.connect("accounting.db")
@@ -184,6 +199,10 @@ def generate_pdf_report(title, data, columns):
 if not check_password():
     st.stop()
 
+# After login, show a warning in sidebar if using default password (secret missing)
+if get_expected_password() == "20082010" and "password" not in st.secrets:
+    st.sidebar.warning("⚠️ Using default password. Set the 'password' secret in Streamlit Cloud for better security.")
+
 # ----------------------------------------------------------------------
 # Sidebar with flag, company info, and logout button
 # ----------------------------------------------------------------------
@@ -200,7 +219,7 @@ with st.sidebar:
     st.markdown("© 2026 GlobalInternet.py – All rights reserved")
 
 # ----------------------------------------------------------------------
-# Main header with Haitian flag and title
+# Main header with Haitian flag and title (again, for after login)
 # ----------------------------------------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
@@ -219,7 +238,7 @@ with col3:
 st.divider()
 
 # ----------------------------------------------------------------------
-# Tabs (same as before)
+# Tabs (unchanged)
 # ----------------------------------------------------------------------
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "💰 Cash In/Out", "🏦 Loans", "📄 Reports"])
 
