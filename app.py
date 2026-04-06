@@ -14,12 +14,20 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 
 # ----------------------------------------------------------------------
-# Authentication using secrets
+# Authentication with fallback if secret is missing
 # ----------------------------------------------------------------------
+def get_expected_password():
+    """Return the password from secrets or a default, with a warning."""
+    try:
+        return st.secrets["password"]
+    except KeyError:
+        st.warning("⚠️ No password secret found. Using default password '20082010'. Please set the 'password' secret in Streamlit Cloud settings for better security.")
+        return "20082010"
+
 def check_password():
     """Returns True if the user is logged in."""
     def password_entered():
-        if st.session_state["password"] == st.secrets["password"]:
+        if st.session_state["password"] == get_expected_password():
             st.session_state["authenticated"] = True
             del st.session_state["password"]  # don't store password
         else:
