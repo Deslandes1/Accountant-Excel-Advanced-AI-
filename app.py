@@ -14,13 +14,15 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 
 # ----------------------------------------------------------------------
-# Helper to get password from secrets with fallback (no warning on login)
+# Authentication with fallback if secret is missing (warning only on login screen)
 # ----------------------------------------------------------------------
 def get_expected_password():
+    """Return the password from secrets or a default, with a warning (shown only on login screen)."""
     try:
         return st.secrets["password"]
     except KeyError:
-        # Silent fallback – the warning will be shown in sidebar after login
+        if not st.session_state.get("authenticated", False):
+            st.warning("⚠️ Using default password '20082010'. For better security, set the 'password' secret in Streamlit Cloud settings (key: password, value: 20082010).")
         return "20082010"
 
 def check_password():
@@ -28,12 +30,12 @@ def check_password():
     def password_entered():
         if st.session_state["password"] == get_expected_password():
             st.session_state["authenticated"] = True
-            del st.session_state["password"]
+            del st.session_state["password"]  # don't store password
         else:
             st.session_state["authenticated"] = False
 
     if "authenticated" not in st.session_state:
-        # Display flag and title on login page
+        # Show login screen with flag and title
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             st.image("https://flagcdn.com/w320/ht.png", width=100)
@@ -49,7 +51,6 @@ def check_password():
             </div>
             """, unsafe_allow_html=True)
         st.divider()
-        
         st.text_input("🔐 Enter password to unlock", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["authenticated"]:
@@ -60,12 +61,13 @@ def check_password():
         return True
 
 def logout():
+    """Log out by clearing the session state."""
     for key in list(st.session_state.keys()):
         del st.session_state[key]
     st.rerun()
 
 # ----------------------------------------------------------------------
-# Database setup (unchanged)
+# Database setup
 # ----------------------------------------------------------------------
 def init_db():
     conn = sqlite3.connect("accounting.db")
@@ -103,7 +105,7 @@ def init_db():
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions (same as before)
+# Helper functions (unchanged)
 # ----------------------------------------------------------------------
 def add_cash_transaction(date, trans_type, category, description, amount):
     conn = sqlite3.connect("accounting.db")
@@ -199,10 +201,6 @@ def generate_pdf_report(title, data, columns):
 if not check_password():
     st.stop()
 
-# After login, show a warning in sidebar if using default password (secret missing)
-if get_expected_password() == "20082010" and "password" not in st.secrets:
-    st.sidebar.warning("⚠️ Using default password. Set the 'password' secret in Streamlit Cloud for better security.")
-
 # ----------------------------------------------------------------------
 # Sidebar with flag, company info, and logout button
 # ----------------------------------------------------------------------
@@ -219,7 +217,7 @@ with st.sidebar:
     st.markdown("© 2026 GlobalInternet.py – All rights reserved")
 
 # ----------------------------------------------------------------------
-# Main header with Haitian flag and title (again, for after login)
+# Main header with Haitian flag and title (after login)
 # ----------------------------------------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
@@ -238,7 +236,7 @@ with col3:
 st.divider()
 
 # ----------------------------------------------------------------------
-# Tabs (unchanged)
+# Tabs (same as before)
 # ----------------------------------------------------------------------
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "💰 Cash In/Out", "🏦 Loans", "📄 Reports"])
 
