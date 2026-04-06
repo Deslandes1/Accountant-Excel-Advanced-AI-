@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import datetime
-import hashlib
 import io
-import base64
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -16,13 +14,14 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 
 # ----------------------------------------------------------------------
-# Authentication
+# Authentication using secrets
 # ----------------------------------------------------------------------
 def check_password():
+    """Returns True if the user is logged in."""
     def password_entered():
-        if st.session_state["password"] == "20082010":
+        if st.session_state["password"] == st.secrets["password"]:
             st.session_state["authenticated"] = True
-            del st.session_state["password"]
+            del st.session_state["password"]  # don't store password
         else:
             st.session_state["authenticated"] = False
 
@@ -35,6 +34,12 @@ def check_password():
         return False
     else:
         return True
+
+def logout():
+    """Log out by clearing the session state."""
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.rerun()
 
 # ----------------------------------------------------------------------
 # Database setup
@@ -75,11 +80,8 @@ def init_db():
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions
+# Helper functions (unchanged)
 # ----------------------------------------------------------------------
-def hash_password(pwd):
-    return hashlib.sha256(pwd.encode()).hexdigest()
-
 def add_cash_transaction(date, trans_type, category, description, amount):
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
@@ -118,7 +120,6 @@ def record_loan_payment(loan_id, payment_date, amount):
     c = conn.cursor()
     c.execute("INSERT INTO loan_payments (loan_id, payment_date, amount) VALUES (?,?,?)", (loan_id, payment_date, amount))
     c.execute("UPDATE loans SET payments_made = payments_made + 1 WHERE id = ?", (loan_id,))
-    # Check if fully paid
     c.execute("SELECT payments_made, total_payments FROM loans WHERE id = ?", (loan_id,))
     made, total = c.fetchone()
     if made >= total:
@@ -170,17 +171,32 @@ def generate_pdf_report(title, data, columns):
     return buffer
 
 # ----------------------------------------------------------------------
-# Main UI
+# Main UI – only shown after successful login
 # ----------------------------------------------------------------------
 if not check_password():
     st.stop()
 
 # ----------------------------------------------------------------------
-# Haitian flag and title (main area)
+# Sidebar with flag, company info, and logout button
+# ----------------------------------------------------------------------
+with st.sidebar:
+    st.image("https://flagcdn.com/w320/ht.png", width=100)
+    st.title("Accountant Excel Advanced AI")
+    st.markdown("**GlobalInternet.py**")
+    st.markdown("Owner: Gesner Deslandes")
+    st.markdown("📧 deslndes78@gmail.com | 📞 (509) 4738-5663")
+    st.markdown("---")
+    if st.button("🚪 Logout"):
+        logout()
+    st.markdown("---")
+    st.markdown("© 2026 GlobalInternet.py – All rights reserved")
+
+# ----------------------------------------------------------------------
+# Main header with Haitian flag and title
 # ----------------------------------------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Flag_of_Haiti.svg/320px-Flag_of_Haiti.svg.png", width=100)
+    st.image("https://flagcdn.com/w320/ht.png", width=100)
 with col2:
     st.markdown("<h1 style='text-align: center;'>Accountant Excel Advanced AI</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center;'><em>Professional Accounting & Loan Management Suite</em></p>", unsafe_allow_html=True)
@@ -188,27 +204,18 @@ with col3:
     st.markdown("""
     <div style='text-align: right;'>
         <b>GlobalInternet.py</b><br>
-        Owner: Gesner Deslandes<br>
-        📧 deslndes78@gmail.com<br>
-        📞 (509) 4738-5663
+        Gesner Deslandes<br>
+        Python Developer
     </div>
     """, unsafe_allow_html=True)
 st.divider()
 
-# Sidebar branding (already has flag, keep as is)
-st.sidebar.image("https://flagcdn.com/w320/ht.png", width=100)
-st.sidebar.title("Accountant Excel Advanced AI")
-st.sidebar.markdown("**GlobalInternet.py**")
-st.sidebar.markdown("Owner: Gesner Deslandes")
-st.sidebar.markdown("📧 deslndes78@gmail.com | 📞 (509) 4738-5663")
-st.sidebar.markdown("---")
-
-# Main tabs
+# ----------------------------------------------------------------------
+# Tabs (same as before)
+# ----------------------------------------------------------------------
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Dashboard", "💰 Cash In/Out", "🏦 Loans", "📄 Reports"])
 
-# ----------------------------------------------------------------------
 # Dashboard
-# ----------------------------------------------------------------------
 with tab1:
     st.header("Financial Dashboard")
     balance = get_cash_balance()
@@ -229,9 +236,7 @@ with tab1:
         else:
             st.info("No active loans.")
 
-# ----------------------------------------------------------------------
 # Cash In/Out
-# ----------------------------------------------------------------------
 with tab2:
     st.header("Cash In / Cash Out")
     with st.form("cash_form"):
@@ -252,16 +257,13 @@ with tab2:
     conn.close()
     st.dataframe(cash_df, use_container_width=True)
     
-    # Export to Excel
     if not cash_df.empty:
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             cash_df.to_excel(writer, sheet_name="Cash Transactions", index=False)
         st.download_button("📥 Download Excel", data=output.getvalue(), file_name="cash_transactions.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-# ----------------------------------------------------------------------
 # Loans
-# ----------------------------------------------------------------------
 with tab3:
     st.header("Loan Management")
     with st.expander("➕ Add New Loan"):
@@ -298,7 +300,6 @@ with tab3:
                     st.success("Payment recorded!")
                     st.rerun()
         
-        # Payment history
         payments_df = get_loan_payments(loan_id)
         if not payments_df.empty:
             st.subheader("Payment History")
@@ -306,9 +307,7 @@ with tab3:
     else:
         st.info("No loans yet. Add a loan above.")
 
-# ----------------------------------------------------------------------
 # Reports
-# ----------------------------------------------------------------------
 with tab4:
     st.header("Generate Professional Reports")
     report_type = st.selectbox("Report Type", ["Cash Flow Statement", "Loan Status Report", "Payment History Report"])
@@ -325,14 +324,11 @@ with tab4:
             st.metric("Total Income", f"${total_income:,.2f}")
             st.metric("Total Expense", f"${total_expense:,.2f}")
             st.metric("Net Cash Flow", f"${total_income - total_expense:,.2f}")
-            # Export options
             if not df.empty:
-                # Excel
                 output_excel = io.BytesIO()
                 with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
                     df.to_excel(writer, sheet_name="Cash Flow", index=False)
                 st.download_button("📥 Download Excel", data=output_excel.getvalue(), file_name=f"cash_flow_{start_date}_to_{end_date}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                # PDF
                 pdf_buffer = generate_pdf_report(f"Cash Flow Statement {start_date} to {end_date}", df, list(df.columns))
                 st.download_button("📄 Download PDF", data=pdf_buffer, file_name=f"cash_flow_{start_date}_to_{end_date}.pdf", mime="application/pdf")
     
@@ -349,7 +345,7 @@ with tab4:
                 pdf_buffer = generate_pdf_report("Loan Status Report", df, list(df.columns))
                 st.download_button("📄 Download PDF", data=pdf_buffer, file_name="loan_report.pdf", mime="application/pdf")
     
-    else:  # Payment History Report
+    else:
         all_loans = get_loans()
         if not all_loans.empty:
             selected_loan = st.selectbox("Select Loan", all_loans['id'].tolist(), format_func=lambda x: f"Loan #{x} - {all_loans[all_loans['id']==x]['borrower'].values[0]}")
@@ -365,6 +361,3 @@ with tab4:
                     st.download_button("📄 Download PDF", data=pdf_buffer, file_name=f"loan_{selected_loan}_payments.pdf", mime="application/pdf")
         else:
             st.info("No loans available to generate payment history.")
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("© 2026 GlobalInternet.py – All rights reserved")
