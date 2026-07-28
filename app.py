@@ -18,7 +18,7 @@ import base64
 st.set_page_config(page_title="Excel Advanced Accounting", layout="wide")
 
 # ----------------------------------------------------------------------
-# Custom CSS – Blue Theme + Table Styling
+# Custom CSS – Blue Theme + Full Table Styling
 # ----------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -65,11 +65,6 @@ st.markdown("""
     [data-testid="stMetricValue"] {
         color: #003366 !important;
     }
-    .dataframe {
-        background-color: #ffffff !important;
-        border: 1px solid #99ccff !important;
-        border-radius: 8px !important;
-    }
     .stTabs [data-baseweb="tab-list"] {
         background-color: #cce5ff !important;
         border-radius: 8px !important;
@@ -83,14 +78,21 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
-    /* --- Professional Table Styling --- */
-    div[data-testid="stDataFrame"] table {
-        border-collapse: collapse;
-        width: 100%;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 14px;
-        border: 1px solid #b0c4de;
+    /* ---- PROFESSIONAL TABLE STYLING (full coverage) ---- */
+    div[data-testid="stDataFrame"] {
+        border: 1px solid #b0c4de !important;
+        border-radius: 4px !important;
+        overflow: hidden !important;
     }
+    div[data-testid="stDataFrame"] table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-size: 14px !important;
+        border: 1px solid #b0c4de !important;
+        background-color: #ffffff !important;
+    }
+    /* Header row */
     div[data-testid="stDataFrame"] thead tr th {
         background-color: #1e88e5 !important;
         color: white !important;
@@ -99,6 +101,7 @@ st.markdown("""
         padding: 8px 6px !important;
         border: 1px solid #1565c0 !important;
     }
+    /* Data rows – alternating colors */
     div[data-testid="stDataFrame"] tbody tr:nth-child(even) {
         background-color: #f0f8ff !important;
     }
@@ -108,16 +111,29 @@ st.markdown("""
     div[data-testid="stDataFrame"] tbody tr:hover {
         background-color: #d9eaf7 !important;
     }
+    /* Cells */
     div[data-testid="stDataFrame"] td {
         padding: 6px 8px !important;
         border: 1px solid #b0c4de !important;
         text-align: right !important;
+        color: #1a2a3a !important;
     }
     div[data-testid="stDataFrame"] td:first-child {
         text-align: left !important;
     }
     div[data-testid="stDataFrame"] td:nth-child(3) {  /* Description column */
         text-align: left !important;
+    }
+    /* Remove any default yellow highlight */
+    div[data-testid="stDataFrame"] tbody tr:focus,
+    div[data-testid="stDataFrame"] tbody tr:active,
+    div[data-testid="stDataFrame"] td:focus,
+    div[data-testid="stDataFrame"] td:active {
+        background-color: inherit !important;
+    }
+    /* Override Streamlit's default selection color */
+    .stDataFrameSelectedRow {
+        background-color: #d9eaf7 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -693,7 +709,6 @@ EXCHANGE_RATE = 100
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
     Generate a spoken summary of the current ledger in the selected language.
-    Closing statement updated to reflect the new title.
     """
     closings = {
         'en': " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
@@ -799,7 +814,7 @@ def text_to_speech(text, lang='en', tld='com'):
         return None
 
 # ----------------------------------------------------------------------
-# Excel export with professional styling
+# Excel export with full professional styling (including alternating rows)
 # ----------------------------------------------------------------------
 def export_styled_excel(df, title):
     """
@@ -823,6 +838,10 @@ def export_styled_excel(df, title):
         currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE  # $#,##0.00
         htg_fmt = '#,##0.00 "G"'
         
+        # Light fill for alternating rows
+        even_fill = PatternFill(start_color="F0F8FF", end_color="F0F8FF", fill_type="solid")
+        odd_fill = PatternFill(start_color="FFFFFF", end_color="FFFFFF", fill_type="solid")
+        
         # Apply header styling
         for cell in worksheet[1]:
             cell.font = header_font
@@ -830,23 +849,23 @@ def export_styled_excel(df, title):
             cell.border = thin_border
             cell.alignment = Alignment(horizontal='center', vertical='center')
         
-        # Apply borders and alignment to all data cells
-        for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
+        # Apply to data rows with alternating fills
+        for row_idx, row in enumerate(worksheet.iter_rows(min_row=2, max_row=worksheet.max_row), start=2):
+            fill = even_fill if row_idx % 2 == 0 else odd_fill
             for cell in row:
+                cell.fill = fill
                 cell.border = thin_border
                 cell.alignment = Alignment(horizontal='right', vertical='center')
         
-        # Identify columns by name
+        # Column-specific formatting
         headers = [cell.value for cell in worksheet[1]]
         for col_idx, header in enumerate(headers, start=1):
             col_letter = worksheet.cell(row=1, column=col_idx).column_letter
-            # Apply currency formatting to USD columns
             if header in ['unit usd', 'total usd', 'Balance USD', 'Credit (Cash In USD)']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
                     if cell.value is not None:
                         cell.number_format = currency_fmt
-            # Apply HTG formatting to HTG columns
             elif header in ['unit htg', 'total htg', 'Balance HTG', 'Credit (Cash In HTG)']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
@@ -856,7 +875,7 @@ def export_styled_excel(df, title):
         # Auto-adjust column widths
         for col in worksheet.columns:
             max_length = 0
-            column_letter = col[0].column_letter
+            col_letter = col[0].column_letter
             for cell in col:
                 try:
                     if len(str(cell.value)) > max_length:
@@ -864,7 +883,7 @@ def export_styled_excel(df, title):
                 except:
                     pass
             adjusted_width = (max_length + 2) * 1.2
-            worksheet.column_dimensions[column_letter].width = min(adjusted_width, 30)
+            worksheet.column_dimensions[col_letter].width = min(adjusted_width, 30)
     
     output.seek(0)
     return output
@@ -1138,7 +1157,7 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ---- Reconciliation Ledger (with professional table styling) ----
+# ---- Reconciliation Ledger (with full professional table styling) ----
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
