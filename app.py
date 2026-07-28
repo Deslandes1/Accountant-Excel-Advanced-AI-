@@ -9,7 +9,11 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
 from openpyxl.utils.dataframe import dataframe_to_rows
-from gtts import gTTS
+# ====== UPGRADED TTS ======
+import edge_tts
+import asyncio
+import tempfile
+import os
 import base64
 
 # ----------------------------------------------------------------------
@@ -703,7 +707,7 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions – NEW SCRIPT WITH CONTACT AND SIGN-UP
+# AI Voice Functions – UPGRADED WITH EDGE TTS (NATIVE FEMALE VOICES)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
@@ -743,41 +747,54 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     
     text = summary + closing
     
-    # Truncate to avoid gTTS length limit (1000 chars)
+    # Truncate to avoid gTTS length limit (no longer needed but keep for safety)
     if len(text) > 1000:
-        # Keep the summary and add a shortened closing
         if len(summary) > 700:
             summary = summary[:700] + "..."
         text = summary + " " + closing
     
     return text
 
-def text_to_speech(text, lang='en', tld='com'):
+def text_to_speech(text, lang='en'):
     """
-    Convert text to speech using gTTS with language support.
+    Convert text to speech using Microsoft Edge's neural TTS (edge-tts).
+    Provides native female voices for English, French, and Spanish.
     """
-    lang_map = {
-        'en': ('en', 'com.au'),
-        'fr': ('fr', 'fr'),
-        'es': ('es', 'es')
+    voice_map = {
+        'en': 'en-US-JennyNeural',   # female, US
+        'fr': 'fr-FR-DeniseNeural',  # female, French
+        'es': 'es-ES-ElviraNeural'   # female, Spanish (Spain)
     }
-    if lang in lang_map:
-        lang_code, tld_val = lang_map[lang]
-    else:
-        lang_code, tld_val = 'en', 'com.au'
+    voice = voice_map.get(lang, 'en-US-JennyNeural')
+    
     try:
-        tts = gTTS(text=text, lang=lang_code, tld=tld_val, slow=False)
-        audio_bytes = io.BytesIO()
-        tts.write_to_fp(audio_bytes)
-        audio_bytes.seek(0)
+        # Use edge-tts (Microsoft Edge neural voices)
+        communicate = edge_tts.Communicate(text, voice)
+        # Write to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
+            tmp_path = tmp.name
+        # Run async
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(communicate.save(tmp_path))
+        loop.close()
+        # Read the audio file
+        with open(tmp_path, 'rb') as f:
+            audio_bytes = f.read()
+        os.unlink(tmp_path)
         return audio_bytes
     except Exception as e:
-        error_msg = str(e)
-        if "200" in error_msg:
-            st.warning(_("Voice service returned empty audio. Try a shorter explanation."))
-        else:
-            st.error(f"Voice generation error: {error_msg}")
-        return None
+        # Fallback to gTTS (Google) if edge-tts fails
+        try:
+            from gtts import gTTS
+            tts = gTTS(text=text, lang=lang, slow=False)
+            audio_io = io.BytesIO()
+            tts.write_to_fp(audio_io)
+            audio_io.seek(0)
+            return audio_io.getvalue()
+        except Exception as e2:
+            st.error(f"Voice generation failed: {e2}")
+            return None
 
 # ----------------------------------------------------------------------
 # Excel export with full professional styling
