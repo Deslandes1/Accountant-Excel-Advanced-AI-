@@ -160,7 +160,8 @@ translations = {
         "balance_usd": "Balance USD",
         "balance_htg": "Balance HTG",
         "date": "Date",
-        "credit_cash_in": "Credit (Cash In)",
+        "credit_cash_in": "Credit (Cash In HTG)",
+        "credit_cash_in_usd": "Credit (Cash In USD)",
         "description_item": "Description / Item Details",
         "qty": "qty",
         "currency_htg": "Currency Unit (HTG)",
@@ -172,7 +173,7 @@ translations = {
         "currency_htg_col": "Currency (HTG)",
         "balance_htg_col": "Balance HTG",
         "add_entry": "Add Entry",
-        "credit": "Credit (Cash In)",
+        "credit": "Credit (Cash In HTG)",
         "qty_input": "Quantity",
         "unit_htg_input": "Unit Price (HTG)",
         "description_input": "Description / Item Details",
@@ -261,7 +262,8 @@ translations = {
         "balance_usd": "Solde USD",
         "balance_htg": "Solde HTG",
         "date": "Date",
-        "credit_cash_in": "Crédit (Entrée)",
+        "credit_cash_in": "Crédit (Entrée HTG)",
+        "credit_cash_in_usd": "Crédit (Entrée USD)",
         "description_item": "Description / Détails",
         "qty": "Qté",
         "currency_htg": "Devise (HTG)",
@@ -273,7 +275,7 @@ translations = {
         "currency_htg_col": "Devise (HTG)",
         "balance_htg_col": "Solde HTG",
         "add_entry": "Ajouter une entrée",
-        "credit": "Crédit (Entrée)",
+        "credit": "Crédit (Entrée HTG)",
         "qty_input": "Quantité",
         "unit_htg_input": "Prix unitaire (HTG)",
         "description_input": "Description / Détails",
@@ -362,7 +364,8 @@ translations = {
         "balance_usd": "Saldo USD",
         "balance_htg": "Saldo HTG",
         "date": "Fecha",
-        "credit_cash_in": "Crédito (Ingreso)",
+        "credit_cash_in": "Crédito (Ingreso HTG)",
+        "credit_cash_in_usd": "Crédito (Ingreso USD)",
         "description_item": "Descripción / Detalle",
         "qty": "Cant.",
         "currency_htg": "Moneda (HTG)",
@@ -374,7 +377,7 @@ translations = {
         "currency_htg_col": "Moneda (HTG)",
         "balance_htg_col": "Saldo HTG",
         "add_entry": "Agregar entrada",
-        "credit": "Crédito (Ingreso)",
+        "credit": "Crédito (Ingreso HTG)",
         "qty_input": "Cantidad",
         "unit_htg_input": "Precio unitario (HTG)",
         "description_input": "Descripción / Detalle",
@@ -476,7 +479,7 @@ def init_db():
     c.execute("""CREATE TABLE IF NOT EXISTS reconciliation_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
-        credit REAL DEFAULT 0,
+        credit_htg REAL DEFAULT 0,   -- now credit is in HTG
         description TEXT,
         qty REAL DEFAULT 0,
         unit_htg REAL DEFAULT 0,
@@ -486,20 +489,22 @@ def init_db():
     )""")
     c.execute("SELECT COUNT(*) FROM reconciliation_entries")
     if c.fetchone()[0] == 0:
-        c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
+        # Balance Forwarded row (ID 1) – starting balances in USD and HTG
+        c.execute("""INSERT INTO reconciliation_entries (date, description, credit_htg, qty, unit_htg, unit_usd, total_htg, total_usd)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                   ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
+        # Demo entries: credit_htg is now in HTG
         demo_entries = [
-            ("2023-03-01", "Cash in from operation", 3000.00, 0, 0, 0, 0, 0),
+            ("2023-03-01", "Cash in from operation (HTG)", 300000.00, 0, 0, 0, 0, 0),  # 300,000 HTG = 3,000 USD
             ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
             ("2023-03-03", "Equipment rental - projector", 0, 5, 500.00, 5.00, 2500.00, 25.00),
             ("2023-03-05", "Fuel for delivery vehicles", 0, 40, 125.00, 1.25, 5000.00, 50.00),
-            ("2023-03-07", "Cash in from sales", 1200.00, 0, 0, 0, 0, 0),
+            ("2023-03-07", "Cash in from sales (HTG)", 120000.00, 0, 0, 0, 0, 0),    # 120,000 HTG = 1,200 USD
             ("2023-03-10", "Utility bills - electricity", 0, 0, 0, 0, 4000.00, 40.00),
             ("2023-03-12", "Transportation - maintenance", 0, 2, 800.00, 8.00, 1600.00, 16.00)
         ]
         for entry in demo_entries:
-            c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
+            c.execute("""INSERT INTO reconciliation_entries (date, description, credit_htg, qty, unit_htg, unit_usd, total_htg, total_usd)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", entry)
         conn.commit()
     conn.commit()
@@ -575,7 +580,7 @@ def get_loan_payments(loan_id):
 def get_reconciliation_entries():
     conn = sqlite3.connect("accounting.db")
     df = pd.read_sql_query(
-        "SELECT id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id",
+        "SELECT id, date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id",
         conn)
     conn.close()
     if not df.empty:
@@ -584,23 +589,26 @@ def get_reconciliation_entries():
         running_usd = 0
         running_htg = 0
         for idx, row in df.iterrows():
-            running_usd += row['credit'] - row['total_usd']
-            running_htg += (row['credit'] * 100) - row['total_htg']
+            # credit_htg is now in HTG, convert to USD by dividing by 100
+            running_usd += (row['credit_htg'] / 100) - row['total_usd']
+            running_htg += row['credit_htg'] - row['total_htg']
             balance_usd.append(running_usd)
             balance_htg.append(running_htg)
         df['balance_usd'] = balance_usd
         df['balance_htg'] = balance_htg
     else:
-        df = pd.DataFrame(columns=['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd',
+        df = pd.DataFrame(columns=['id', 'date', 'credit_htg', 'description', 'qty', 'unit_htg', 'unit_usd',
                                    'total_htg', 'total_usd', 'balance_usd', 'balance_htg'])
+    # Rename credit_htg to credit for display
+    df.rename(columns={'credit_htg': 'credit'}, inplace=True)
     return df
 
-def add_reconciliation_entry(date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd):
+def add_reconciliation_entry(date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd):
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
-    c.execute("""INSERT INTO reconciliation_entries (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd)
+    c.execute("""INSERT INTO reconciliation_entries (date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-              (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd))
+              (date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd))
     conn.commit()
     conn.close()
 
@@ -639,6 +647,8 @@ def generate_pdf_report(title, data, columns):
 
 def usd_to_htg(usd):
     return usd * 100
+
+EXCHANGE_RATE = 100  # 1 USD = 100 HTG
 
 # ----------------------------------------------------------------------
 # Main UI
@@ -884,7 +894,7 @@ with tab4:
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
-    st.info("💡 **How it works:** Enter a Credit (Cash In) to increase balances, or leave it at 0. Then add items (qty, unit HTG). The balances update automatically. **Credit increases, expenses decrease.**")
+    st.info("💡 **How it works:** Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.")
 
     df_rec = get_reconciliation_entries()
     
@@ -905,7 +915,7 @@ with tab5:
         col_headers = {
             'id': 'ID',
             'date': _('date'),
-            'credit': _('credit_cash_in'),
+            'credit': _('credit_cash_in'),  # now in HTG
             'description': _('description_item'),
             'qty': _('qty'),
             'unit_htg': _('unit_htg'),
@@ -916,12 +926,13 @@ with tab5:
             'balance_htg': _('balance_htg_col')
         }
         df_display = df_rec[display_cols].copy()
-        for col in ['credit', 'unit_usd', 'total_usd', 'balance_usd']:
-            if col in df_display.columns:
-                df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
-        for col in ['unit_htg', 'total_htg', 'balance_htg']:
+        # Formatting: credit is in HTG now
+        for col in ['credit', 'unit_htg', 'total_htg', 'balance_htg']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
+        for col in ['unit_usd', 'total_usd', 'balance_usd']:
+            if col in df_display.columns:
+                df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
         df_display.rename(columns=col_headers, inplace=True)
         st.dataframe(df_display, use_container_width=True)
     else:
@@ -933,31 +944,36 @@ with tab5:
         col1, col2 = st.columns(2)
         with col1:
             date = st.date_input(_("date"), value=datetime.date.today())
-            credit = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
+            credit_htg = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
             description = st.text_input(_("description_item"))
         with col2:
             qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0, key="qty_input")
             unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
         
+        # Get current values
         qty_val = st.session_state.get("qty_input", 0.0)
         unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
-        preview_unit_usd = unit_htg_val / 100
-        preview_total_htg = qty_val * unit_htg_val
-        preview_total_usd = qty_val * preview_unit_usd
+        # Compute USD equivalent of credit
+        credit_usd = credit_htg / EXCHANGE_RATE
+        # Compute totals
+        unit_usd_preview = unit_htg_val / EXCHANGE_RATE
+        total_htg_preview = qty_val * unit_htg_val
+        total_usd_preview = qty_val * unit_usd_preview
         
         st.markdown("---")
         st.markdown("**📊 Preview (will be used when you submit)**")
-        col1, col2, col3 = st.columns(3)
-        col1.metric("unit usd", f"{preview_unit_usd:.2f}")
-        col2.metric("total htg", f"{preview_total_htg:.2f}")
-        col3.metric("total usd", f"{preview_total_usd:.2f}")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Credit (USD)", f"${credit_usd:.2f}")
+        col2.metric("unit usd", f"{unit_usd_preview:.2f}")
+        col3.metric("total htg", f"{total_htg_preview:.2f}")
+        col4.metric("total usd", f"{total_usd_preview:.2f}")
         
         submitted = st.form_submit_button(_("add_entry"))
         if submitted:
             if description.strip() == "":
                 st.error("Description is required.")
             else:
-                add_reconciliation_entry(str(date), credit, description, qty_val, unit_htg_val, preview_unit_usd, preview_total_htg, preview_total_usd)
+                add_reconciliation_entry(str(date), credit_htg, description, qty_val, unit_htg_val, unit_usd_preview, total_htg_preview, total_usd_preview)
                 st.success(_("entry_added"))
                 st.rerun()
     
