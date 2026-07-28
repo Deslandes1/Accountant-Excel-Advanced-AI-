@@ -17,7 +17,7 @@ import base64
 st.set_page_config(page_title="Excel Advanced Accounting", layout="wide")
 
 # ----------------------------------------------------------------------
-# Custom CSS – Blue Theme (unchanged)
+# Custom CSS – Blue Theme
 # ----------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -83,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations
+# Translations (keep English only for simplicity, but you can add others)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -187,7 +187,7 @@ translations = {
         "delete_entry": "Delete Entry",
         "cannot_delete_balance": "Cannot delete the initial balance row."
     },
-    # (French and Spanish kept as before, but not necessary for this update)
+    # (You can add French and Spanish if needed)
 }
 
 def _(key):
@@ -445,11 +445,11 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Function (using gTTS)
+# AI Voice Functions (FIXED: shorter text & better error handling)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg):
     """
-    Generate a spoken summary of the current ledger.
+    Generate a spoken summary of the current ledger, truncated to 1000 chars.
     """
     if entries.empty:
         text = "There are no entries in the ledger. Please add a transaction."
@@ -470,20 +470,29 @@ def generate_voice_explanation(entries, balance_usd, balance_htg):
             f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
             f"You can download a professionally formatted Excel report with just one click."
         )
+    # Truncate to 1000 characters to avoid gTTS length limit
+    if len(text) > 1000:
+        text = text[:997] + "..."
     return text
 
 def text_to_speech(text, lang='en', tld='com.au'):
     """
-    Convert text to speech and return an audio bytes object.
+    Convert text to speech using gTTS with better error handling.
     """
     try:
-        tts = gTTS(text=text, lang=lang, tld=tld)
+        tts = gTTS(text=text, lang=lang, tld=tld, slow=False)
         audio_bytes = io.BytesIO()
         tts.write_to_fp(audio_bytes)
         audio_bytes.seek(0)
         return audio_bytes
     except Exception as e:
-        st.error(f"Voice generation failed: {e}")
+        # gTTS can raise a gTTS.gTTSError; we capture it
+        error_msg = str(e)
+        # If the error contains "200 (OK)", it's a known issue – we return None
+        if "200" in error_msg:
+            st.warning("The voice service returned an empty audio file. Please try again with a shorter explanation.")
+        else:
+            st.error(f"Voice generation error: {error_msg}")
         return None
 
 # ----------------------------------------------------------------------
@@ -553,7 +562,7 @@ def export_styled_excel(df, title):
 if not check_password():
     st.stop()
 
-# Language selector (simplified)
+# Language selector (English only for now)
 lang_options = {"en": "🇺🇸 English"}
 if "language" not in st.session_state:
     st.session_state.language = "en"
@@ -591,7 +600,7 @@ with st.sidebar:
                 st.audio(audio_bytes, format='audio/mp3')
                 st.success("✅ Voice explanation played!")
             else:
-                st.error("Failed to generate voice.")
+                st.warning("Voice generation failed – please try again or use a shorter explanation.")
     st.markdown("---")
     if st.button(_("logout")):
         logout()
@@ -912,35 +921,40 @@ with tab5:
                 st.success("Entry deleted.")
                 st.rerun()
     
-    # Download Excel with styling and voice explanation
+    # Download Excel with voice explanation
     if not df_rec.empty:
         styled_excel = export_styled_excel(df_rec, _("reconciliation_title"))
-        # Add voice explanation for the download
-        if st.button("📥 Download Excel with Voice Explanation"):
-            # Generate voice explanation
-            last_row = df_rec.iloc[-1]
-            balance_usd = last_row['balance_usd']
-            balance_htg = last_row['balance_htg']
-            explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg)
-            # Add a note about the download
-            explanation += " You are about to download a professional Excel report. This file can be opened even if you don't have Microsoft Excel installed. The report contains all your transactions with formatted currencies and a clear summary."
-            audio_bytes = text_to_speech(explanation)
-            if audio_bytes:
-                st.audio(audio_bytes, format='audio/mp3')
-                st.success("✅ Voice explanation played! Now download the file below.")
-            else:
-                st.warning("Voice explanation failed, but you can still download the report.")
-            st.download_button(
-                _("download_reconciliation"),
-                data=styled_excel,
-                file_name="reconciliation_ledger.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-        else:
+        
+        # Two buttons: one with voice, one without
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("📥 Download Excel (with Voice)"):
+                # Generate voice explanation
+                last_row = df_rec.iloc[-1]
+                balance_usd = last_row['balance_usd']
+                balance_htg = last_row['balance_htg']
+                explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg)
+                # Add a note about the download
+                explanation += " You are about to download a professional Excel report. This file can be opened even if you don't have Microsoft Excel installed."
+                audio_bytes = text_to_speech(explanation)
+                if audio_bytes:
+                    st.audio(audio_bytes, format='audio/mp3')
+                    st.success("✅ Voice explanation played! Download your file below.")
+                else:
+                    st.warning("Voice explanation failed, but you can still download the report.")
+                st.download_button(
+                    _("download_reconciliation"),
+                    data=styled_excel,
+                    file_name="reconciliation_ledger.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="download_voice"
+                )
+        with col2:
             # Normal download without voice
             st.download_button(
                 _("download_reconciliation"),
                 data=styled_excel,
                 file_name="reconciliation_ledger.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="download_normal"
             )
