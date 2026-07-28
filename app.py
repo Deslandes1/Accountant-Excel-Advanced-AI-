@@ -10,7 +10,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-# ====== TTS ENGINE: try edge-tts first, fallback to gTTS ======
+# ====== CHECK FOR EDGE TTS (MUST BE INSTALLED) ======
+EDGE_TTS_AVAILABLE = False
 try:
     import edge_tts
     import asyncio
@@ -18,8 +19,7 @@ try:
     import os
     EDGE_TTS_AVAILABLE = True
 except ImportError:
-    EDGE_TTS_AVAILABLE = False
-    from gtts import gTTS
+    pass
 
 # ----------------------------------------------------------------------
 # Page config
@@ -147,7 +147,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (only English for brevity, but you can add others)
+# Translations
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -510,7 +510,7 @@ def logout():
     st.rerun()
 
 # ----------------------------------------------------------------------
-# Database setup (unchanged)
+# Database setup
 # ----------------------------------------------------------------------
 def init_db():
     conn = sqlite3.connect("accounting.db")
@@ -577,7 +577,7 @@ def init_db():
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions (unchanged)
+# Helper functions
 # ----------------------------------------------------------------------
 def add_cash_transaction(date, trans_type, category, description, amount):
     conn = sqlite3.connect("accounting.db")
@@ -712,13 +712,12 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions – FALLBACK SUPPORT FOR BOTH ENGINES
+# AI Voice Functions – FORCED USE OF EDGE TTS (NATIVE VOICES)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
     Generate a spoken summary of the current ledger with contact info and sign-up link.
     """
-    # Base message
     if entries.empty:
         summary = "There are no entries in the ledger. Please add a transaction."
     else:
@@ -739,7 +738,6 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
             f"You can download a professionally formatted Excel report with just one click."
         )
     
-    # Closing with contact and sign-up
     closing = (
         " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
         "Phone: (509)-47385663. Email: deslandes78@gmail.com. "
@@ -751,52 +749,44 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     )
     
     text = summary + closing
-    
-    # Truncate if too long (edge-tts can handle longer text, but gTTS has limits)
-    if len(text) > 1000:
-        if len(summary) > 700:
-            summary = summary[:700] + "..."
+    # edge-tts supports much longer text, so we don't truncate aggressively
+    if len(text) > 1500:
+        # If still too long, shorten the summary part
+        if len(summary) > 1000:
+            summary = summary[:1000] + "..."
         text = summary + " " + closing
-    
     return text
 
 def text_to_speech(text, lang='en'):
     """
-    Convert text to speech using edge-tts if available, otherwise fallback to gTTS.
+    Convert text to speech using Microsoft Edge's neural TTS (edge-tts).
+    Raises an exception if edge-tts is not available or fails.
     """
-    if EDGE_TTS_AVAILABLE:
-        voice_map = {
-            'en': 'en-US-JennyNeural',
-            'fr': 'fr-FR-DeniseNeural',
-            'es': 'es-ES-ElviraNeural'
-        }
-        voice = voice_map.get(lang, 'en-US-JennyNeural')
-        try:
-            communicate = edge_tts.Communicate(text, voice)
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
-                tmp_path = tmp.name
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(communicate.save(tmp_path))
-            loop.close()
-            with open(tmp_path, 'rb') as f:
-                audio_bytes = f.read()
-            os.unlink(tmp_path)
-            return audio_bytes
-        except Exception as e:
-            st.warning(f"edge-tts failed: {e}. Falling back to gTTS.")
-            # fall through to gTTS
-    # Fallback to gTTS
+    if not EDGE_TTS_AVAILABLE:
+        raise RuntimeError("edge-tts is not installed. Please add 'edge-tts>=6.1.9' to your requirements.txt and redeploy.")
+    
+    voice_map = {
+        'en': 'en-US-JennyNeural',   # female, US
+        'fr': 'fr-FR-DeniseNeural',  # female, French (native)
+        'es': 'es-ES-ElviraNeural'   # female, Spanish (native, Spain)
+    }
+    voice = voice_map.get(lang, 'en-US-JennyNeural')
+    
     try:
-        from gtts import gTTS
-        tts = gTTS(text=text, lang=lang, slow=False)
-        audio_io = io.BytesIO()
-        tts.write_to_fp(audio_io)
-        audio_io.seek(0)
-        return audio_io.getvalue()
-    except Exception as e2:
-        st.error(f"Voice generation failed: {e2}")
-        return None
+        communicate = edge_tts.Communicate(text, voice)
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
+            tmp_path = tmp.name
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(communicate.save(tmp_path))
+        loop.close()
+        with open(tmp_path, 'rb') as f:
+            audio_bytes = f.read()
+        os.unlink(tmp_path)
+        return audio_bytes
+    except Exception as e:
+        # Re-raise with a clear error message
+        raise RuntimeError(f"edge-tts generation failed: {e}")
 
 # ----------------------------------------------------------------------
 # Excel export with full professional styling
@@ -899,9 +889,16 @@ with st.sidebar:
     st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     
-    # ---- AI Voice Button ----
-    if st.button("🎙️ " + _("Explain Ledger (AI Voice)")):
-        with st.spinner(_("Generating voice explanation...")):
+    # ---- AI Voice Button with status ----
+    if EDGE_TTS_AVAILABLE:
+        st.success("✅ Native voice engine (edge-tts) is active")
+        voice_button = st.button("🎙️ " + _("Explain Ledger (AI Voice)"))
+    else:
+        st.error("❌ Native voice engine (edge-tts) is NOT installed. Please add 'edge-tts>=6.1.9' to your requirements.txt and redeploy.")
+        voice_button = st.button("🎙️ " + _("Explain Ledger (AI Voice)"), disabled=True)
+    
+    if voice_button and EDGE_TTS_AVAILABLE:
+        with st.spinner(_("Generating voice explanation with native voices...")):
             df_rec = get_reconciliation_entries()
             if not df_rec.empty:
                 last_row = df_rec.iloc[-1]
@@ -911,12 +908,14 @@ with st.sidebar:
                 balance_usd = 0
                 balance_htg = 0
             explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg, selected_lang)
-            audio_bytes = text_to_speech(explanation, lang=selected_lang)
-            if audio_bytes:
-                st.audio(audio_bytes, format='audio/mp3')
-                st.success(_("Voice explanation played!"))
-            else:
-                st.warning(_("Voice generation failed – please try again."))
+            try:
+                audio_bytes = text_to_speech(explanation, lang=selected_lang)
+                if audio_bytes:
+                    st.audio(audio_bytes, format='audio/mp3')
+                    st.success(_("Voice explanation played with native voice!"))
+            except Exception as e:
+                st.error(f"Voice generation failed: {e}")
+    
     st.markdown("---")
     if st.button(_("logout")):
         logout()
