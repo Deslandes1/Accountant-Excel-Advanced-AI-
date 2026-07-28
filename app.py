@@ -9,12 +9,18 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
 from openpyxl.utils.dataframe import dataframe_to_rows
-# ====== UPGRADED TTS ======
-import edge_tts
-import asyncio
-import tempfile
-import os
-import base64
+
+# ====== TTS ENGINE: try edge-tts first, fallback to gTTS ======
+try:
+    import edge_tts
+    import asyncio
+    import tempfile
+    import os
+    EDGE_TTS_AVAILABLE = True
+except ImportError:
+    EDGE_TTS_AVAILABLE = False
+    # gTTS will be used as fallback
+    from gtts import gTTS
 
 # ----------------------------------------------------------------------
 # Page config
@@ -707,7 +713,7 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions – UPGRADED WITH EDGE TTS (NATIVE FEMALE VOICES)
+# AI Voice Functions – FALLBACK SUPPORT FOR BOTH ENGINES
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
@@ -747,7 +753,7 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     
     text = summary + closing
     
-    # Truncate to avoid gTTS length limit (no longer needed but keep for safety)
+    # Truncate if too long (edge-tts can handle longer text, but gTTS has limits)
     if len(text) > 1000:
         if len(summary) > 700:
             summary = summary[:700] + "..."
@@ -757,44 +763,41 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
 
 def text_to_speech(text, lang='en'):
     """
-    Convert text to speech using Microsoft Edge's neural TTS (edge-tts).
-    Provides native female voices for English, French, and Spanish.
+    Convert text to speech using edge-tts if available, otherwise fallback to gTTS.
     """
-    voice_map = {
-        'en': 'en-US-JennyNeural',   # female, US
-        'fr': 'fr-FR-DeniseNeural',  # female, French
-        'es': 'es-ES-ElviraNeural'   # female, Spanish (Spain)
-    }
-    voice = voice_map.get(lang, 'en-US-JennyNeural')
-    
-    try:
-        # Use edge-tts (Microsoft Edge neural voices)
-        communicate = edge_tts.Communicate(text, voice)
-        # Write to a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
-            tmp_path = tmp.name
-        # Run async
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(communicate.save(tmp_path))
-        loop.close()
-        # Read the audio file
-        with open(tmp_path, 'rb') as f:
-            audio_bytes = f.read()
-        os.unlink(tmp_path)
-        return audio_bytes
-    except Exception as e:
-        # Fallback to gTTS (Google) if edge-tts fails
+    if EDGE_TTS_AVAILABLE:
+        voice_map = {
+            'en': 'en-US-JennyNeural',
+            'fr': 'fr-FR-DeniseNeural',
+            'es': 'es-ES-ElviraNeural'
+        }
+        voice = voice_map.get(lang, 'en-US-JennyNeural')
         try:
-            from gtts import gTTS
-            tts = gTTS(text=text, lang=lang, slow=False)
-            audio_io = io.BytesIO()
-            tts.write_to_fp(audio_io)
-            audio_io.seek(0)
-            return audio_io.getvalue()
-        except Exception as e2:
-            st.error(f"Voice generation failed: {e2}")
-            return None
+            communicate = edge_tts.Communicate(text, voice)
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp:
+                tmp_path = tmp.name
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(communicate.save(tmp_path))
+            loop.close()
+            with open(tmp_path, 'rb') as f:
+                audio_bytes = f.read()
+            os.unlink(tmp_path)
+            return audio_bytes
+        except Exception as e:
+            st.warning(f"edge-tts failed: {e}. Falling back to gTTS.")
+            # fall through to gTTS
+    # Fallback to gTTS
+    try:
+        from gtts import gTTS
+        tts = gTTS(text=text, lang=lang, slow=False)
+        audio_io = io.BytesIO()
+        tts.write_to_fp(audio_io)
+        audio_io.seek(0)
+        return audio_io.getvalue()
+    except Exception as e2:
+        st.error(f"Voice generation failed: {e2}")
+        return None
 
 # ----------------------------------------------------------------------
 # Excel export with full professional styling
