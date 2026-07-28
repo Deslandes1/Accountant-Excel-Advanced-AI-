@@ -83,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (keep English only for simplicity, but you can add others)
+# Translations (only English for simplicity, but you can add others)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -186,8 +186,7 @@ translations = {
         "initial_balance_forwarded": "Balance Forwarded from February",
         "delete_entry": "Delete Entry",
         "cannot_delete_balance": "Cannot delete the initial balance row."
-    },
-    # (You can add French and Spanish if needed)
+    }
 }
 
 def _(key):
@@ -445,7 +444,7 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions (FIXED: shorter text & better error handling)
+# AI Voice Functions (Female voice, truncated text)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg):
     """
@@ -475,9 +474,10 @@ def generate_voice_explanation(entries, balance_usd, balance_htg):
         text = text[:997] + "..."
     return text
 
-def text_to_speech(text, lang='en', tld='com.au'):
+def text_to_speech(text, lang='en', tld='co.uk'):  # 'co.uk' gives a British female voice
     """
     Convert text to speech using gTTS with better error handling.
+    Uses British English female voice by default.
     """
     try:
         tts = gTTS(text=text, lang=lang, tld=tld, slow=False)
@@ -486,9 +486,7 @@ def text_to_speech(text, lang='en', tld='com.au'):
         audio_bytes.seek(0)
         return audio_bytes
     except Exception as e:
-        # gTTS can raise a gTTS.gTTSError; we capture it
         error_msg = str(e)
-        # If the error contains "200 (OK)", it's a known issue – we return None
         if "200" in error_msg:
             st.warning("The voice service returned an empty audio file. Please try again with a shorter explanation.")
         else:
@@ -583,7 +581,7 @@ with st.sidebar:
     st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     
-    # ---- AI Voice Button ----
+    # ---- AI Voice Button (Female) ----
     if st.button("🎙️ Explain Ledger (AI Voice)"):
         with st.spinner("Generating voice explanation..."):
             df_rec = get_reconciliation_entries()
@@ -600,7 +598,7 @@ with st.sidebar:
                 st.audio(audio_bytes, format='audio/mp3')
                 st.success("✅ Voice explanation played!")
             else:
-                st.warning("Voice generation failed – please try again or use a shorter explanation.")
+                st.warning("Voice generation failed – please try again.")
     st.markdown("---")
     if st.button(_("logout")):
         logout()
@@ -821,7 +819,7 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ===== RECONCILIATION LEDGER (with voice on download) =====
+# ===== RECONCILIATION LEDGER (only regular download – no voice) =====
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
@@ -921,40 +919,12 @@ with tab5:
                 st.success("Entry deleted.")
                 st.rerun()
     
-    # Download Excel with voice explanation
+    # Download Excel (only regular, no voice)
     if not df_rec.empty:
         styled_excel = export_styled_excel(df_rec, _("reconciliation_title"))
-        
-        # Two buttons: one with voice, one without
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("📥 Download Excel (with Voice)"):
-                # Generate voice explanation
-                last_row = df_rec.iloc[-1]
-                balance_usd = last_row['balance_usd']
-                balance_htg = last_row['balance_htg']
-                explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg)
-                # Add a note about the download
-                explanation += " You are about to download a professional Excel report. This file can be opened even if you don't have Microsoft Excel installed."
-                audio_bytes = text_to_speech(explanation)
-                if audio_bytes:
-                    st.audio(audio_bytes, format='audio/mp3')
-                    st.success("✅ Voice explanation played! Download your file below.")
-                else:
-                    st.warning("Voice explanation failed, but you can still download the report.")
-                st.download_button(
-                    _("download_reconciliation"),
-                    data=styled_excel,
-                    file_name="reconciliation_ledger.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    key="download_voice"
-                )
-        with col2:
-            # Normal download without voice
-            st.download_button(
-                _("download_reconciliation"),
-                data=styled_excel,
-                file_name="reconciliation_ledger.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                key="download_normal"
-            )
+        st.download_button(
+            _("download_reconciliation"),
+            data=styled_excel,
+            file_name="reconciliation_ledger.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
