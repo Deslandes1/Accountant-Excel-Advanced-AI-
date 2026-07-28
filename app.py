@@ -83,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (only English for simplicity, but you can add others)
+# Translations (only English for simplicity)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -444,14 +444,16 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions (Female voice, truncated text)
+# AI Voice Functions (Female voice, with closing statement)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg):
     """
     Generate a spoken summary of the current ledger, truncated to 1000 chars.
+    Ends with a closing statement.
     """
+    closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit."
     if entries.empty:
-        text = "There are no entries in the ledger. Please add a transaction."
+        text = "There are no entries in the ledger. Please add a transaction." + closing
     else:
         total_credit_htg = entries['credit'].sum()
         total_expense_htg = entries['total_htg'].sum()
@@ -468,16 +470,35 @@ def generate_voice_explanation(entries, balance_usd, balance_htg):
             f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
             f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
             f"You can download a professionally formatted Excel report with just one click."
-        )
+        ) + closing
     # Truncate to 1000 characters to avoid gTTS length limit
     if len(text) > 1000:
-        text = text[:997] + "..."
+        # Prioritize keeping the closing statement; we truncate the middle part
+        # We'll just truncate hard at 997 and append "..." but we want to keep the closing
+        # Simple approach: if too long, cut the main text and keep the closing.
+        # We'll reconstruct: take the first part up to ~800 chars, add "...", then the closing.
+        # But easier: just truncate the whole text and hope the closing fits.
+        # We'll keep it simple: if length > 1000, we slice 997 and add "..."
+        # but then we lose the closing. We'll handle by reducing the middle.
+        # For simplicity, we reduce the main part.
+        main_text = text[:800]  # take first 800 chars
+        # Find where to cut cleanly
+        if len(text) > 1000:
+            # We'll keep the first 700 chars, add "...", then the closing.
+            # We'll separate main and closing.
+            # Actually better: we can compute the text without closing, then append closing at the end.
+            # Let's restructure: generate base text without closing, then add closing and truncate if necessary.
+            base_text = text.replace(closing, "")
+            # Ensure we have room for closing (which is about 80 chars)
+            max_base_len = 1000 - len(closing) - 3  # 3 for "..."
+            if len(base_text) > max_base_len:
+                base_text = base_text[:max_base_len] + "..."
+            text = base_text + closing
     return text
 
-def text_to_speech(text, lang='en', tld='co.uk'):  # 'co.uk' gives a British female voice
+def text_to_speech(text, lang='en', tld='co.uk'):  # British English female voice
     """
-    Convert text to speech using gTTS with better error handling.
-    Uses British English female voice by default.
+    Convert text to speech using gTTS.
     """
     try:
         tts = gTTS(text=text, lang=lang, tld=tld, slow=False)
@@ -494,7 +515,7 @@ def text_to_speech(text, lang='en', tld='co.uk'):  # 'co.uk' gives a British fem
         return None
 
 # ----------------------------------------------------------------------
-# Excel export with styling
+# Excel export with styling (unchanged)
 # ----------------------------------------------------------------------
 def export_styled_excel(df, title):
     output = io.BytesIO()
@@ -819,7 +840,7 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ===== RECONCILIATION LEDGER (only regular download – no voice) =====
+# ===== RECONCILIATION LEDGER (only regular download) =====
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
