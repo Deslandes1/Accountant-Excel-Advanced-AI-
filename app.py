@@ -10,7 +10,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-# ====== CHECK FOR EDGE TTS (MUST BE INSTALLED) ======
+# ====== CHECK FOR EDGE TTS (REQUIRED FOR NATIVE VOICES) ======
 EDGE_TTS_AVAILABLE = False
 try:
     import edge_tts
@@ -147,10 +147,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations
+# Full translations for UI and Voice explanation
 # ----------------------------------------------------------------------
 translations = {
     "en": {
+        # UI labels
         "app_title": "Excel Advanced Accounting",
         "subtitle": "Professional Accounting & Loan Management Suite",
         "login_title": "🔐 Login",
@@ -225,7 +226,6 @@ translations = {
         "exchange_rate": "Exchange Rate: 1 USD = 100 HTG",
         "balance_usd": "Balance USD",
         "balance_htg": "Balance HTG",
-        "date": "Date",
         "credit_cash_in": "Credit (Cash In HTG)",
         "credit_cash_in_usd": "Credit (Cash In USD)",
         "description_item": "Description / Item Details",
@@ -249,9 +249,19 @@ translations = {
         "starting_balance_htg": "Starting Balance (HTG)",
         "initial_balance_forwarded": "Balance Forwarded from February",
         "delete_entry": "Delete Entry",
-        "cannot_delete_balance": "Cannot delete the initial balance row."
+        "cannot_delete_balance": "Cannot delete the initial balance row.",
+        # Voice explanation texts (full sentences in target language)
+        "voice_welcome": "Welcome to Excel Advanced Accounting.",
+        "voice_ledger": "This is the Reconciliation Ledger for July 2026.",
+        "voice_entries": "Currently, you have {count} entries.",
+        "voice_credit": "The total credit received in Haitian Gourdes is {credit_htg:,.2f} HTG, which is equivalent to {credit_usd:,.2f} USD.",
+        "voice_expenses": "The total expenses in HTG are {expense_htg:,.2f}, and the total expenses in USD are {expense_usd:,.2f}.",
+        "voice_balance": "Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG.",
+        "voice_how_it_works": "Remember: every cash-in increases your balance, and every purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. You can download a professionally formatted Excel report with just one click.",
+        "voice_closing": "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. Phone: (509)-47385663. Email: deslandes78@gmail.com. This application is now open for public use! To access the full version of Excel Advanced Accounting and other tools from GlobalInternet.py, sign up today at: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Use the password: 20082010 to unlock the application. Thank you for using Excel Advanced Accounting – your professional accounting solution, built in Haiti, for the world."
     },
     "fr": {
+        # UI labels (French)
         "app_title": "Comptabilité Avancée Excel",
         "subtitle": "Suite Professionnelle de Comptabilité et Gestion de Prêts",
         "login_title": "🔐 Connexion",
@@ -326,7 +336,6 @@ translations = {
         "exchange_rate": "Taux de change : 1 USD = 100 HTG",
         "balance_usd": "Solde USD",
         "balance_htg": "Solde HTG",
-        "date": "Date",
         "credit_cash_in": "Crédit (Entrée HTG)",
         "credit_cash_in_usd": "Crédit (Entrée USD)",
         "description_item": "Description / Détails",
@@ -350,9 +359,19 @@ translations = {
         "starting_balance_htg": "Solde initial (HTG)",
         "initial_balance_forwarded": "Solde reporté de Février",
         "delete_entry": "Supprimer une entrée",
-        "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial."
+        "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial.",
+        # Voice explanation (French)
+        "voice_welcome": "Bienvenue dans Excel Advanced Accounting.",
+        "voice_ledger": "Ceci est le Grand Livre de Réconciliation pour Juillet 2026.",
+        "voice_entries": "Actuellement, vous avez {count} entrées.",
+        "voice_credit": "Le crédit total reçu en Gourdes Haïtiennes est de {credit_htg:,.2f} HTG, ce qui équivaut à {credit_usd:,.2f} USD.",
+        "voice_expenses": "Les dépenses totales en HTG sont de {expense_htg:,.2f}, et les dépenses totales en USD sont de {expense_usd:,.2f}.",
+        "voice_balance": "Votre solde actuel est de {balance_usd:,.2f} USD et {balance_htg:,.2f} HTG.",
+        "voice_how_it_works": "Rappelez-vous : chaque entrée de fonds augmente votre solde, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD en utilisant le taux de change de 1 USD pour 100 HTG. Vous pouvez télécharger un rapport Excel formaté professionnellement en un seul clic.",
+        "voice_closing": "Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py. Téléphone : (509)-47385663. Email : deslandes78@gmail.com. Cette application est désormais ouverte au public ! Pour accéder à la version complète d'Excel Advanced Accounting et à d'autres outils de GlobalInternet.py, inscrivez-vous dès aujourd'hui sur : https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Utilisez le mot de passe : 20082010 pour déverrouiller l'application. Merci d'utiliser Excel Advanced Accounting – votre solution comptable professionnelle, construite en Haïti, pour le monde."
     },
     "es": {
+        # UI labels (Spanish)
         "app_title": "Contabilidad Avanzada con Excel",
         "subtitle": "Suite Profesional de Contabilidad y Gestión de Préstamos",
         "login_title": "🔐 Iniciar sesión",
@@ -427,7 +446,6 @@ translations = {
         "exchange_rate": "Tipo de cambio: 1 USD = 100 HTG",
         "balance_usd": "Saldo USD",
         "balance_htg": "Saldo HTG",
-        "date": "Fecha",
         "credit_cash_in": "Crédito (Ingreso HTG)",
         "credit_cash_in_usd": "Crédito (Ingreso USD)",
         "description_item": "Descripción / Detalle",
@@ -451,7 +469,16 @@ translations = {
         "starting_balance_htg": "Saldo inicial (HTG)",
         "initial_balance_forwarded": "Saldo trasladado de Febrero",
         "delete_entry": "Eliminar entrada",
-        "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial."
+        "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial.",
+        # Voice explanation (Spanish)
+        "voice_welcome": "Bienvenido a Excel Advanced Accounting.",
+        "voice_ledger": "Este es el Libro Mayor de Conciliación para Julio de 2026.",
+        "voice_entries": "Actualmente, tiene {count} entradas.",
+        "voice_credit": "El crédito total recibido en Gourdes haitianas es de {credit_htg:,.2f} HTG, que equivale a {credit_usd:,.2f} USD.",
+        "voice_expenses": "Los gastos totales en HTG son {expense_htg:,.2f}, y los gastos totales en USD son {expense_usd:,.2f}.",
+        "voice_balance": "Su saldo actual es de {balance_usd:,.2f} USD y {balance_htg:,.2f} HTG.",
+        "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo, y cada compra lo disminuye. El sistema convierte automáticamente HTG a USD utilizando el tipo de cambio de 1 USD por 100 HTG. Puede descargar un informe de Excel con formato profesional con un solo clic.",
+        "voice_closing": "Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py. Teléfono: (509)-47385663. Correo: deslandes78@gmail.com. ¡Esta aplicación ya está abierta al público! Para acceder a la versión completa de Excel Advanced Accounting y otras herramientas de GlobalInternet.py, regístrese hoy en: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Use la contraseña: 20082010 para desbloquear la aplicación. Gracias por usar Excel Advanced Accounting – su solución contable profesional, construida en Haití, para el mundo."
     }
 }
 
@@ -712,49 +739,34 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions – FORCED USE OF EDGE TTS (NATIVE VOICES)
+# AI Voice Functions – FULL LOCALISATION
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
-    Generate a spoken summary of the current ledger with contact info and sign-up link.
+    Generate a spoken summary in the selected language using translated templates.
     """
     if entries.empty:
-        summary = "There are no entries in the ledger. Please add a transaction."
-    else:
-        total_credit_htg = entries['credit'].sum()
-        total_expense_htg = entries['total_htg'].sum()
-        total_expense_usd = entries['total_usd'].sum()
-        summary = (
-            f"Welcome to Excel Advanced Accounting. "
-            f"This is the Reconciliation Ledger for July 2026. "
-            f"Currently, you have {len(entries)} entries. "
-            f"The total credit received in Haitian Gourdes is {total_credit_htg:,.2f} HTG, "
-            f"which is equivalent to {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
-            f"The total expenses in HTG are {total_expense_htg:,.2f}, "
-            f"and the total expenses in USD are {total_expense_usd:,.2f}. "
-            f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
-            f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
-            f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
-            f"You can download a professionally formatted Excel report with just one click."
-        )
+        return _("voice_no_entries") if "voice_no_entries" in translations[lang] else "There are no entries in the ledger. Please add a transaction."
     
-    closing = (
-        " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
-        "Phone: (509)-47385663. Email: deslandes78@gmail.com. "
-        "This application is now open for public use! "
-        "To access the full version of Excel Advanced Accounting and other tools from GlobalInternet.py, "
-        "sign up today at: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ "
-        "Use the password: 20082010 to unlock the application. "
-        "Thank you for using Excel Advanced Accounting – your professional accounting solution, built in Haiti, for the world."
-    )
+    # Compute statistics
+    total_credit_htg = entries['credit'].sum()
+    total_expense_htg = entries['total_htg'].sum()
+    total_expense_usd = entries['total_usd'].sum()
+    total_credit_usd = total_credit_htg / EXCHANGE_RATE
     
-    text = summary + closing
-    # edge-tts supports much longer text, so we don't truncate aggressively
-    if len(text) > 1500:
-        # If still too long, shorten the summary part
-        if len(summary) > 1000:
-            summary = summary[:1000] + "..."
-        text = summary + " " + closing
+    # Build the explanation in the target language
+    parts = []
+    parts.append(_("voice_welcome"))
+    parts.append(_("voice_ledger"))
+    parts.append(_("voice_entries").format(count=len(entries)))
+    parts.append(_("voice_credit").format(credit_htg=total_credit_htg, credit_usd=total_credit_usd))
+    parts.append(_("voice_expenses").format(expense_htg=total_expense_htg, expense_usd=total_expense_usd))
+    parts.append(_("voice_balance").format(balance_usd=balance_usd, balance_htg=balance_htg))
+    parts.append(_("voice_how_it_works"))
+    parts.append(_("voice_closing"))
+    
+    # Combine with spaces
+    text = " ".join(parts)
     return text
 
 def text_to_speech(text, lang='en'):
@@ -785,7 +797,6 @@ def text_to_speech(text, lang='en'):
         os.unlink(tmp_path)
         return audio_bytes
     except Exception as e:
-        # Re-raise with a clear error message
         raise RuntimeError(f"edge-tts generation failed: {e}")
 
 # ----------------------------------------------------------------------
@@ -898,7 +909,7 @@ with st.sidebar:
         voice_button = st.button("🎙️ " + _("Explain Ledger (AI Voice)"), disabled=True)
     
     if voice_button and EDGE_TTS_AVAILABLE:
-        with st.spinner(_("Generating voice explanation with native voices...")):
+        with st.spinner("Generating voice explanation with native voices..."):
             df_rec = get_reconciliation_entries()
             if not df_rec.empty:
                 last_row = df_rec.iloc[-1]
@@ -912,7 +923,7 @@ with st.sidebar:
                 audio_bytes = text_to_speech(explanation, lang=selected_lang)
                 if audio_bytes:
                     st.audio(audio_bytes, format='audio/mp3')
-                    st.success(_("Voice explanation played with native voice!"))
+                    st.success("Voice explanation played with native voice!")
             except Exception as e:
                 st.error(f"Voice generation failed: {e}")
     
