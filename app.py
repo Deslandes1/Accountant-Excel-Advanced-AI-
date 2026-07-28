@@ -11,7 +11,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 # ----------------------------------------------------------------------
 # Page config
 # ----------------------------------------------------------------------
-st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
+st.set_page_config(page_title="Excel Advanced Accounting", layout="wide")
 
 # ----------------------------------------------------------------------
 # Custom CSS – Blue Theme
@@ -80,11 +80,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations
+# Translations – updated app_title to "Excel Advanced Accounting"
 # ----------------------------------------------------------------------
 translations = {
     "en": {
-        "app_title": "Accountant Excel Advanced AI",
+        "app_title": "Excel Advanced Accounting",
         "subtitle": "Professional Accounting & Loan Management Suite",
         "login_title": "🔐 Login",
         "login_password": "Enter password to unlock",
@@ -186,7 +186,7 @@ translations = {
         "cannot_delete_balance": "Cannot delete the initial balance row."
     },
     "fr": {
-        "app_title": "Comptabilité Excel IA Avancée",
+        "app_title": "Comptabilité Avancée Excel",
         "subtitle": "Suite Professionnelle de Comptabilité et Gestion de Prêts",
         "login_title": "🔐 Connexion",
         "login_password": "Entrez le mot de passe pour déverrouiller",
@@ -288,7 +288,7 @@ translations = {
         "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial."
     },
     "es": {
-        "app_title": "Contabilidad Excel IA Avanzada",
+        "app_title": "Contabilidad Avanzada con Excel",
         "subtitle": "Suite Profesional de Contabilidad y Gestión de Préstamos",
         "login_title": "🔐 Iniciar sesión",
         "login_password": "Ingrese la contraseña para desbloquear",
@@ -479,7 +479,7 @@ def init_db():
     c.execute("""CREATE TABLE IF NOT EXISTS reconciliation_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
-        credit REAL DEFAULT 0,        -- now stores HTG values
+        credit REAL DEFAULT 0,
         description TEXT,
         qty REAL DEFAULT 0,
         unit_htg REAL DEFAULT 0,
@@ -489,11 +489,11 @@ def init_db():
     )""")
     c.execute("SELECT COUNT(*) FROM reconciliation_entries")
     if c.fetchone()[0] == 0:
-        # Balance Forwarded row (ID 1) – starting balances in USD and HTG
+        # Balance Forwarded row
         c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                   ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
-        # Demo entries: credit is now in HTG (multiply previous USD by 100)
+        # Demo entries with credit in HTG
         demo_entries = [
             ("2023-03-01", "Cash in from operation (HTG)", 300000.00, 0, 0, 0, 0, 0),
             ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
@@ -579,7 +579,6 @@ def get_loan_payments(loan_id):
 
 def get_reconciliation_entries():
     conn = sqlite3.connect("accounting.db")
-    # column is 'credit' (now stores HTG)
     df = pd.read_sql_query(
         "SELECT id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id",
         conn)
@@ -590,7 +589,7 @@ def get_reconciliation_entries():
         running_usd = 0
         running_htg = 0
         for idx, row in df.iterrows():
-            # credit is now in HTG, convert to USD by dividing by 100
+            # credit is in HTG, convert to USD for balance
             running_usd += (row['credit'] / 100) - row['total_usd']
             running_htg += row['credit'] - row['total_htg']
             balance_usd.append(running_usd)
