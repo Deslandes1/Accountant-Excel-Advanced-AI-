@@ -7,6 +7,9 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
+from openpyxl import load_workbook
+from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
+from openpyxl.utils.dataframe import dataframe_to_rows
 
 # ----------------------------------------------------------------------
 # Page config
@@ -80,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations – updated app_title to "Excel Advanced Accounting"
+# Translations – updated app_title and reconciliation_title
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -154,8 +157,8 @@ translations = {
         "no_data": "No data available.",
         "select_loan_for_history": "Select Loan",
         "created_by": "Python Developer",
-        # Reconciliation
-        "reconciliation_title": "Reconciliation March - 2023",
+        # Reconciliation – updated title to 2026
+        "reconciliation_title": "Reconciliation March - 2026",
         "exchange_rate": "Exchange Rate: 1 USD = 100 HTG",
         "balance_usd": "Balance USD",
         "balance_htg": "Balance HTG",
@@ -256,7 +259,7 @@ translations = {
         "no_data": "Aucune donnée disponible.",
         "select_loan_for_history": "Sélectionner un prêt",
         "created_by": "Développeur Python",
-        # Reconciliation
+        # Reconciliation – French remains unchanged (but you can update if needed)
         "reconciliation_title": "Réconciliation Mars - 2023",
         "exchange_rate": "Taux de change : 1 USD = 100 HTG",
         "balance_usd": "Solde USD",
@@ -358,7 +361,7 @@ translations = {
         "no_data": "No hay datos disponibles.",
         "select_loan_for_history": "Seleccionar préstamo",
         "created_by": "Desarrollador Python",
-        # Reconciliation
+        # Reconciliation – Spanish unchanged
         "reconciliation_title": "Conciliación Marzo - 2023",
         "exchange_rate": "Tipo de cambio: 1 USD = 100 HTG",
         "balance_usd": "Saldo USD",
@@ -647,6 +650,78 @@ def usd_to_htg(usd):
     return usd * 100
 
 EXCHANGE_RATE = 100  # 1 USD = 100 HTG
+
+# ----------------------------------------------------------------------
+# Excel export with styling
+# ----------------------------------------------------------------------
+def export_styled_excel(df, title):
+    """
+    Export a DataFrame to a styled Excel file with formatting.
+    """
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, sheet_name="Reconciliation", index=False)
+        workbook = writer.book
+        worksheet = writer.sheets["Reconciliation"]
+        
+        # Define styles
+        header_font = Font(bold=True, color="FFFFFF")
+        header_fill = PatternFill(start_color="1E88E5", end_color="1E88E5", fill_type="solid")
+        thin_border = Border(
+            left=Side(style='thin'),
+            right=Side(style='thin'),
+            top=Side(style='thin'),
+            bottom=Side(style='thin')
+        )
+        currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE  # "$#,##0.00"
+        # For HTG we'll use a custom format
+        htg_fmt = '#,##0.00 "G"'
+        
+        # Apply to header row (row 1)
+        for cell in worksheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.border = thin_border
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+        
+        # Apply to all data rows
+        for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
+            for cell in row:
+                cell.border = thin_border
+                cell.alignment = Alignment(horizontal='right', vertical='center')
+        
+        # Identify columns by name (assuming first row has headers)
+        headers = [cell.value for cell in worksheet[1]]
+        for col_idx, header in enumerate(headers, start=1):
+            col_letter = worksheet.cell(row=1, column=col_idx).column_letter
+            # Apply currency formatting to USD columns
+            if header in ['unit usd', 'total usd', 'Balance USD', 'Credit (Cash In USD)']:
+                for row in range(2, worksheet.max_row + 1):
+                    cell = worksheet.cell(row=row, column=col_idx)
+                    if cell.value is not None:
+                        cell.number_format = currency_fmt
+            # Apply HTG formatting to HTG columns
+            elif header in ['unit htg', 'total htg', 'Balance HTG', 'Credit (Cash In HTG)']:
+                for row in range(2, worksheet.max_row + 1):
+                    cell = worksheet.cell(row=row, column=col_idx)
+                    if cell.value is not None:
+                        cell.number_format = htg_fmt
+        
+        # Auto-adjust column widths
+        for col in worksheet.columns:
+            max_length = 0
+            column = col[0].column_letter  # get column letter
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(str(cell.value))
+                except:
+                    pass
+            adjusted_width = (max_length + 2) * 1.2
+            worksheet.column_dimensions[column].width = min(adjusted_width, 30)
+    
+    output.seek(0)
+    return output
 
 # ----------------------------------------------------------------------
 # Main UI
@@ -988,11 +1063,12 @@ with tab5:
                 st.success("Entry deleted.")
                 st.rerun()
     
-    # Download Excel
+    # Download Excel with styling
     if not df_rec.empty:
-        output_excel = io.BytesIO()
-        with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
-            df_rec.to_excel(writer, sheet_name="Reconciliation", index=False)
-        st.download_button(_("download_reconciliation"), data=output_excel.getvalue(),
-                           file_name="reconciliation_ledger.xlsx",
-                           mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        styled_excel = export_styled_excel(df_rec, _("reconciliation_title"))
+        st.download_button(
+            _("download_reconciliation"),
+            data=styled_excel,
+            file_name="reconciliation_ledger.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
