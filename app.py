@@ -19,7 +19,6 @@ try:
     EDGE_TTS_AVAILABLE = True
 except ImportError:
     EDGE_TTS_AVAILABLE = False
-    # gTTS will be used as fallback
     from gtts import gTTS
 
 # ----------------------------------------------------------------------
