@@ -427,7 +427,7 @@ def check_password():
             <div style='text-align: right;'>
                 <b>GlobalInternet.py</b><br>
                 Gesner Deslandes<br>
-                Technology Coordinator at Be Like Brit
+                Chief Engineer at GlobalInternet.py
             </div>
             """, unsafe_allow_html=True)
         st.divider()
@@ -648,15 +648,22 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions (multilingual)
+# AI Voice Functions (multilingual, updated closing)
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
     Generate a spoken summary of the current ledger in the selected language.
+    Closing statement updated to reflect the new title.
     """
-    # Get translated base text (hardcoded for simplicity; could be expanded)
+    # Closing statements per language
+    closings = {
+        'en': " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
+        'fr': " Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py.",
+        'es': " Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py."
+    }
+    closing = closings.get(lang, closings['en'])
+
     if lang == 'fr':
-        closing = " Cette application a été construite par Gesner Deslandes, Coordinateur Technologique chez Be Like Brit."
         if entries.empty:
             text = "Il n'y a aucune entrée dans le grand livre. Veuillez ajouter une transaction." + closing
         else:
@@ -677,7 +684,6 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
                 f"Vous pouvez télécharger un rapport Excel professionnel en un seul clic."
             ) + closing
     elif lang == 'es':
-        closing = " Esta aplicación fue construida por Gesner Deslandes, Coordinador Tecnológico en Be Like Brit."
         if entries.empty:
             text = "No hay entradas en el libro mayor. Por favor, agregue una transacción." + closing
         else:
@@ -698,7 +704,6 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
                 f"Puede descargar un informe de Excel profesional con solo un clic."
             ) + closing
     else:  # English default
-        closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit."
         if entries.empty:
             text = "There are no entries in the ledger. Please add a transaction." + closing
         else:
@@ -720,7 +725,6 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
             ) + closing
     # Truncate to avoid gTTS length limit
     if len(text) > 1000:
-        # Keep the closing; reduce the main part
         base_text = text.replace(closing, "")
         max_base_len = 1000 - len(closing) - 3
         if len(base_text) > max_base_len:
@@ -732,7 +736,6 @@ def text_to_speech(text, lang='en', tld='com'):
     """
     Convert text to speech using gTTS with language support.
     """
-    # Map language codes to gTTS language and TLD
     lang_map = {
         'en': ('en', 'com.au'),   # English (Australia) – female voice
         'fr': ('fr', 'fr'),       # French
@@ -842,7 +845,7 @@ with st.sidebar:
     st.title(_("app_title"))
     st.markdown("**GlobalInternet.py**")
     st.markdown("Gesner Deslandes")
-    st.markdown("Technology Coordinator at Be Like Brit")
+    st.markdown("Chief Engineer at GlobalInternet.py")
     st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     
@@ -885,7 +888,7 @@ with col3:
     <div style='text-align: right;'>
         <b>GlobalInternet.py</b><br>
         Gesner Deslandes<br>
-        Technology Coordinator at Be Like Brit
+        Chief Engineer at GlobalInternet.py
     </div>
     """, unsafe_allow_html=True)
 st.divider()
