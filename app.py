@@ -213,7 +213,11 @@ def check_password():
     if "authenticated" not in st.session_state:
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
-            st.image("https://flagcdn.com/w320/ht.png", width=100)
+            # NEW IMAGE – replaced Haitian flag
+            st.image(
+                "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
+                width=100
+            )
         with col2:
             st.markdown(f"<h1 style='text-align: center;'>{_('app_title')}</h1>", unsafe_allow_html=True)
             st.markdown(f"<p style='text-align: center;'><em>{_('subtitle')}</em></p>", unsafe_allow_html=True)
@@ -577,7 +581,11 @@ if selected_lang != st.session_state.language:
     st.rerun()
 
 with st.sidebar:
-    st.image("https://flagcdn.com/w320/ht.png", width=100)
+    # NEW IMAGE – replaced Haitian flag in sidebar as well
+    st.image(
+        "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
+        width=100
+    )
     st.title(_("app_title"))
     st.markdown("**GlobalInternet.py**")
     st.markdown("Gesner Deslandes")
@@ -612,7 +620,11 @@ with st.sidebar:
 # Main header
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
-    st.image("https://flagcdn.com/w320/ht.png", width=100)
+    # NEW IMAGE – replaced Haitian flag on top left main page
+    st.image(
+        "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
+        width=100
+    )
 with col2:
     st.markdown(f"<h1 style='text-align: center;'>{_('app_title')}</h1>", unsafe_allow_html=True)
     st.markdown(f"<p style='text-align: center;'><em>{_('subtitle')}</em></p>", unsafe_allow_html=True)
