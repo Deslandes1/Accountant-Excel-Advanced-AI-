@@ -14,6 +14,80 @@ from reportlab.lib.styles import getSampleStyleSheet
 st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 
 # ----------------------------------------------------------------------
+# Custom CSS – Blue Theme
+# ----------------------------------------------------------------------
+st.markdown("""
+<style>
+    /* Main app background */
+    .stApp {
+        background-color: #e6f2ff !important;
+    }
+    .stApp [data-testid="stAppViewContainer"] {
+        background-color: transparent !important;
+    }
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #cce5ff !important;
+        border-right: 1px solid #99ccff;
+    }
+    [data-testid="stSidebar"] * {
+        color: #003366 !important;
+    }
+    /* Headers */
+    h1, h2, h3 {
+        color: #003366 !important;
+    }
+    /* Inputs */
+    .stTextInput > div > div > input,
+    .stTextArea > div > textarea,
+    .stSelectbox > div > div {
+        background: #ffffff !important;
+        color: #003366 !important;
+        border: 1px solid #99ccff !important;
+        border-radius: 8px !important;
+    }
+    /* Buttons */
+    .stButton > button {
+        background: linear-gradient(105deg, #1e88e5 0%, #42a5f5 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 40px !important;
+        padding: 0.6rem 2rem !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+        transition: 0.2s;
+    }
+    .stButton > button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(30, 136, 229, 0.4);
+    }
+    /* Metric cards */
+    [data-testid="stMetricValue"] {
+        color: #003366 !important;
+    }
+    /* DataFrames */
+    .dataframe {
+        background-color: #ffffff !important;
+        border: 1px solid #99ccff !important;
+        border-radius: 8px !important;
+    }
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #cce5ff !important;
+        border-radius: 8px !important;
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #003366 !important;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #1e88e5 !important;
+        color: white !important;
+        border-radius: 8px !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ----------------------------------------------------------------------
 # Translations
 # ----------------------------------------------------------------------
 translations = {
@@ -28,6 +102,7 @@ translations = {
         "cash_tab": "💰 Cash In/Out",
         "loans_tab": "🏦 Loans",
         "reports_tab": "📄 Reports",
+        "reconciliation_tab": "📋 Reconciliation Ledger",
         "current_balance": "Current Cash Balance",
         "recent_transactions": "Recent Cash Transactions",
         "active_loans": "Active Loans",
@@ -82,7 +157,26 @@ translations = {
         "completed": "completed",
         "no_data": "No data available.",
         "select_loan_for_history": "Select Loan",
-        "created_by": "Python Developer"
+        "created_by": "Python Developer",
+        # Reconciliation
+        "reconciliation_title": "Multi‑Currency Cash Reconciliation",
+        "add_entry": "Add Entry",
+        "credit": "Credit (Cash In)",
+        "qty": "Quantity",
+        "currency_htg": "Currency (HTG)",
+        "unit_htg": "Unit HTG",
+        "unit_usd": "Unit USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "balance_usd": "Balance USD",
+        "balance_htg": "Balance HTG",
+        "exchange_rate_hint": "Exchange rate: 1 USD = 100 HTG (fixed for this ledger)",
+        "initial_balance_forwarded": "Balance Forwarded",
+        "entry_added": "Entry added!",
+        "reconciliation_table": "Reconciliation Ledger",
+        "download_reconciliation": "📥 Download Reconciliation Excel",
+        "starting_balance_usd": "Starting Balance (USD)",
+        "starting_balance_htg": "Starting Balance (HTG)"
     },
     "fr": {
         "app_title": "Comptabilité Excel IA Avancée",
@@ -95,6 +189,7 @@ translations = {
         "cash_tab": "💰 Entrées/Sorties",
         "loans_tab": "🏦 Prêts",
         "reports_tab": "📄 Rapports",
+        "reconciliation_tab": "📋 Grand Livre de Réconciliation",
         "current_balance": "Solde de trésorerie actuel",
         "recent_transactions": "Transactions récentes",
         "active_loans": "Prêts actifs",
@@ -149,7 +244,26 @@ translations = {
         "completed": "terminé",
         "no_data": "Aucune donnée disponible.",
         "select_loan_for_history": "Sélectionner un prêt",
-        "created_by": "Développeur Python"
+        "created_by": "Développeur Python",
+        # Reconciliation (fr)
+        "reconciliation_title": "Grand Livre de Réconciliation Multi‑Devises",
+        "add_entry": "Ajouter une entrée",
+        "credit": "Crédit (Entrée)",
+        "qty": "Quantité",
+        "currency_htg": "Devise (HTG)",
+        "unit_htg": "Prix unitaire HTG",
+        "unit_usd": "Prix unitaire USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "balance_usd": "Solde USD",
+        "balance_htg": "Solde HTG",
+        "exchange_rate_hint": "Taux de change : 1 USD = 100 HTG (fixe pour ce grand livre)",
+        "initial_balance_forwarded": "Solde reporté",
+        "entry_added": "Entrée ajoutée !",
+        "reconciliation_table": "Grand Livre de Réconciliation",
+        "download_reconciliation": "📥 Télécharger le grand livre Excel",
+        "starting_balance_usd": "Solde initial (USD)",
+        "starting_balance_htg": "Solde initial (HTG)"
     },
     "es": {
         "app_title": "Contabilidad Excel IA Avanzada",
@@ -162,6 +276,7 @@ translations = {
         "cash_tab": "💰 Entradas/Salidas",
         "loans_tab": "🏦 Préstamos",
         "reports_tab": "📄 Informes",
+        "reconciliation_tab": "📋 Libro Mayor de Conciliación",
         "current_balance": "Saldo de efectivo actual",
         "recent_transactions": "Transacciones recientes",
         "active_loans": "Préstamos activos",
@@ -216,7 +331,26 @@ translations = {
         "completed": "completado",
         "no_data": "No hay datos disponibles.",
         "select_loan_for_history": "Seleccionar préstamo",
-        "created_by": "Desarrollador Python"
+        "created_by": "Desarrollador Python",
+        # Reconciliation (es)
+        "reconciliation_title": "Libro Mayor de Conciliación Multi‑Moneda",
+        "add_entry": "Agregar entrada",
+        "credit": "Crédito (Ingreso)",
+        "qty": "Cantidad",
+        "currency_htg": "Moneda (HTG)",
+        "unit_htg": "Precio unitario HTG",
+        "unit_usd": "Precio unitario USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "balance_usd": "Saldo USD",
+        "balance_htg": "Saldo HTG",
+        "exchange_rate_hint": "Tasa de cambio: 1 USD = 100 HTG (fija)",
+        "initial_balance_forwarded": "Saldo trasladado",
+        "entry_added": "Entrada agregada!",
+        "reconciliation_table": "Libro Mayor de Conciliación",
+        "download_reconciliation": "📥 Descargar Excel de Conciliación",
+        "starting_balance_usd": "Saldo inicial (USD)",
+        "starting_balance_htg": "Saldo inicial (HTG)"
     }
 }
 
@@ -276,11 +410,12 @@ def logout():
     st.rerun()
 
 # ----------------------------------------------------------------------
-# Database setup (unchanged)
+# Database setup (including reconciliation)
 # ----------------------------------------------------------------------
 def init_db():
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
+    # Existing tables
     c.execute("""CREATE TABLE IF NOT EXISTS cash_transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
@@ -308,101 +443,84 @@ def init_db():
         amount REAL,
         FOREIGN KEY (loan_id) REFERENCES loans (id)
     )""")
+    # New reconciliation table
+    c.execute("""CREATE TABLE IF NOT EXISTS reconciliation_entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT,
+        credit REAL DEFAULT 0,
+        description TEXT,
+        qty REAL DEFAULT 0,
+        unit_htg REAL DEFAULT 0,
+        unit_usd REAL DEFAULT 0,
+        total_htg REAL DEFAULT 0,
+        total_usd REAL DEFAULT 0
+    )""")
+    # Check if we have an initial balance row; if not, add one
+    c.execute("SELECT COUNT(*) FROM reconciliation_entries")
+    if c.fetchone()[0] == 0:
+        # Insert a Balance Forwarded row with starting balances (example)
+        c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                  (datetime.date.today().isoformat(), _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
+        conn.commit()
+        # We'll set starting balances in the UI via a config or hardcoded; we'll add a config table later or just use session state.
     conn.commit()
     conn.close()
 
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions (unchanged)
+# Helper functions for reconciliation
 # ----------------------------------------------------------------------
-def add_cash_transaction(date, trans_type, category, description, amount):
+def get_reconciliation_entries():
     conn = sqlite3.connect("accounting.db")
-    c = conn.cursor()
-    c.execute("INSERT INTO cash_transactions (date, type, category, description, amount) VALUES (?,?,?,?,?)",
-              (date, trans_type, category, description, amount))
-    conn.commit()
+    df = pd.read_sql_query("SELECT id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id", conn)
     conn.close()
-
-def get_cash_balance():
-    conn = sqlite3.connect("accounting.db")
-    df = pd.read_sql_query("SELECT type, amount FROM cash_transactions", conn)
-    conn.close()
-    if df.empty:
-        return 0
-    income = df[df['type'] == 'Income']['amount'].sum()
-    expense = df[df['type'] == 'Expense']['amount'].sum()
-    return income - expense
-
-def get_cash_flow(start_date, end_date):
-    conn = sqlite3.connect("accounting.db")
-    df = pd.read_sql_query("SELECT * FROM cash_transactions WHERE date BETWEEN ? AND ?", conn, params=(start_date, end_date))
-    conn.close()
-    return df
-
-def add_loan(borrower, amount, start_date, interest_rate, payment_frequency, payment_amount, total_payments):
-    conn = sqlite3.connect("accounting.db")
-    c = conn.cursor()
-    c.execute("""INSERT INTO loans (borrower, amount, start_date, interest_rate, payment_frequency, payment_amount, total_payments)
-                 VALUES (?,?,?,?,?,?,?)""",
-              (borrower, amount, start_date, interest_rate, payment_frequency, payment_amount, total_payments))
-    conn.commit()
-    conn.close()
-
-def record_loan_payment(loan_id, payment_date, amount):
-    conn = sqlite3.connect("accounting.db")
-    c = conn.cursor()
-    c.execute("INSERT INTO loan_payments (loan_id, payment_date, amount) VALUES (?,?,?)", (loan_id, payment_date, amount))
-    c.execute("UPDATE loans SET payments_made = payments_made + 1 WHERE id = ?", (loan_id,))
-    c.execute("SELECT payments_made, total_payments FROM loans WHERE id = ?", (loan_id,))
-    made, total = c.fetchone()
-    if made >= total:
-        c.execute("UPDATE loans SET status = 'completed' WHERE id = ?", (loan_id,))
-    conn.commit()
-    conn.close()
-
-def get_loans(status=None):
-    conn = sqlite3.connect("accounting.db")
-    query = "SELECT * FROM loans"
-    if status:
-        query += " WHERE status = ?"
-        df = pd.read_sql_query(query, conn, params=(status,))
+    # Add computed balances
+    if not df.empty:
+        # Compute running totals
+        balance_usd = []
+        balance_htg = []
+        running_usd = 0
+        running_htg = 0
+        # Convert credit to USD and HTG? Actually credit is Cash In (USD) per spec? Let's check: the spec says Credit (Cash In) column B is in USD? Actually it says Credit (Cash In) – likely USD.
+        # The formulas: K5 = K4 + B5 - J5 (where B5 is credit (cash in) and J5 is total USD spent)
+        # M5 = M4 + (B5*100) - I5 (credit converted to HTG minus total HTG spent)
+        for idx, row in df.iterrows():
+            running_usd += row['credit'] - row['total_usd']
+            running_htg += (row['credit'] * 100) - row['total_htg']
+            balance_usd.append(running_usd)
+            balance_htg.append(running_htg)
+        df['balance_usd'] = balance_usd
+        df['balance_htg'] = balance_htg
     else:
-        df = pd.read_sql_query(query, conn)
-    conn.close()
+        df = pd.DataFrame(columns=['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg'])
     return df
 
-def get_loan_payments(loan_id):
+def add_reconciliation_entry(date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd):
     conn = sqlite3.connect("accounting.db")
-    df = pd.read_sql_query("SELECT * FROM loan_payments WHERE loan_id = ? ORDER BY payment_date", conn, params=(loan_id,))
+    c = conn.cursor()
+    c.execute("""INSERT INTO reconciliation_entries (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+              (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd))
+    conn.commit()
     conn.close()
-    return df
 
-def generate_pdf_report(title, data, columns):
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
-    story = []
-    story.append(Paragraph(title, styles['Title']))
-    story.append(Spacer(1, 12))
-    if not data.empty:
-        table_data = [columns] + data.values.tolist()
-        table = Table(table_data)
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.grey),
-            ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-            ('BOTTOMPADDING', (0,0), (-1,0), 12),
-            ('BACKGROUND', (0,1), (-1,-1), colors.beige),
-            ('GRID', (0,0), (-1,-1), 1, colors.black)
-        ]))
-        story.append(table)
-    else:
-        story.append(Paragraph(_("no_data"), styles['Normal']))
-    doc.build(story)
-    buffer.seek(0)
-    return buffer
+def update_reconciliation_entry(id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd):
+    conn = sqlite3.connect("accounting.db")
+    c = conn.cursor()
+    c.execute("""UPDATE reconciliation_entries SET date=?, credit=?, description=?, qty=?, unit_htg=?, unit_usd=?, total_htg=?, total_usd=?
+                 WHERE id=?""",
+              (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd, id))
+    conn.commit()
+    conn.close()
+
+def delete_reconciliation_entry(id):
+    conn = sqlite3.connect("accounting.db")
+    c = conn.cursor()
+    c.execute("DELETE FROM reconciliation_entries WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
 
 # ----------------------------------------------------------------------
 # Main UI – only after login
@@ -429,7 +547,7 @@ with st.sidebar:
     st.title(_("app_title"))
     st.markdown("**GlobalInternet.py**")
     st.markdown("Owner: Gesner Deslandes")
-    st.markdown("📧 deslndes78@gmail.com | 📞 (509) 4738-5663")
+    st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     if st.button(_("logout")):
         logout()
@@ -456,9 +574,9 @@ with col3:
 st.divider()
 
 # ----------------------------------------------------------------------
-# Tabs
+# Tabs (new Reconciliation tab added)
 # ----------------------------------------------------------------------
-tab1, tab2, tab3, tab4 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab")])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
 # Dashboard
 with tab1:
@@ -611,3 +729,88 @@ with tab4:
                     st.download_button("📄 Download PDF", data=pdf_buffer, file_name=f"loan_{selected_loan}_payments.pdf", mime="application/pdf")
         else:
             st.info(_("no_loans"))
+
+# ----------------------------------------------------------------------
+# Reconciliation Ledger (NEW)
+# ----------------------------------------------------------------------
+with tab5:
+    st.header(_("reconciliation_title"))
+    st.caption(_("exchange_rate_hint"))
+    
+    # Display current reconciliation table
+    df_rec = get_reconciliation_entries()
+    
+    # Show summary balances
+    if not df_rec.empty:
+        last_row = df_rec.iloc[-1]
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric(_("balance_usd"), f"${last_row['balance_usd']:,.2f}")
+        with col2:
+            st.metric(_("balance_htg"), f"G {last_row['balance_htg']:,.2f}")
+    else:
+        st.info("No entries yet. Add an entry below.")
+    
+    st.subheader(_("reconciliation_table"))
+    # Reorder columns for display: id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd, balance_usd, balance_htg
+    display_columns = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
+    if not df_rec.empty:
+        # Ensure all columns exist
+        df_display = df_rec[display_columns].copy()
+        # Format currency columns
+        for col in ['credit', 'unit_usd', 'total_usd', 'balance_usd']:
+            if col in df_display.columns:
+                df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
+        for col in ['unit_htg', 'total_htg', 'balance_htg']:
+            if col in df_display.columns:
+                df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
+        st.dataframe(df_display, use_container_width=True)
+    else:
+        st.info(_("no_data"))
+    
+    # Add entry form
+    st.subheader(_("add_entry"))
+    with st.form("reconciliation_form"):
+        date = st.date_input(_("date"), value=datetime.date.today())
+        credit = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
+        description = st.text_input(_("description"))
+        qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0)
+        unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0)
+        # unit_usd is computed automatically: unit_usd = unit_htg / 100
+        unit_usd = unit_htg / 100
+        st.write(f"**{_('unit_usd')}:** {unit_usd:.2f} (computed automatically)")
+        # total_htg = qty * unit_htg
+        total_htg = qty * unit_htg
+        st.write(f"**{_('total_htg')}:** {total_htg:.2f}")
+        # total_usd = qty * unit_usd
+        total_usd = qty * unit_usd
+        st.write(f"**{_('total_usd')}:** {total_usd:.2f}")
+        submitted = st.form_submit_button(_("add_entry"))
+        if submitted:
+            if description.strip() == "":
+                st.error("Description is required.")
+            else:
+                add_reconciliation_entry(str(date), credit, description, qty, unit_htg, unit_usd, total_htg, total_usd)
+                st.success(_("entry_added"))
+                st.rerun()
+    
+    # Option to delete entries
+    if not df_rec.empty:
+        st.subheader("Delete Entry")
+        # Allow deleting any row except the initial balance (id=1 typically)
+        delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(), format_func=lambda x: f"ID {x} - {df_rec[df_rec['id']==x]['description'].iloc[0]}")
+        if st.button("Delete selected entry", use_container_width=True):
+            # Prevent deleting the first balance row (id=1) - we'll keep it safe
+            if delete_id == 1:
+                st.error("Cannot delete the initial balance row.")
+            else:
+                delete_reconciliation_entry(delete_id)
+                st.success("Entry deleted.")
+                st.rerun()
+    
+    # Download as Excel
+    if not df_rec.empty:
+        output_excel = io.BytesIO()
+        with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
+            df_rec.to_excel(writer, sheet_name="Reconciliation", index=False)
+        st.download_button(_("download_reconciliation"), data=output_excel.getvalue(), file_name="reconciliation_ledger.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
