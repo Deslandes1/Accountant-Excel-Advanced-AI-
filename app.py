@@ -83,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations – updated app_title and reconciliation_title
+# Translations – updated reconciliation_title to July 2026
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -157,8 +157,8 @@ translations = {
         "no_data": "No data available.",
         "select_loan_for_history": "Select Loan",
         "created_by": "Python Developer",
-        # Reconciliation – updated title to 2026
-        "reconciliation_title": "Reconciliation March - 2026",
+        # Reconciliation – updated to July 2026
+        "reconciliation_title": "Reconciliation July - 2026",
         "exchange_rate": "Exchange Rate: 1 USD = 100 HTG",
         "balance_usd": "Balance USD",
         "balance_htg": "Balance HTG",
@@ -259,7 +259,7 @@ translations = {
         "no_data": "Aucune donnée disponible.",
         "select_loan_for_history": "Sélectionner un prêt",
         "created_by": "Développeur Python",
-        # Reconciliation – French remains unchanged (but you can update if needed)
+        # Reconciliation – French remains March 2023 (or you can update)
         "reconciliation_title": "Réconciliation Mars - 2023",
         "exchange_rate": "Taux de change : 1 USD = 100 HTG",
         "balance_usd": "Solde USD",
