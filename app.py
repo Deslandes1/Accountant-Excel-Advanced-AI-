@@ -9,7 +9,6 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
 from gtts import gTTS
-import base64
 
 # ----------------------------------------------------------------------
 # Page config
@@ -17,7 +16,7 @@ import base64
 st.set_page_config(page_title="Excel Advanced Accounting", layout="wide")
 
 # ----------------------------------------------------------------------
-# Custom CSS – Blue Theme
+# Custom CSS – Blue Theme (unchanged)
 # ----------------------------------------------------------------------
 st.markdown("""
 <style>
@@ -83,7 +82,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (only English for simplicity)
+# Translations (only English)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -448,10 +447,10 @@ EXCHANGE_RATE = 100
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg):
     """
-    Generate a spoken summary of the current ledger, truncated to 1000 chars.
-    Ends with a closing statement.
+    Generate a spoken summary of the current ledger.
+    Ends with a closing statement and "Your report is ready..."
     """
-    closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit."
+    closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit. Your report is ready to be downloaded now. Good luck!"
     if entries.empty:
         text = "There are no entries in the ledger. Please add a transaction." + closing
     else:
@@ -469,31 +468,18 @@ def generate_voice_explanation(entries, balance_usd, balance_htg):
             f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
             f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
             f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
-            f"You can download a professionally formatted Excel report with just one click."
         ) + closing
     # Truncate to 1000 characters to avoid gTTS length limit
     if len(text) > 1000:
-        # Prioritize keeping the closing statement; we truncate the middle part
-        # We'll just truncate hard at 997 and append "..." but we want to keep the closing
-        # Simple approach: if too long, cut the main text and keep the closing.
-        # We'll reconstruct: take the first part up to ~800 chars, add "...", then the closing.
-        # But easier: just truncate the whole text and hope the closing fits.
-        # We'll keep it simple: if length > 1000, we slice 997 and add "..."
-        # but then we lose the closing. We'll handle by reducing the middle.
-        # For simplicity, we reduce the main part.
-        main_text = text[:800]  # take first 800 chars
-        # Find where to cut cleanly
-        if len(text) > 1000:
-            # We'll keep the first 700 chars, add "...", then the closing.
-            # We'll separate main and closing.
-            # Actually better: we can compute the text without closing, then append closing at the end.
-            # Let's restructure: generate base text without closing, then add closing and truncate if necessary.
-            base_text = text.replace(closing, "")
-            # Ensure we have room for closing (which is about 80 chars)
-            max_base_len = 1000 - len(closing) - 3  # 3 for "..."
-            if len(base_text) > max_base_len:
-                base_text = base_text[:max_base_len] + "..."
-            text = base_text + closing
+        # Keep the closing part, shorten the main part
+        # We'll keep the first 700 chars and then add "... " + closing
+        # Better: extract the closing part and keep it, trim the rest
+        closing_part = closing
+        main_part = text.replace(closing_part, "")
+        max_main = 1000 - len(closing_part) - 3  # 3 for "..."
+        if len(main_part) > max_main:
+            main_part = main_part[:max_main] + "..."
+        text = main_part + closing_part
     return text
 
 def text_to_speech(text, lang='en', tld='co.uk'):  # British English female voice
@@ -581,7 +567,7 @@ def export_styled_excel(df, title):
 if not check_password():
     st.stop()
 
-# Language selector (English only for now)
+# Language selector (English only)
 lang_options = {"en": "🇺🇸 English"}
 if "language" not in st.session_state:
     st.session_state.language = "en"
@@ -591,6 +577,10 @@ selected_lang = st.sidebar.selectbox("🌐 Language", options=list(lang_options.
 if selected_lang != st.session_state.language:
     st.session_state.language = selected_lang
     st.rerun()
+
+# Initialize session state for voice
+if 'voice_audio' not in st.session_state:
+    st.session_state.voice_audio = None
 
 with st.sidebar:
     st.image("https://flagcdn.com/w320/ht.png", width=100)
@@ -602,7 +592,7 @@ with st.sidebar:
     st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     
-    # ---- AI Voice Button (Female) ----
+    # Manual AI Voice Button
     if st.button("🎙️ Explain Ledger (AI Voice)"):
         with st.spinner("Generating voice explanation..."):
             df_rec = get_reconciliation_entries()
@@ -644,7 +634,6 @@ with col3:
     """, unsafe_allow_html=True)
 st.divider()
 
-# Tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
 # ---- Dashboard (unchanged) ----
@@ -840,11 +829,17 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ===== RECONCILIATION LEDGER (only regular download) =====
+# ===== RECONCILIATION LEDGER =====
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
     st.info("💡 **How it works:** Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.")
+
+    # Play automatic voice if present in session state
+    if st.session_state.voice_audio is not None:
+        st.audio(st.session_state.voice_audio, format='audio/mp3')
+        # Clear after playing (so it doesn't replay on next rerun)
+        st.session_state.voice_audio = None
 
     df_rec = get_reconciliation_entries()
     
@@ -925,6 +920,20 @@ with tab5:
             else:
                 add_reconciliation_entry(str(date), credit_htg, description, qty_val, unit_htg_val, unit_usd_preview, total_htg_preview, total_usd_preview)
                 st.success(_("entry_added"))
+                # Generate voice explanation automatically
+                df_rec_updated = get_reconciliation_entries()
+                if not df_rec_updated.empty:
+                    last_row_updated = df_rec_updated.iloc[-1]
+                    balance_usd_updated = last_row_updated['balance_usd']
+                    balance_htg_updated = last_row_updated['balance_htg']
+                else:
+                    balance_usd_updated = 0
+                    balance_htg_updated = 0
+                explanation = generate_voice_explanation(df_rec_updated, balance_usd_updated, balance_htg_updated)
+                audio_bytes = text_to_speech(explanation)
+                if audio_bytes:
+                    # Store in session state to play on next rerun
+                    st.session_state.voice_audio = audio_bytes
                 st.rerun()
     
     # Delete entry
