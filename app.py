@@ -8,6 +8,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment, numbers
+from openpyxl.utils.dataframe import dataframe_to_rows
 from gtts import gTTS
 import base64
 
@@ -17,16 +18,18 @@ import base64
 st.set_page_config(page_title="Excel Advanced Accounting", layout="wide")
 
 # ----------------------------------------------------------------------
-# Custom CSS – Blue Theme
+# Custom CSS – Blue Theme + Table Styling
 # ----------------------------------------------------------------------
 st.markdown("""
 <style>
+    /* Main app background */
     .stApp {
         background-color: #e6f2ff !important;
     }
     .stApp [data-testid="stAppViewContainer"] {
         background-color: transparent !important;
     }
+    /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: #cce5ff !important;
         border-right: 1px solid #99ccff;
@@ -79,11 +82,48 @@ st.markdown("""
         color: white !important;
         border-radius: 8px !important;
     }
+
+    /* --- Professional Table Styling --- */
+    div[data-testid="stDataFrame"] table {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        border: 1px solid #b0c4de;
+    }
+    div[data-testid="stDataFrame"] thead tr th {
+        background-color: #1e88e5 !important;
+        color: white !important;
+        font-weight: bold !important;
+        text-align: center !important;
+        padding: 8px 6px !important;
+        border: 1px solid #1565c0 !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr:nth-child(even) {
+        background-color: #f0f8ff !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr:nth-child(odd) {
+        background-color: #ffffff !important;
+    }
+    div[data-testid="stDataFrame"] tbody tr:hover {
+        background-color: #d9eaf7 !important;
+    }
+    div[data-testid="stDataFrame"] td {
+        padding: 6px 8px !important;
+        border: 1px solid #b0c4de !important;
+        text-align: right !important;
+    }
+    div[data-testid="stDataFrame"] td:first-child {
+        text-align: left !important;
+    }
+    div[data-testid="stDataFrame"] td:nth-child(3) {  /* Description column */
+        text-align: left !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations
+# Translations (only English for brevity, but you can add others)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -655,7 +695,6 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     Generate a spoken summary of the current ledger in the selected language.
     Closing statement updated to reflect the new title.
     """
-    # Closing statements per language
     closings = {
         'en': " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
         'fr': " Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py.",
@@ -737,9 +776,9 @@ def text_to_speech(text, lang='en', tld='com'):
     Convert text to speech using gTTS with language support.
     """
     lang_map = {
-        'en': ('en', 'com.au'),   # English (Australia) – female voice
-        'fr': ('fr', 'fr'),       # French
-        'es': ('es', 'es')        # Spanish
+        'en': ('en', 'com.au'),
+        'fr': ('fr', 'fr'),
+        'es': ('es', 'es')
     }
     if lang in lang_map:
         lang_code, tld_val = lang_map[lang]
@@ -754,21 +793,25 @@ def text_to_speech(text, lang='en', tld='com'):
     except Exception as e:
         error_msg = str(e)
         if "200" in error_msg:
-            st.warning(_("Voice service returned empty audio. Try a shorter explanation.") if hasattr(_, '__call__') else "Voice service returned empty audio. Try a shorter explanation.")
+            st.warning(_("Voice service returned empty audio. Try a shorter explanation."))
         else:
             st.error(f"Voice generation error: {error_msg}")
         return None
 
 # ----------------------------------------------------------------------
-# Excel export with styling
+# Excel export with professional styling
 # ----------------------------------------------------------------------
 def export_styled_excel(df, title):
+    """
+    Export a DataFrame to a professionally formatted Excel file.
+    """
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name="Reconciliation", index=False)
         workbook = writer.book
         worksheet = writer.sheets["Reconciliation"]
         
+        # Styles
         header_font = Font(bold=True, color="FFFFFF")
         header_fill = PatternFill(start_color="1E88E5", end_color="1E88E5", fill_type="solid")
         thin_border = Border(
@@ -777,37 +820,43 @@ def export_styled_excel(df, title):
             top=Side(style='thin'),
             bottom=Side(style='thin')
         )
-        currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE
+        currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE  # $#,##0.00
         htg_fmt = '#,##0.00 "G"'
         
+        # Apply header styling
         for cell in worksheet[1]:
             cell.font = header_font
             cell.fill = header_fill
             cell.border = thin_border
             cell.alignment = Alignment(horizontal='center', vertical='center')
         
+        # Apply borders and alignment to all data cells
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.border = thin_border
                 cell.alignment = Alignment(horizontal='right', vertical='center')
         
+        # Identify columns by name
         headers = [cell.value for cell in worksheet[1]]
         for col_idx, header in enumerate(headers, start=1):
             col_letter = worksheet.cell(row=1, column=col_idx).column_letter
+            # Apply currency formatting to USD columns
             if header in ['unit usd', 'total usd', 'Balance USD', 'Credit (Cash In USD)']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
                     if cell.value is not None:
                         cell.number_format = currency_fmt
+            # Apply HTG formatting to HTG columns
             elif header in ['unit htg', 'total htg', 'Balance HTG', 'Credit (Cash In HTG)']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
                     if cell.value is not None:
                         cell.number_format = htg_fmt
         
+        # Auto-adjust column widths
         for col in worksheet.columns:
             max_length = 0
-            column = col[0].column_letter
+            column_letter = col[0].column_letter
             for cell in col:
                 try:
                     if len(str(cell.value)) > max_length:
@@ -815,7 +864,7 @@ def export_styled_excel(df, title):
                 except:
                     pass
             adjusted_width = (max_length + 2) * 1.2
-            worksheet.column_dimensions[column].width = min(adjusted_width, 30)
+            worksheet.column_dimensions[column_letter].width = min(adjusted_width, 30)
     
     output.seek(0)
     return output
@@ -1089,11 +1138,11 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ---- Reconciliation Ledger ----
+# ---- Reconciliation Ledger (with professional table styling) ----
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
-    st.info("💡 " + _("How it works:") + " " + _("Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.") if hasattr(_, '__call__') else "💡 How it works: Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.")
+    st.info("💡 " + _("How it works:") + " " + _("Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances."))
 
     df_rec = get_reconciliation_entries()
     
@@ -1110,7 +1159,11 @@ with tab5:
     st.subheader(_("reconciliation_table"))
     
     if not df_rec.empty:
+        # Prepare data for display – keep numeric values for formatting
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
+        df_display = df_rec[display_cols].copy()
+        
+        # Rename columns to translated headers
         col_headers = {
             'id': _('ID'),
             'date': _('date'),
@@ -1124,15 +1177,25 @@ with tab5:
             'balance_usd': _('balance_usd_col'),
             'balance_htg': _('balance_htg_col')
         }
-        df_display = df_rec[display_cols].copy()
-        for col in ['credit', 'unit_htg', 'total_htg', 'balance_htg']:
-            if col in df_display.columns:
-                df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
-        for col in ['unit_usd', 'total_usd', 'balance_usd']:
-            if col in df_display.columns:
-                df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
         df_display.rename(columns=col_headers, inplace=True)
-        st.dataframe(df_display, use_container_width=True)
+        
+        # Configure column formats using column_config
+        column_config = {
+            _('ID'): st.column_config.NumberColumn(_('ID'), format="%d"),
+            _('date'): st.column_config.TextColumn(_('date')),
+            _('credit'): st.column_config.NumberColumn(_('credit'), format="G %,.2f"),
+            _('description'): st.column_config.TextColumn(_('description')),
+            _('qty'): st.column_config.NumberColumn(_('qty'), format="%f"),
+            _('unit_htg'): st.column_config.NumberColumn(_('unit_htg'), format="G %,.2f"),
+            _('unit_usd'): st.column_config.NumberColumn(_('unit_usd'), format="$% ,.2f"),
+            _('total_htg'): st.column_config.NumberColumn(_('total_htg'), format="G %,.2f"),
+            _('total_usd'): st.column_config.NumberColumn(_('total_usd'), format="$% ,.2f"),
+            _('balance_usd'): st.column_config.NumberColumn(_('balance_usd'), format="$% ,.2f"),
+            _('balance_htg'): st.column_config.NumberColumn(_('balance_htg'), format="G %,.2f")
+        }
+        
+        # Display the styled dataframe with column config
+        st.dataframe(df_display, column_config=column_config, use_container_width=True, hide_index=True)
     else:
         st.info(_("no_data"))
     
