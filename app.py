@@ -18,14 +18,12 @@ st.set_page_config(page_title="Accountant Excel Advanced AI", layout="wide")
 # ----------------------------------------------------------------------
 st.markdown("""
 <style>
-    /* Main app background */
     .stApp {
         background-color: #e6f2ff !important;
     }
     .stApp [data-testid="stAppViewContainer"] {
         background-color: transparent !important;
     }
-    /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: #cce5ff !important;
         border-right: 1px solid #99ccff;
@@ -33,11 +31,9 @@ st.markdown("""
     [data-testid="stSidebar"] * {
         color: #003366 !important;
     }
-    /* Headers */
     h1, h2, h3 {
         color: #003366 !important;
     }
-    /* Inputs */
     .stTextInput > div > div > input,
     .stTextArea > div > textarea,
     .stSelectbox > div > div {
@@ -46,7 +42,6 @@ st.markdown("""
         border: 1px solid #99ccff !important;
         border-radius: 8px !important;
     }
-    /* Buttons */
     .stButton > button {
         background: linear-gradient(105deg, #1e88e5 0%, #42a5f5 100%) !important;
         color: white !important;
@@ -61,17 +56,14 @@ st.markdown("""
         transform: scale(1.02);
         box-shadow: 0 4px 20px rgba(30, 136, 229, 0.4);
     }
-    /* Metric cards */
     [data-testid="stMetricValue"] {
         color: #003366 !important;
     }
-    /* DataFrames */
     .dataframe {
         background-color: #ffffff !important;
         border: 1px solid #99ccff !important;
         border-radius: 8px !important;
     }
-    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
         background-color: #cce5ff !important;
         border-radius: 8px !important;
@@ -84,11 +76,40 @@ st.markdown("""
         color: white !important;
         border-radius: 8px !important;
     }
+    /* Excel‑like table styling */
+    .recon-table {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .recon-table th {
+        background-color: #cce5ff;
+        color: #003366;
+        font-weight: bold;
+        border: 1px solid #99ccff;
+        padding: 6px;
+        text-align: center;
+    }
+    .recon-table td {
+        border: 1px solid #99ccff;
+        padding: 6px;
+        text-align: right;
+    }
+    .recon-table td:first-child {
+        text-align: left;
+    }
+    .recon-table .credit {
+        color: green;
+        font-weight: bold;
+    }
+    .recon-table .balance {
+        font-weight: bold;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (including new reconciliation keys)
+# Translations (including reconciliation)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -163,25 +184,34 @@ translations = {
         "select_loan_for_history": "Select Loan",
         "created_by": "Python Developer",
         # Reconciliation
-        "reconciliation_title": "Multi‑Currency Cash Reconciliation",
-        "add_entry": "Add Entry",
-        "credit": "Credit (Cash In)",
-        "qty": "Quantity",
-        "currency_htg": "Currency (HTG)",
-        "unit_htg": "Unit HTG",
-        "unit_usd": "Unit USD",
-        "total_htg": "Total HTG",
-        "total_usd": "Total USD",
+        "reconciliation_title": "Reconciliation March - 2023",
+        "exchange_rate": "Exchange Rate: 1 USD = 100 HTG",
         "balance_usd": "Balance USD",
         "balance_htg": "Balance HTG",
-        "exchange_rate_hint": "Exchange rate: 1 USD = 100 HTG (fixed for this ledger)",
-        "initial_balance_forwarded": "Balance Forwarded",
+        "date": "Date",
+        "credit_cash_in": "Credit (Cash In)",
+        "description_item": "Description / Item Details",
+        "qty": "qty",
+        "currency_htg": "Currency Unit (HTG)",
+        "unit_htg": "unit htg",
+        "unit_usd": "unit usd",
+        "total_htg": "total htg",
+        "total_usd": "total usd",
+        "balance_usd_col": "Balance USD",
+        "currency_htg_col": "Currency (HTG)",
+        "balance_htg_col": "Balance HTG",
+        "add_entry": "Add Entry",
+        "credit": "Credit (Cash In)",
+        "qty_input": "Quantity",
+        "unit_htg_input": "Unit Price (HTG)",
+        "description_input": "Description / Item Details",
         "entry_added": "Entry added!",
-        "reconciliation_table": "Reconciliation Ledger",
-        "download_reconciliation": "📥 Download Reconciliation Excel",
+        "download_reconciliation": "📥 Download Excel",
         "starting_balance_usd": "Starting Balance (USD)",
         "starting_balance_htg": "Starting Balance (HTG)",
-        "usd_htg_rate": "1 USD = 100 HTG"
+        "initial_balance_forwarded": "Balance Forwarded from February",
+        "delete_entry": "Delete Entry",
+        "cannot_delete_balance": "Cannot delete the initial balance row."
     },
     "fr": {
         "app_title": "Comptabilité Excel IA Avancée",
@@ -254,26 +284,35 @@ translations = {
         "no_data": "Aucune donnée disponible.",
         "select_loan_for_history": "Sélectionner un prêt",
         "created_by": "Développeur Python",
-        # Reconciliation (fr)
-        "reconciliation_title": "Grand Livre de Réconciliation Multi‑Devises",
-        "add_entry": "Ajouter une entrée",
-        "credit": "Crédit (Entrée)",
-        "qty": "Quantité",
+        # Reconciliation
+        "reconciliation_title": "Réconciliation Mars - 2023",
+        "exchange_rate": "Taux de change : 1 USD = 100 HTG",
+        "balance_usd": "Solde USD",
+        "balance_htg": "Solde HTG",
+        "date": "Date",
+        "credit_cash_in": "Crédit (Entrée)",
+        "description_item": "Description / Détails",
+        "qty": "Qté",
         "currency_htg": "Devise (HTG)",
         "unit_htg": "Prix unitaire HTG",
         "unit_usd": "Prix unitaire USD",
         "total_htg": "Total HTG",
         "total_usd": "Total USD",
-        "balance_usd": "Solde USD",
-        "balance_htg": "Solde HTG",
-        "exchange_rate_hint": "Taux de change : 1 USD = 100 HTG (fixe)",
-        "initial_balance_forwarded": "Solde reporté",
+        "balance_usd_col": "Solde USD",
+        "currency_htg_col": "Devise (HTG)",
+        "balance_htg_col": "Solde HTG",
+        "add_entry": "Ajouter une entrée",
+        "credit": "Crédit (Entrée)",
+        "qty_input": "Quantité",
+        "unit_htg_input": "Prix unitaire (HTG)",
+        "description_input": "Description / Détails",
         "entry_added": "Entrée ajoutée !",
-        "reconciliation_table": "Grand Livre de Réconciliation",
-        "download_reconciliation": "📥 Télécharger le grand livre Excel",
+        "download_reconciliation": "📥 Télécharger Excel",
         "starting_balance_usd": "Solde initial (USD)",
         "starting_balance_htg": "Solde initial (HTG)",
-        "usd_htg_rate": "1 USD = 100 HTG"
+        "initial_balance_forwarded": "Solde reporté de Février",
+        "delete_entry": "Supprimer une entrée",
+        "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial."
     },
     "es": {
         "app_title": "Contabilidad Excel IA Avanzada",
@@ -346,26 +385,35 @@ translations = {
         "no_data": "No hay datos disponibles.",
         "select_loan_for_history": "Seleccionar préstamo",
         "created_by": "Desarrollador Python",
-        # Reconciliation (es)
-        "reconciliation_title": "Libro Mayor de Conciliación Multi‑Moneda",
-        "add_entry": "Agregar entrada",
-        "credit": "Crédito (Ingreso)",
-        "qty": "Cantidad",
+        # Reconciliation
+        "reconciliation_title": "Conciliación Marzo - 2023",
+        "exchange_rate": "Tipo de cambio: 1 USD = 100 HTG",
+        "balance_usd": "Saldo USD",
+        "balance_htg": "Saldo HTG",
+        "date": "Fecha",
+        "credit_cash_in": "Crédito (Ingreso)",
+        "description_item": "Descripción / Detalle",
+        "qty": "Cant.",
         "currency_htg": "Moneda (HTG)",
         "unit_htg": "Precio unitario HTG",
         "unit_usd": "Precio unitario USD",
         "total_htg": "Total HTG",
         "total_usd": "Total USD",
-        "balance_usd": "Saldo USD",
-        "balance_htg": "Saldo HTG",
-        "exchange_rate_hint": "Tasa de cambio: 1 USD = 100 HTG (fija)",
-        "initial_balance_forwarded": "Saldo trasladado",
-        "entry_added": "Entrada agregada!",
-        "reconciliation_table": "Libro Mayor de Conciliación",
-        "download_reconciliation": "📥 Descargar Excel de Conciliación",
+        "balance_usd_col": "Saldo USD",
+        "currency_htg_col": "Moneda (HTG)",
+        "balance_htg_col": "Saldo HTG",
+        "add_entry": "Agregar entrada",
+        "credit": "Crédito (Ingreso)",
+        "qty_input": "Cantidad",
+        "unit_htg_input": "Precio unitario (HTG)",
+        "description_input": "Descripción / Detalle",
+        "entry_added": "¡Entrada agregada!",
+        "download_reconciliation": "📥 Descargar Excel",
         "starting_balance_usd": "Saldo inicial (USD)",
         "starting_balance_htg": "Saldo inicial (HTG)",
-        "usd_htg_rate": "1 USD = 100 HTG"
+        "initial_balance_forwarded": "Saldo trasladado de Febrero",
+        "delete_entry": "Eliminar entrada",
+        "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial."
     }
 }
 
@@ -394,7 +442,6 @@ def check_password():
             st.session_state["authenticated"] = False
 
     if "authenticated" not in st.session_state:
-        # Show login screen
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             st.image("https://flagcdn.com/w320/ht.png", width=100)
@@ -430,7 +477,6 @@ def logout():
 def init_db():
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
-    # Existing tables
     c.execute("""CREATE TABLE IF NOT EXISTS cash_transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
@@ -458,7 +504,6 @@ def init_db():
         amount REAL,
         FOREIGN KEY (loan_id) REFERENCES loans (id)
     )""")
-    # Reconciliation table
     c.execute("""CREATE TABLE IF NOT EXISTS reconciliation_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
@@ -470,12 +515,26 @@ def init_db():
         total_htg REAL DEFAULT 0,
         total_usd REAL DEFAULT 0
     )""")
-    # Insert initial balance if table is empty
+    # Insert initial balance and some demo rows if table is empty
     c.execute("SELECT COUNT(*) FROM reconciliation_entries")
     if c.fetchone()[0] == 0:
+        # Balance Forwarded row (ID 1)
         c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-                  (datetime.date.today().isoformat(), _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
+                  ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
+        # Demo entries
+        demo_entries = [
+            ("2023-03-01", "Cash in from Mirlaine for operation", 3000.00, 0, 0, 0, 0, 0),
+            ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
+            ("2023-03-03", "Equipment rental - projector", 0, 5, 500.00, 5.00, 2500.00, 25.00),
+            ("2023-03-05", "Fuel for delivery vehicles", 0, 40, 125.00, 1.25, 5000.00, 50.00),
+            ("2023-03-07", "Cash in from sales", 1200.00, 0, 0, 0, 0, 0),
+            ("2023-03-10", "Utility bills - electricity", 0, 0, 0, 0, 4000.00, 40.00),
+            ("2023-03-12", "Transportation - maintenance", 0, 2, 800.00, 8.00, 1600.00, 16.00)
+        ]
+        for entry in demo_entries:
+            c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", entry)
         conn.commit()
     conn.commit()
     conn.close()
@@ -560,7 +619,6 @@ def get_reconciliation_entries():
         conn)
     conn.close()
     if not df.empty:
-        # Compute running balances
         balance_usd = []
         balance_htg = []
         running_usd = 0
@@ -704,7 +762,6 @@ with tab1:
         recent_cash = pd.read_sql_query("SELECT date, type, category, description, amount FROM cash_transactions ORDER BY date DESC LIMIT 10", conn)
         conn.close()
         if not recent_cash.empty:
-            # Add HTG column
             recent_cash['amount_htg'] = recent_cash['amount'].apply(usd_to_htg)
             st.dataframe(recent_cash, use_container_width=True)
         else:
@@ -713,7 +770,6 @@ with tab1:
         st.subheader(_("active_loans"))
         active_loans = get_loans(status='active')
         if not active_loans.empty:
-            # Add HTG column
             active_loans['amount_htg'] = active_loans['amount'].apply(usd_to_htg)
             st.dataframe(active_loans[['borrower', 'amount', 'amount_htg', 'payments_made', 'total_payments', 'status']], use_container_width=True)
         else:
@@ -822,7 +878,6 @@ with tab4:
                 col3.metric(_("net_cash_flow"), f"${total_income - total_expense:,.2f}")
                 st.metric(_("total_income") + " (HTG)", f"G {usd_to_htg(total_income):,.2f}")
                 st.metric(_("total_expense") + " (HTG)", f"G {usd_to_htg(total_expense):,.2f}")
-                # Download Excel and PDF
                 output_excel = io.BytesIO()
                 with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
                     df.to_excel(writer, sheet_name="Cash Flow", index=False)
@@ -885,7 +940,7 @@ with tab4:
 # ===== RECONCILIATION LEDGER =====
 with tab5:
     st.header(_("reconciliation_title"))
-    st.caption(_("exchange_rate_hint"))
+    st.caption(_("exchange_rate"))
     
     df_rec = get_reconciliation_entries()
     
@@ -900,27 +955,50 @@ with tab5:
         st.info("No entries yet. Add an entry below.")
     
     st.subheader(_("reconciliation_table"))
-    display_columns = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
+    
+    # Prepare display data
     if not df_rec.empty:
-        df_display = df_rec[display_columns].copy()
-        # Format currency columns
+        display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
+        # Map to translated headers
+        col_headers = {
+            'id': 'ID',
+            'date': _('date'),
+            'credit': _('credit_cash_in'),
+            'description': _('description_item'),
+            'qty': _('qty'),
+            'unit_htg': _('unit_htg'),
+            'unit_usd': _('unit_usd'),
+            'total_htg': _('total_htg'),
+            'total_usd': _('total_usd'),
+            'balance_usd': _('balance_usd_col'),
+            'balance_htg': _('balance_htg_col')
+        }
+        df_display = df_rec[display_cols].copy()
+        # Apply formatting
         for col in ['credit', 'unit_usd', 'total_usd', 'balance_usd']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
         for col in ['unit_htg', 'total_htg', 'balance_htg']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
+        # Rename columns
+        df_display.rename(columns=col_headers, inplace=True)
         st.dataframe(df_display, use_container_width=True)
     else:
         st.info(_("no_data"))
     
+    # Add entry form
     st.subheader(_("add_entry"))
     with st.form("reconciliation_form"):
-        date = st.date_input(_("date"), value=datetime.date.today())
-        credit = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
-        description = st.text_input(_("description"))
-        qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0)
-        unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0)
+        col1, col2 = st.columns(2)
+        with col1:
+            date = st.date_input(_("date"), value=datetime.date.today())
+            credit = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
+            description = st.text_input(_("description_item"))
+        with col2:
+            qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0)
+            unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0)
+        # Auto-calculated fields
         unit_usd = unit_htg / 100
         total_htg = qty * unit_htg
         total_usd = qty * unit_usd
@@ -936,21 +1014,24 @@ with tab5:
                 st.success(_("entry_added"))
                 st.rerun()
     
+    # Delete entry
     if not df_rec.empty:
-        st.subheader("Delete Entry")
+        st.subheader(_("delete_entry"))
         delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(),
                                  format_func=lambda x: f"ID {x} - {df_rec[df_rec['id']==x]['description'].iloc[0]}")
         if st.button("Delete selected entry", use_container_width=True):
             if delete_id == 1:
-                st.error("Cannot delete the initial balance row.")
+                st.error(_("cannot_delete_balance"))
             else:
                 delete_reconciliation_entry(delete_id)
                 st.success("Entry deleted.")
                 st.rerun()
     
+    # Download Excel
     if not df_rec.empty:
         output_excel = io.BytesIO()
         with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
+            # Write with proper formatting in Excel
             df_rec.to_excel(writer, sheet_name="Reconciliation", index=False)
         st.download_button(_("download_reconciliation"), data=output_excel.getvalue(),
                            file_name="reconciliation_ledger.xlsx",
