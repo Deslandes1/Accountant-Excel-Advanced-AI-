@@ -80,7 +80,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (including reconciliation)
+# Translations
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -389,8 +389,6 @@ translations = {
 }
 
 # ----------------------------------------------------------------------
-# Helper to get translated text
-# ----------------------------------------------------------------------
 def _(key):
     lang = st.session_state.get("language", "en")
     return translations[lang].get(key, key)
@@ -486,14 +484,11 @@ def init_db():
         total_htg REAL DEFAULT 0,
         total_usd REAL DEFAULT 0
     )""")
-    # Insert initial balance and some demo rows if table is empty
     c.execute("SELECT COUNT(*) FROM reconciliation_entries")
     if c.fetchone()[0] == 0:
-        # Balance Forwarded row (ID 1)
         c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                   ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
-        # Demo entries
         demo_entries = [
             ("2023-03-01", "Cash in from operation", 3000.00, 0, 0, 0, 0, 0),
             ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
@@ -513,7 +508,7 @@ def init_db():
 init_db()
 
 # ----------------------------------------------------------------------
-# Helper functions – Cash
+# Helper functions
 # ----------------------------------------------------------------------
 def add_cash_transaction(date, trans_type, category, description, amount):
     conn = sqlite3.connect("accounting.db")
@@ -539,9 +534,6 @@ def get_cash_flow(start_date, end_date):
     conn.close()
     return df
 
-# ----------------------------------------------------------------------
-# Helper functions – Loans
-# ----------------------------------------------------------------------
 def add_loan(borrower, amount, start_date, interest_rate, payment_frequency, payment_amount, total_payments):
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
@@ -580,9 +572,6 @@ def get_loan_payments(loan_id):
     conn.close()
     return df
 
-# ----------------------------------------------------------------------
-# Helper functions – Reconciliation
-# ----------------------------------------------------------------------
 def get_reconciliation_entries():
     conn = sqlite3.connect("accounting.db")
     df = pd.read_sql_query(
@@ -622,9 +611,6 @@ def delete_reconciliation_entry(entry_id):
     conn.commit()
     conn.close()
 
-# ----------------------------------------------------------------------
-# Report generation (PDF)
-# ----------------------------------------------------------------------
 def generate_pdf_report(title, data, columns):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
@@ -651,21 +637,16 @@ def generate_pdf_report(title, data, columns):
     buffer.seek(0)
     return buffer
 
-# ----------------------------------------------------------------------
-# Utility for HTG conversion
-# ----------------------------------------------------------------------
 def usd_to_htg(usd):
     return usd * 100
 
 # ----------------------------------------------------------------------
-# Main UI – after login
+# Main UI
 # ----------------------------------------------------------------------
 if not check_password():
     st.stop()
 
-# ----------------------------------------------------------------------
 # Language selector
-# ----------------------------------------------------------------------
 lang_options = {"en": "🇺🇸 English", "fr": "🇫🇷 Français", "es": "🇪🇸 Español"}
 if "language" not in st.session_state:
     st.session_state.language = "en"
@@ -676,9 +657,6 @@ if selected_lang != st.session_state.language:
     st.session_state.language = selected_lang
     st.rerun()
 
-# ----------------------------------------------------------------------
-# Sidebar
-# ----------------------------------------------------------------------
 with st.sidebar:
     st.image("https://flagcdn.com/w320/ht.png", width=100)
     st.title(_("app_title"))
@@ -691,9 +669,6 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("© 2026 GlobalInternet.py – All rights reserved")
 
-# ----------------------------------------------------------------------
-# Main header
-# ----------------------------------------------------------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
     st.image("https://flagcdn.com/w320/ht.png", width=100)
@@ -710,9 +685,6 @@ with col3:
     """, unsafe_allow_html=True)
 st.divider()
 
-# ----------------------------------------------------------------------
-# Tabs
-# ----------------------------------------------------------------------
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
 # ===== DASHBOARD =====
@@ -967,7 +939,6 @@ with tab5:
             qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0, key="qty_input")
             unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
         
-        # Get current values from session state (they update live)
         qty_val = st.session_state.get("qty_input", 0.0)
         unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
         preview_unit_usd = unit_htg_val / 100
@@ -988,9 +959,6 @@ with tab5:
             else:
                 add_reconciliation_entry(str(date), credit, description, qty_val, unit_htg_val, preview_unit_usd, preview_total_htg, preview_total_usd)
                 st.success(_("entry_added"))
-                # Reset the input fields after submission
-                st.session_state.qty_input = 0.0
-                st.session_state.unit_htg_input = 0.0
                 st.rerun()
     
     # Delete entry
