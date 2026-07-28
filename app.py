@@ -83,7 +83,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (only English for simplicity)
+# Translations
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -186,6 +186,208 @@ translations = {
         "initial_balance_forwarded": "Balance Forwarded from February",
         "delete_entry": "Delete Entry",
         "cannot_delete_balance": "Cannot delete the initial balance row."
+    },
+    "fr": {
+        "app_title": "Comptabilité Avancée Excel",
+        "subtitle": "Suite Professionnelle de Comptabilité et Gestion de Prêts",
+        "login_title": "🔐 Connexion",
+        "login_password": "Entrez le mot de passe pour déverrouiller",
+        "wrong_password": "Mot de passe incorrect. Accès refusé.",
+        "logout": "🚪 Déconnexion",
+        "dashboard": "📊 Tableau de bord",
+        "cash_tab": "💰 Entrées/Sorties",
+        "loans_tab": "🏦 Prêts",
+        "reports_tab": "📄 Rapports",
+        "reconciliation_tab": "📋 Grand Livre de Réconciliation",
+        "current_balance": "Solde de trésorerie actuel",
+        "current_balance_htg": "Solde de trésorerie (HTG)",
+        "recent_transactions": "Transactions récentes",
+        "active_loans": "Prêts actifs",
+        "no_active_loans": "Aucun prêt actif.",
+        "add_transaction": "Ajouter une transaction",
+        "date": "Date",
+        "type": "Type",
+        "income": "Revenu",
+        "expense": "Dépense",
+        "category": "Catégorie (ex: Ventes, Loyer, Salaire)",
+        "description": "Description",
+        "amount": "Montant ($)",
+        "amount_htg": "Montant (HTG)",
+        "transaction_added": "Transaction ajoutée !",
+        "transaction_history": "Historique des transactions",
+        "download_excel": "📥 Télécharger Excel",
+        "loan_management": "Gestion des prêts",
+        "add_new_loan": "➕ Ajouter un prêt",
+        "borrower_name": "Nom de l'emprunteur",
+        "loan_amount": "Montant du prêt ($)",
+        "loan_amount_htg": "Montant du prêt (HTG)",
+        "start_date": "Date de début",
+        "interest_rate": "Taux d'intérêt (%)",
+        "payment_frequency": "Fréquence de paiement",
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "payment_amount": "Montant du paiement ($)",
+        "payment_amount_htg": "Montant du paiement (HTG)",
+        "total_payments": "Nombre total de paiements",
+        "create_loan": "Créer le prêt",
+        "loan_created": "Prêt créé !",
+        "all_loans": "Tous les prêts",
+        "select_loan": "Sélectionnez l'ID du prêt pour enregistrer un paiement ou voir les détails",
+        "remaining_payments": "Paiements restants",
+        "status": "Statut",
+        "record_payment": "Enregistrer le paiement",
+        "payment_date": "Date de paiement",
+        "payment_recorded": "Paiement enregistré !",
+        "payment_history": "Historique des paiements",
+        "no_loans": "Aucun prêt pour le moment. Ajoutez un prêt ci-dessus.",
+        "generate_reports": "Générer des rapports professionnels",
+        "report_type": "Type de rapport",
+        "cash_flow_statement": "État des flux de trésorerie",
+        "loan_status_report": "Rapport sur l'état des prêts",
+        "payment_history_report": "Historique des paiements",
+        "generate": "Générer",
+        "from_date": "Date de début",
+        "to_date": "Date de fin",
+        "total_income": "Revenu total",
+        "total_expense": "Dépense totale",
+        "net_cash_flow": "Flux de trésorerie net",
+        "filter_by_status": "Filtrer par statut",
+        "all": "Tous",
+        "active": "actif",
+        "completed": "terminé",
+        "no_data": "Aucune donnée disponible.",
+        "select_loan_for_history": "Sélectionner un prêt",
+        "created_by": "Développeur Python",
+        "reconciliation_title": "Réconciliation Juillet - 2026",
+        "exchange_rate": "Taux de change : 1 USD = 100 HTG",
+        "balance_usd": "Solde USD",
+        "balance_htg": "Solde HTG",
+        "date": "Date",
+        "credit_cash_in": "Crédit (Entrée HTG)",
+        "credit_cash_in_usd": "Crédit (Entrée USD)",
+        "description_item": "Description / Détails",
+        "qty": "Qté",
+        "currency_htg": "Devise (HTG)",
+        "unit_htg": "Prix unitaire HTG",
+        "unit_usd": "Prix unitaire USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "balance_usd_col": "Solde USD",
+        "currency_htg_col": "Devise (HTG)",
+        "balance_htg_col": "Solde HTG",
+        "add_entry": "Ajouter une entrée",
+        "credit": "Crédit (Entrée HTG)",
+        "qty_input": "Quantité",
+        "unit_htg_input": "Prix unitaire (HTG)",
+        "description_input": "Description / Détails",
+        "entry_added": "Entrée ajoutée !",
+        "download_reconciliation": "📥 Télécharger Excel",
+        "starting_balance_usd": "Solde initial (USD)",
+        "starting_balance_htg": "Solde initial (HTG)",
+        "initial_balance_forwarded": "Solde reporté de Février",
+        "delete_entry": "Supprimer une entrée",
+        "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial."
+    },
+    "es": {
+        "app_title": "Contabilidad Avanzada con Excel",
+        "subtitle": "Suite Profesional de Contabilidad y Gestión de Préstamos",
+        "login_title": "🔐 Iniciar sesión",
+        "login_password": "Ingrese la contraseña para desbloquear",
+        "wrong_password": "Contraseña incorrecta. Acceso denegado.",
+        "logout": "🚪 Cerrar sesión",
+        "dashboard": "📊 Tablero",
+        "cash_tab": "💰 Entradas/Salidas",
+        "loans_tab": "🏦 Préstamos",
+        "reports_tab": "📄 Informes",
+        "reconciliation_tab": "📋 Libro Mayor de Conciliación",
+        "current_balance": "Saldo de efectivo actual",
+        "current_balance_htg": "Saldo de efectivo (HTG)",
+        "recent_transactions": "Transacciones recientes",
+        "active_loans": "Préstamos activos",
+        "no_active_loans": "No hay préstamos activos.",
+        "add_transaction": "Agregar transacción",
+        "date": "Fecha",
+        "type": "Tipo",
+        "income": "Ingreso",
+        "expense": "Gasto",
+        "category": "Categoría (ej. Ventas, Alquiler, Salario)",
+        "description": "Descripción",
+        "amount": "Monto ($)",
+        "amount_htg": "Monto (HTG)",
+        "transaction_added": "¡Transacción agregada!",
+        "transaction_history": "Historial de transacciones",
+        "download_excel": "📥 Descargar Excel",
+        "loan_management": "Gestión de préstamos",
+        "add_new_loan": "➕ Agregar préstamo",
+        "borrower_name": "Nombre del prestatario",
+        "loan_amount": "Monto del préstamo ($)",
+        "loan_amount_htg": "Monto del préstamo (HTG)",
+        "start_date": "Fecha de inicio",
+        "interest_rate": "Tasa de interés (%)",
+        "payment_frequency": "Frecuencia de pago",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "payment_amount": "Monto del pago ($)",
+        "payment_amount_htg": "Monto del pago (HTG)",
+        "total_payments": "Número total de pagos",
+        "create_loan": "Crear préstamo",
+        "loan_created": "¡Préstamo creado!",
+        "all_loans": "Todos los préstamos",
+        "select_loan": "Seleccione ID de préstamo para registrar pago o ver detalles",
+        "remaining_payments": "Pagos restantes",
+        "status": "Estado",
+        "record_payment": "Registrar pago",
+        "payment_date": "Fecha de pago",
+        "payment_recorded": "¡Pago registrado!",
+        "payment_history": "Historial de pagos",
+        "no_loans": "Aún no hay préstamos. Agregue uno arriba.",
+        "generate_reports": "Generar informes profesionales",
+        "report_type": "Tipo de informe",
+        "cash_flow_statement": "Estado de flujo de efectivo",
+        "loan_status_report": "Informe de estado de préstamos",
+        "payment_history_report": "Historial de pagos",
+        "generate": "Generar",
+        "from_date": "Fecha de inicio",
+        "to_date": "Fecha de fin",
+        "total_income": "Ingreso total",
+        "total_expense": "Gasto total",
+        "net_cash_flow": "Flujo de efectivo neto",
+        "filter_by_status": "Filtrar por estado",
+        "all": "Todos",
+        "active": "activo",
+        "completed": "completado",
+        "no_data": "No hay datos disponibles.",
+        "select_loan_for_history": "Seleccionar préstamo",
+        "created_by": "Desarrollador Python",
+        "reconciliation_title": "Conciliación Julio - 2026",
+        "exchange_rate": "Tipo de cambio: 1 USD = 100 HTG",
+        "balance_usd": "Saldo USD",
+        "balance_htg": "Saldo HTG",
+        "date": "Fecha",
+        "credit_cash_in": "Crédito (Ingreso HTG)",
+        "credit_cash_in_usd": "Crédito (Ingreso USD)",
+        "description_item": "Descripción / Detalle",
+        "qty": "Cant.",
+        "currency_htg": "Moneda (HTG)",
+        "unit_htg": "Precio unitario HTG",
+        "unit_usd": "Precio unitario USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "balance_usd_col": "Saldo USD",
+        "currency_htg_col": "Moneda (HTG)",
+        "balance_htg_col": "Saldo HTG",
+        "add_entry": "Agregar entrada",
+        "credit": "Crédito (Ingreso HTG)",
+        "qty_input": "Cantidad",
+        "unit_htg_input": "Precio unitario (HTG)",
+        "description_input": "Descripción / Detalle",
+        "entry_added": "¡Entrada agregada!",
+        "download_reconciliation": "📥 Descargar Excel",
+        "starting_balance_usd": "Saldo inicial (USD)",
+        "starting_balance_htg": "Saldo inicial (HTG)",
+        "initial_balance_forwarded": "Saldo trasladado de Febrero",
+        "delete_entry": "Eliminar entrada",
+        "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial."
     }
 }
 
@@ -213,7 +415,6 @@ def check_password():
     if "authenticated" not in st.session_state:
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
-            # NEW IMAGE – replaced Haitian flag
             st.image(
                 "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
                 width=100
@@ -447,49 +648,102 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions (Female voice, with closing statement)
+# AI Voice Functions (multilingual)
 # ----------------------------------------------------------------------
-def generate_voice_explanation(entries, balance_usd, balance_htg):
+def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
-    Generate a spoken summary of the current ledger, truncated to 1000 chars.
-    Ends with a closing statement.
+    Generate a spoken summary of the current ledger in the selected language.
     """
-    closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit."
-    if entries.empty:
-        text = "There are no entries in the ledger. Please add a transaction." + closing
-    else:
-        total_credit_htg = entries['credit'].sum()
-        total_expense_htg = entries['total_htg'].sum()
-        total_expense_usd = entries['total_usd'].sum()
-        text = (
-            f"Welcome to Excel Advanced Accounting. "
-            f"This is the Reconciliation Ledger for July 2026. "
-            f"Currently, you have {len(entries)} entries. "
-            f"The total credit received in Haitian Gourdes is {total_credit_htg:,.2f} HTG, "
-            f"which is equivalent to {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
-            f"The total expenses in HTG are {total_expense_htg:,.2f}, "
-            f"and the total expenses in USD are {total_expense_usd:,.2f}. "
-            f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
-            f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
-            f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
-            f"You can download a professionally formatted Excel report with just one click."
-        ) + closing
-    # Truncate to 1000 characters to avoid gTTS length limit
+    # Get translated base text (hardcoded for simplicity; could be expanded)
+    if lang == 'fr':
+        closing = " Cette application a été construite par Gesner Deslandes, Coordinateur Technologique chez Be Like Brit."
+        if entries.empty:
+            text = "Il n'y a aucune entrée dans le grand livre. Veuillez ajouter une transaction." + closing
+        else:
+            total_credit_htg = entries['credit'].sum()
+            total_expense_htg = entries['total_htg'].sum()
+            total_expense_usd = entries['total_usd'].sum()
+            text = (
+                f"Bienvenue dans Comptabilité Avancée Excel. "
+                f"Ceci est le Grand Livre de Réconciliation pour Juillet 2026. "
+                f"Actuellement, vous avez {len(entries)} entrées. "
+                f"Le crédit total reçu en Gourdes haïtiennes est de {total_credit_htg:,.2f} HTG, "
+                f"ce qui équivaut à {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
+                f"Les dépenses totales en HTG sont de {total_expense_htg:,.2f}, "
+                f"et les dépenses totales en USD sont de {total_expense_usd:,.2f}. "
+                f"Votre solde actuel est de {balance_usd:,.2f} USD et {balance_htg:,.2f} HTG. "
+                f"N'oubliez pas : chaque entrée de trésorerie augmente votre solde, et chaque achat le diminue. "
+                f"Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG. "
+                f"Vous pouvez télécharger un rapport Excel professionnel en un seul clic."
+            ) + closing
+    elif lang == 'es':
+        closing = " Esta aplicación fue construida por Gesner Deslandes, Coordinador Tecnológico en Be Like Brit."
+        if entries.empty:
+            text = "No hay entradas en el libro mayor. Por favor, agregue una transacción." + closing
+        else:
+            total_credit_htg = entries['credit'].sum()
+            total_expense_htg = entries['total_htg'].sum()
+            total_expense_usd = entries['total_usd'].sum()
+            text = (
+                f"Bienvenido a Contabilidad Avanzada con Excel. "
+                f"Este es el Libro Mayor de Conciliación para Julio 2026. "
+                f"Actualmente, tiene {len(entries)} entradas. "
+                f"El crédito total recibido en Gourdes haitianas es de {total_credit_htg:,.2f} HTG, "
+                f"que equivale a {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
+                f"Los gastos totales en HTG son {total_expense_htg:,.2f}, "
+                f"y los gastos totales en USD son {total_expense_usd:,.2f}. "
+                f"Su saldo actual es de {balance_usd:,.2f} USD y {balance_htg:,.2f} HTG. "
+                f"Recuerde: cada ingreso de efectivo aumenta su saldo, y cada compra lo disminuye. "
+                f"El sistema convierte automáticamente HTG a USD usando la tasa de 1 USD = 100 HTG. "
+                f"Puede descargar un informe de Excel profesional con solo un clic."
+            ) + closing
+    else:  # English default
+        closing = " This application was built by Gesner Deslandes, Technology Coordinator at Be Like Brit."
+        if entries.empty:
+            text = "There are no entries in the ledger. Please add a transaction." + closing
+        else:
+            total_credit_htg = entries['credit'].sum()
+            total_expense_htg = entries['total_htg'].sum()
+            total_expense_usd = entries['total_usd'].sum()
+            text = (
+                f"Welcome to Excel Advanced Accounting. "
+                f"This is the Reconciliation Ledger for July 2026. "
+                f"Currently, you have {len(entries)} entries. "
+                f"The total credit received in Haitian Gourdes is {total_credit_htg:,.2f} HTG, "
+                f"which is equivalent to {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
+                f"The total expenses in HTG are {total_expense_htg:,.2f}, "
+                f"and the total expenses in USD are {total_expense_usd:,.2f}. "
+                f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
+                f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
+                f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
+                f"You can download a professionally formatted Excel report with just one click."
+            ) + closing
+    # Truncate to avoid gTTS length limit
     if len(text) > 1000:
-        # We'll keep the closing; reduce the main part
+        # Keep the closing; reduce the main part
         base_text = text.replace(closing, "")
-        max_base_len = 1000 - len(closing) - 3  # 3 for "..."
+        max_base_len = 1000 - len(closing) - 3
         if len(base_text) > max_base_len:
             base_text = base_text[:max_base_len] + "..."
         text = base_text + closing
     return text
 
-def text_to_speech(text, lang='en', tld='co.uk'):
+def text_to_speech(text, lang='en', tld='com'):
     """
-    Convert text to speech using gTTS.
+    Convert text to speech using gTTS with language support.
     """
+    # Map language codes to gTTS language and TLD
+    lang_map = {
+        'en': ('en', 'com.au'),   # English (Australia) – female voice
+        'fr': ('fr', 'fr'),       # French
+        'es': ('es', 'es')        # Spanish
+    }
+    if lang in lang_map:
+        lang_code, tld_val = lang_map[lang]
+    else:
+        lang_code, tld_val = 'en', 'com.au'
     try:
-        tts = gTTS(text=text, lang=lang, tld=tld, slow=False)
+        tts = gTTS(text=text, lang=lang_code, tld=tld_val, slow=False)
         audio_bytes = io.BytesIO()
         tts.write_to_fp(audio_bytes)
         audio_bytes.seek(0)
@@ -497,13 +751,13 @@ def text_to_speech(text, lang='en', tld='co.uk'):
     except Exception as e:
         error_msg = str(e)
         if "200" in error_msg:
-            st.warning("The voice service returned an empty audio file. Please try again with a shorter explanation.")
+            st.warning(_("Voice service returned empty audio. Try a shorter explanation.") if hasattr(_, '__call__') else "Voice service returned empty audio. Try a shorter explanation.")
         else:
             st.error(f"Voice generation error: {error_msg}")
         return None
 
 # ----------------------------------------------------------------------
-# Excel export with styling (unchanged)
+# Excel export with styling
 # ----------------------------------------------------------------------
 def export_styled_excel(df, title):
     output = io.BytesIO()
@@ -569,19 +823,18 @@ def export_styled_excel(df, title):
 if not check_password():
     st.stop()
 
-# Language selector (English only for now)
-lang_options = {"en": "🇺🇸 English"}
+# Language selector
+lang_options = {"en": "🇺🇸 English", "fr": "🇫🇷 Français", "es": "🇪🇸 Español"}
 if "language" not in st.session_state:
     st.session_state.language = "en"
 selected_lang = st.sidebar.selectbox("🌐 Language", options=list(lang_options.keys()),
                                      format_func=lambda x: lang_options[x],
-                                     index=0)
+                                     index=["en","fr","es"].index(st.session_state.language))
 if selected_lang != st.session_state.language:
     st.session_state.language = selected_lang
     st.rerun()
 
 with st.sidebar:
-    # NEW IMAGE – replaced Haitian flag in sidebar as well
     st.image(
         "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
         width=100
@@ -593,9 +846,9 @@ with st.sidebar:
     st.markdown("📧 deslandes78@gmail.com | 📞 (509) 4738-5663")
     st.markdown("---")
     
-    # ---- AI Voice Button (Female) ----
-    if st.button("🎙️ Explain Ledger (AI Voice)"):
-        with st.spinner("Generating voice explanation..."):
+    # ---- AI Voice Button ----
+    if st.button("🎙️ " + _("Explain Ledger (AI Voice)")):
+        with st.spinner(_("Generating voice explanation...")):
             df_rec = get_reconciliation_entries()
             if not df_rec.empty:
                 last_row = df_rec.iloc[-1]
@@ -604,13 +857,13 @@ with st.sidebar:
             else:
                 balance_usd = 0
                 balance_htg = 0
-            explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg)
-            audio_bytes = text_to_speech(explanation)
+            explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg, selected_lang)
+            audio_bytes = text_to_speech(explanation, lang=selected_lang)
             if audio_bytes:
                 st.audio(audio_bytes, format='audio/mp3')
-                st.success("✅ Voice explanation played!")
+                st.success(_("Voice explanation played!"))
             else:
-                st.warning("Voice generation failed – please try again.")
+                st.warning(_("Voice generation failed – please try again."))
     st.markdown("---")
     if st.button(_("logout")):
         logout()
@@ -620,7 +873,6 @@ with st.sidebar:
 # Main header
 col1, col2, col3 = st.columns([1, 2, 1])
 with col1:
-    # NEW IMAGE – replaced Haitian flag on top left main page
     st.image(
         "https://raw.githubusercontent.com/Deslandes1/Accountant-Excel-Advanced-AI-/main/Gemini_Generated_Image_8s108y8s108y8s10.png",
         width=100
@@ -641,7 +893,7 @@ st.divider()
 # Tabs
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
-# ---- Dashboard (unchanged) ----
+# ---- Dashboard ----
 with tab1:
     st.header(_("dashboard"))
     balance_usd = get_cash_balance()
@@ -672,7 +924,7 @@ with tab1:
         else:
             st.info(_("no_active_loans"))
 
-# ---- Cash In/Out (unchanged) ----
+# ---- Cash In/Out ----
 with tab2:
     st.header(_("cash_tab"))
     with st.form("cash_form"):
@@ -704,7 +956,7 @@ with tab2:
         st.download_button(_("download_excel"), data=output.getvalue(), file_name="cash_transactions.xlsx",
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-# ---- Loans (unchanged) ----
+# ---- Loans ----
 with tab3:
     st.header(_("loan_management"))
     with st.expander(_("add_new_loan")):
@@ -753,7 +1005,7 @@ with tab3:
     else:
         st.info(_("no_loans"))
 
-# ---- Reports (unchanged) ----
+# ---- Reports ----
 with tab4:
     st.header(_("generate_reports"))
     report_type = st.selectbox(_("report_type"), [_("cash_flow_statement"), _("loan_status_report"), _("payment_history_report")])
@@ -834,11 +1086,11 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ===== RECONCILIATION LEDGER (only regular download) =====
+# ---- Reconciliation Ledger ----
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
-    st.info("💡 **How it works:** Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.")
+    st.info("💡 " + _("How it works:") + " " + _("Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.") if hasattr(_, '__call__') else "💡 How it works: Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce both balances.")
 
     df_rec = get_reconciliation_entries()
     
@@ -850,14 +1102,14 @@ with tab5:
         with col2:
             st.metric(_("balance_htg"), f"G {last_row['balance_htg']:,.2f}")
     else:
-        st.info("No entries yet. Add an entry below.")
+        st.info(_("no_data"))
     
     st.subheader(_("reconciliation_table"))
     
     if not df_rec.empty:
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
         col_headers = {
-            'id': 'ID',
+            'id': _('ID'),
             'date': _('date'),
             'credit': _('credit_cash_in'),
             'description': _('description_item'),
@@ -870,7 +1122,6 @@ with tab5:
             'balance_htg': _('balance_htg_col')
         }
         df_display = df_rec[display_cols].copy()
-        # Format: credit is HTG now
         for col in ['credit', 'unit_htg', 'total_htg', 'balance_htg']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
@@ -894,18 +1145,15 @@ with tab5:
             qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0, key="qty_input")
             unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
         
-        # Get current values
         qty_val = st.session_state.get("qty_input", 0.0)
         unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
-        # Compute USD equivalent of credit
         credit_usd = credit_htg / EXCHANGE_RATE
-        # Compute totals
         unit_usd_preview = unit_htg_val / EXCHANGE_RATE
         total_htg_preview = qty_val * unit_htg_val
         total_usd_preview = qty_val * unit_usd_preview
         
         st.markdown("---")
-        st.markdown("**📊 Preview (will be used when you submit)**")
+        st.markdown("**📊 " + _("Preview (will be used when you submit)") + "**")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Credit (USD)", f"${credit_usd:.2f}")
         col2.metric("unit usd", f"{unit_usd_preview:.2f}")
@@ -921,12 +1169,11 @@ with tab5:
                 st.success(_("entry_added"))
                 st.rerun()
     
-    # Delete entry
     if not df_rec.empty:
         st.subheader(_("delete_entry"))
         delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(),
                                  format_func=lambda x: f"ID {x} - {df_rec[df_rec['id']==x]['description'].iloc[0]}")
-        if st.button("Delete selected entry", use_container_width=True):
+        if st.button(_("Delete selected entry"), use_container_width=True):
             if delete_id == 1:
                 st.error(_("cannot_delete_balance"))
             else:
@@ -934,7 +1181,6 @@ with tab5:
                 st.success("Entry deleted.")
                 st.rerun()
     
-    # Download Excel (only regular, no voice)
     if not df_rec.empty:
         styled_excel = export_styled_excel(df_rec, _("reconciliation_title"))
         st.download_button(
