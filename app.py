@@ -76,35 +76,6 @@ st.markdown("""
         color: white !important;
         border-radius: 8px !important;
     }
-    /* Excel‑like table styling */
-    .recon-table {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-    }
-    .recon-table th {
-        background-color: #cce5ff;
-        color: #003366;
-        font-weight: bold;
-        border: 1px solid #99ccff;
-        padding: 6px;
-        text-align: center;
-    }
-    .recon-table td {
-        border: 1px solid #99ccff;
-        padding: 6px;
-        text-align: right;
-    }
-    .recon-table td:first-child {
-        text-align: left;
-    }
-    .recon-table .credit {
-        color: green;
-        font-weight: bold;
-    }
-    .recon-table .balance {
-        font-weight: bold;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -524,7 +495,7 @@ def init_db():
                   ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
         # Demo entries
         demo_entries = [
-            ("2023-03-01", "Cash in from Mirlaine for operation", 3000.00, 0, 0, 0, 0, 0),
+            ("2023-03-01", "Cash in from operation", 3000.00, 0, 0, 0, 0, 0),
             ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
             ("2023-03-03", "Equipment rental - projector", 0, 5, 500.00, 5.00, 2500.00, 25.00),
             ("2023-03-05", "Fuel for delivery vehicles", 0, 40, 125.00, 1.25, 5000.00, 50.00),
@@ -941,7 +912,8 @@ with tab4:
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
-    
+    st.info("💡 **How it works:** Enter a Credit (Cash In) to increase balances, or leave it at 0. Then add items (qty, unit HTG). The balances update automatically. **Credit increases, expenses decrease.**")
+
     df_rec = get_reconciliation_entries()
     
     if not df_rec.empty:
@@ -956,10 +928,8 @@ with tab5:
     
     st.subheader(_("reconciliation_table"))
     
-    # Prepare display data
     if not df_rec.empty:
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
-        # Map to translated headers
         col_headers = {
             'id': 'ID',
             'date': _('date'),
@@ -974,21 +944,19 @@ with tab5:
             'balance_htg': _('balance_htg_col')
         }
         df_display = df_rec[display_cols].copy()
-        # Apply formatting
         for col in ['credit', 'unit_usd', 'total_usd', 'balance_usd']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"${x:,.2f}" if pd.notnull(x) else "")
         for col in ['unit_htg', 'total_htg', 'balance_htg']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
-        # Rename columns
         df_display.rename(columns=col_headers, inplace=True)
         st.dataframe(df_display, use_container_width=True)
     else:
         st.info(_("no_data"))
     
-    # Add entry form
     st.subheader(_("add_entry"))
+    
     with st.form("reconciliation_form"):
         col1, col2 = st.columns(2)
         with col1:
@@ -996,22 +964,33 @@ with tab5:
             credit = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
             description = st.text_input(_("description_item"))
         with col2:
-            qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0)
-            unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0)
-        # Auto-calculated fields
-        unit_usd = unit_htg / 100
-        total_htg = qty * unit_htg
-        total_usd = qty * unit_usd
-        st.write(f"**{_('unit_usd')}:** {unit_usd:.2f} (auto-calculated)")
-        st.write(f"**{_('total_htg')}:** {total_htg:.2f}")
-        st.write(f"**{_('total_usd')}:** {total_usd:.2f}")
+            qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0, key="qty_input")
+            unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
+        
+        # Get current values from session state (they update live)
+        qty_val = st.session_state.get("qty_input", 0.0)
+        unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
+        preview_unit_usd = unit_htg_val / 100
+        preview_total_htg = qty_val * unit_htg_val
+        preview_total_usd = qty_val * preview_unit_usd
+        
+        st.markdown("---")
+        st.markdown("**📊 Preview (will be used when you submit)**")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("unit usd", f"{preview_unit_usd:.2f}")
+        col2.metric("total htg", f"{preview_total_htg:.2f}")
+        col3.metric("total usd", f"{preview_total_usd:.2f}")
+        
         submitted = st.form_submit_button(_("add_entry"))
         if submitted:
             if description.strip() == "":
                 st.error("Description is required.")
             else:
-                add_reconciliation_entry(str(date), credit, description, qty, unit_htg, unit_usd, total_htg, total_usd)
+                add_reconciliation_entry(str(date), credit, description, qty_val, unit_htg_val, preview_unit_usd, preview_total_htg, preview_total_usd)
                 st.success(_("entry_added"))
+                # Reset the input fields after submission
+                st.session_state.qty_input = 0.0
+                st.session_state.unit_htg_input = 0.0
                 st.rerun()
     
     # Delete entry
@@ -1031,7 +1010,6 @@ with tab5:
     if not df_rec.empty:
         output_excel = io.BytesIO()
         with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
-            # Write with proper formatting in Excel
             df_rec.to_excel(writer, sheet_name="Reconciliation", index=False)
         st.download_button(_("download_reconciliation"), data=output_excel.getvalue(),
                            file_name="reconciliation_ledger.xlsx",
