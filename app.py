@@ -479,7 +479,7 @@ def init_db():
     c.execute("""CREATE TABLE IF NOT EXISTS reconciliation_entries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT,
-        credit_htg REAL DEFAULT 0,   -- now credit is in HTG
+        credit REAL DEFAULT 0,        -- now stores HTG values
         description TEXT,
         qty REAL DEFAULT 0,
         unit_htg REAL DEFAULT 0,
@@ -490,21 +490,21 @@ def init_db():
     c.execute("SELECT COUNT(*) FROM reconciliation_entries")
     if c.fetchone()[0] == 0:
         # Balance Forwarded row (ID 1) – starting balances in USD and HTG
-        c.execute("""INSERT INTO reconciliation_entries (date, description, credit_htg, qty, unit_htg, unit_usd, total_htg, total_usd)
+        c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
                   ("2023-03-01", _("initial_balance_forwarded"), 0, 0, 0, 0, 0, 0))
-        # Demo entries: credit_htg is now in HTG
+        # Demo entries: credit is now in HTG (multiply previous USD by 100)
         demo_entries = [
-            ("2023-03-01", "Cash in from operation (HTG)", 300000.00, 0, 0, 0, 0, 0),  # 300,000 HTG = 3,000 USD
+            ("2023-03-01", "Cash in from operation (HTG)", 300000.00, 0, 0, 0, 0, 0),
             ("2023-03-02", "Office supplies - paper & pens", 0, 20, 150.00, 1.50, 3000.00, 30.00),
             ("2023-03-03", "Equipment rental - projector", 0, 5, 500.00, 5.00, 2500.00, 25.00),
             ("2023-03-05", "Fuel for delivery vehicles", 0, 40, 125.00, 1.25, 5000.00, 50.00),
-            ("2023-03-07", "Cash in from sales (HTG)", 120000.00, 0, 0, 0, 0, 0),    # 120,000 HTG = 1,200 USD
+            ("2023-03-07", "Cash in from sales (HTG)", 120000.00, 0, 0, 0, 0, 0),
             ("2023-03-10", "Utility bills - electricity", 0, 0, 0, 0, 4000.00, 40.00),
             ("2023-03-12", "Transportation - maintenance", 0, 2, 800.00, 8.00, 1600.00, 16.00)
         ]
         for entry in demo_entries:
-            c.execute("""INSERT INTO reconciliation_entries (date, description, credit_htg, qty, unit_htg, unit_usd, total_htg, total_usd)
+            c.execute("""INSERT INTO reconciliation_entries (date, description, credit, qty, unit_htg, unit_usd, total_htg, total_usd)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", entry)
         conn.commit()
     conn.commit()
@@ -579,8 +579,9 @@ def get_loan_payments(loan_id):
 
 def get_reconciliation_entries():
     conn = sqlite3.connect("accounting.db")
+    # column is 'credit' (now stores HTG)
     df = pd.read_sql_query(
-        "SELECT id, date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id",
+        "SELECT id, date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd FROM reconciliation_entries ORDER BY id",
         conn)
     conn.close()
     if not df.empty:
@@ -589,24 +590,22 @@ def get_reconciliation_entries():
         running_usd = 0
         running_htg = 0
         for idx, row in df.iterrows():
-            # credit_htg is now in HTG, convert to USD by dividing by 100
-            running_usd += (row['credit_htg'] / 100) - row['total_usd']
-            running_htg += row['credit_htg'] - row['total_htg']
+            # credit is now in HTG, convert to USD by dividing by 100
+            running_usd += (row['credit'] / 100) - row['total_usd']
+            running_htg += row['credit'] - row['total_htg']
             balance_usd.append(running_usd)
             balance_htg.append(running_htg)
         df['balance_usd'] = balance_usd
         df['balance_htg'] = balance_htg
     else:
-        df = pd.DataFrame(columns=['id', 'date', 'credit_htg', 'description', 'qty', 'unit_htg', 'unit_usd',
+        df = pd.DataFrame(columns=['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd',
                                    'total_htg', 'total_usd', 'balance_usd', 'balance_htg'])
-    # Rename credit_htg to credit for display
-    df.rename(columns={'credit_htg': 'credit'}, inplace=True)
     return df
 
 def add_reconciliation_entry(date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd):
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
-    c.execute("""INSERT INTO reconciliation_entries (date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd)
+    c.execute("""INSERT INTO reconciliation_entries (date, credit, description, qty, unit_htg, unit_usd, total_htg, total_usd)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
               (date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd))
     conn.commit()
@@ -915,7 +914,7 @@ with tab5:
         col_headers = {
             'id': 'ID',
             'date': _('date'),
-            'credit': _('credit_cash_in'),  # now in HTG
+            'credit': _('credit_cash_in'),
             'description': _('description_item'),
             'qty': _('qty'),
             'unit_htg': _('unit_htg'),
@@ -926,7 +925,7 @@ with tab5:
             'balance_htg': _('balance_htg_col')
         }
         df_display = df_rec[display_cols].copy()
-        # Formatting: credit is in HTG now
+        # Format: credit is HTG now
         for col in ['credit', 'unit_htg', 'total_htg', 'balance_htg']:
             if col in df_display.columns:
                 df_display[col] = df_display[col].apply(lambda x: f"G {x:,.2f}" if pd.notnull(x) else "")
