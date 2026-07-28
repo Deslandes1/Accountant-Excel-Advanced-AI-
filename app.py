@@ -131,7 +131,6 @@ st.markdown("""
     div[data-testid="stDataFrame"] td:active {
         background-color: inherit !important;
     }
-    /* Override Streamlit's default selection color */
     .stDataFrameSelectedRow {
         background-color: #d9eaf7 !important;
     }
@@ -704,86 +703,53 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions (multilingual, updated closing)
+# AI Voice Functions – NEW SCRIPT WITH CONTACT AND SIGN-UP
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
-    Generate a spoken summary of the current ledger in the selected language.
+    Generate a spoken summary of the current ledger with contact info and sign-up link.
     """
-    closings = {
-        'en': " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
-        'fr': " Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py.",
-        'es': " Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py."
-    }
-    closing = closings.get(lang, closings['en'])
-
-    if lang == 'fr':
-        if entries.empty:
-            text = "Il n'y a aucune entrée dans le grand livre. Veuillez ajouter une transaction." + closing
-        else:
-            total_credit_htg = entries['credit'].sum()
-            total_expense_htg = entries['total_htg'].sum()
-            total_expense_usd = entries['total_usd'].sum()
-            text = (
-                f"Bienvenue dans Comptabilité Avancée Excel. "
-                f"Ceci est le Grand Livre de Réconciliation pour Juillet 2026. "
-                f"Actuellement, vous avez {len(entries)} entrées. "
-                f"Le crédit total reçu en Gourdes haïtiennes est de {total_credit_htg:,.2f} HTG, "
-                f"ce qui équivaut à {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
-                f"Les dépenses totales en HTG sont de {total_expense_htg:,.2f}, "
-                f"et les dépenses totales en USD sont de {total_expense_usd:,.2f}. "
-                f"Votre solde actuel est de {balance_usd:,.2f} USD et {balance_htg:,.2f} HTG. "
-                f"N'oubliez pas : chaque entrée de trésorerie augmente votre solde, et chaque achat le diminue. "
-                f"Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG. "
-                f"Vous pouvez télécharger un rapport Excel professionnel en un seul clic."
-            ) + closing
-    elif lang == 'es':
-        if entries.empty:
-            text = "No hay entradas en el libro mayor. Por favor, agregue una transacción." + closing
-        else:
-            total_credit_htg = entries['credit'].sum()
-            total_expense_htg = entries['total_htg'].sum()
-            total_expense_usd = entries['total_usd'].sum()
-            text = (
-                f"Bienvenido a Contabilidad Avanzada con Excel. "
-                f"Este es el Libro Mayor de Conciliación para Julio 2026. "
-                f"Actualmente, tiene {len(entries)} entradas. "
-                f"El crédito total recibido en Gourdes haitianas es de {total_credit_htg:,.2f} HTG, "
-                f"que equivale a {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
-                f"Los gastos totales en HTG son {total_expense_htg:,.2f}, "
-                f"y los gastos totales en USD son {total_expense_usd:,.2f}. "
-                f"Su saldo actual es de {balance_usd:,.2f} USD y {balance_htg:,.2f} HTG. "
-                f"Recuerde: cada ingreso de efectivo aumenta su saldo, y cada compra lo disminuye. "
-                f"El sistema convierte automáticamente HTG a USD usando la tasa de 1 USD = 100 HTG. "
-                f"Puede descargar un informe de Excel profesional con solo un clic."
-            ) + closing
-    else:  # English default
-        if entries.empty:
-            text = "There are no entries in the ledger. Please add a transaction." + closing
-        else:
-            total_credit_htg = entries['credit'].sum()
-            total_expense_htg = entries['total_htg'].sum()
-            total_expense_usd = entries['total_usd'].sum()
-            text = (
-                f"Welcome to Excel Advanced Accounting. "
-                f"This is the Reconciliation Ledger for July 2026. "
-                f"Currently, you have {len(entries)} entries. "
-                f"The total credit received in Haitian Gourdes is {total_credit_htg:,.2f} HTG, "
-                f"which is equivalent to {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
-                f"The total expenses in HTG are {total_expense_htg:,.2f}, "
-                f"and the total expenses in USD are {total_expense_usd:,.2f}. "
-                f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
-                f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
-                f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
-                f"You can download a professionally formatted Excel report with just one click."
-            ) + closing
-    # Truncate to avoid gTTS length limit
+    # Base message
+    if entries.empty:
+        summary = "There are no entries in the ledger. Please add a transaction."
+    else:
+        total_credit_htg = entries['credit'].sum()
+        total_expense_htg = entries['total_htg'].sum()
+        total_expense_usd = entries['total_usd'].sum()
+        summary = (
+            f"Welcome to Excel Advanced Accounting. "
+            f"This is the Reconciliation Ledger for July 2026. "
+            f"Currently, you have {len(entries)} entries. "
+            f"The total credit received in Haitian Gourdes is {total_credit_htg:,.2f} HTG, "
+            f"which is equivalent to {total_credit_htg / EXCHANGE_RATE:,.2f} USD. "
+            f"The total expenses in HTG are {total_expense_htg:,.2f}, "
+            f"and the total expenses in USD are {total_expense_usd:,.2f}. "
+            f"Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG. "
+            f"Remember: every cash‑in increases your balance, and every purchase decreases it. "
+            f"The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. "
+            f"You can download a professionally formatted Excel report with just one click."
+        )
+    
+    # Closing with contact and sign-up
+    closing = (
+        " This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. "
+        "Phone: (509)-47385663. Email: deslandes78@gmail.com. "
+        "This application is now open for public use! "
+        "To access the full version of Excel Advanced Accounting and other tools from GlobalInternet.py, "
+        "sign up today at: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ "
+        "Use the password: 20082010 to unlock the application. "
+        "Thank you for using Excel Advanced Accounting – your professional accounting solution, built in Haiti, for the world."
+    )
+    
+    text = summary + closing
+    
+    # Truncate to avoid gTTS length limit (1000 chars)
     if len(text) > 1000:
-        base_text = text.replace(closing, "")
-        max_base_len = 1000 - len(closing) - 3
-        if len(base_text) > max_base_len:
-            base_text = base_text[:max_base_len] + "..."
-        text = base_text + closing
+        # Keep the summary and add a shortened closing
+        if len(summary) > 700:
+            summary = summary[:700] + "..."
+        text = summary + " " + closing
+    
     return text
 
 def text_to_speech(text, lang='en', tld='com'):
@@ -814,12 +780,9 @@ def text_to_speech(text, lang='en', tld='com'):
         return None
 
 # ----------------------------------------------------------------------
-# Excel export with full professional styling (including alternating rows)
+# Excel export with full professional styling
 # ----------------------------------------------------------------------
 def export_styled_excel(df, title):
-    """
-    Export a DataFrame to a professionally formatted Excel file.
-    """
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, sheet_name="Reconciliation", index=False)
@@ -835,7 +798,7 @@ def export_styled_excel(df, title):
             top=Side(style='thin'),
             bottom=Side(style='thin')
         )
-        currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE  # $#,##0.00
+        currency_fmt = numbers.FORMAT_CURRENCY_USD_SIMPLE
         htg_fmt = '#,##0.00 "G"'
         
         # Light fill for alternating rows
@@ -1157,7 +1120,7 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ---- Reconciliation Ledger (with full professional table styling) ----
+# ---- Reconciliation Ledger ----
 with tab5:
     st.header(_("reconciliation_title"))
     st.caption(_("exchange_rate"))
@@ -1178,11 +1141,9 @@ with tab5:
     st.subheader(_("reconciliation_table"))
     
     if not df_rec.empty:
-        # Prepare data for display – keep numeric values for formatting
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 'total_htg', 'total_usd', 'balance_usd', 'balance_htg']
         df_display = df_rec[display_cols].copy()
         
-        # Rename columns to translated headers
         col_headers = {
             'id': _('ID'),
             'date': _('date'),
@@ -1198,7 +1159,6 @@ with tab5:
         }
         df_display.rename(columns=col_headers, inplace=True)
         
-        # Configure column formats using column_config
         column_config = {
             _('ID'): st.column_config.NumberColumn(_('ID'), format="%d"),
             _('date'): st.column_config.TextColumn(_('date')),
@@ -1213,7 +1173,6 @@ with tab5:
             _('balance_htg'): st.column_config.NumberColumn(_('balance_htg'), format="G %,.2f")
         }
         
-        # Display the styled dataframe with column config
         st.dataframe(df_display, column_config=column_config, use_container_width=True, hide_index=True)
     else:
         st.info(_("no_data"))
