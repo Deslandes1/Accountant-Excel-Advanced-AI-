@@ -250,7 +250,7 @@ translations = {
         "initial_balance_forwarded": "Balance Forwarded from February",
         "delete_entry": "Delete Entry",
         "cannot_delete_balance": "Cannot delete the initial balance row.",
-        # NEW: For running balance
+        # For running balance
         "available_balance_htg": "Available Balance (HTG)",
         "available_balance_usd": "Available Balance (USD)",
         # Voice explanation texts (full sentences in target language)
@@ -363,7 +363,7 @@ translations = {
         "initial_balance_forwarded": "Solde reporté de Février",
         "delete_entry": "Supprimer une entrée",
         "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial.",
-        # NEW: For running balance
+        # For running balance
         "available_balance_htg": "Solde disponible (HTG)",
         "available_balance_usd": "Solde disponible (USD)",
         # Voice explanation (French)
@@ -476,7 +476,7 @@ translations = {
         "initial_balance_forwarded": "Saldo trasladado de Febrero",
         "delete_entry": "Eliminar entrada",
         "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial.",
-        # NEW: For running balance
+        # For running balance
         "available_balance_htg": "Saldo disponible (HTG)",
         "available_balance_usd": "Saldo disponible (USD)",
         # Voice explanation (Spanish)
@@ -1217,7 +1217,7 @@ with tab5:
             st.metric("📊 Net Balance (USD)", f"${net_usd:,.2f}", delta=f"{net_usd:,.2f}")
         # ------------------------------------------------
 
-        # ---------- NEW: STANDALONE MANUAL CALCULATOR ----------
+        # ---------- STANDALONE MANUAL CALCULATOR ----------
         st.markdown("---")
         st.subheader("🧮 Quick Cash Calculator (Manual Entry)")
         st.caption("Enter any amounts below to calculate Cash In - Expenses. This does NOT affect your ledger.")
@@ -1293,7 +1293,23 @@ with tab5:
     else:
         st.info(_("no_data"))
     
-    st.subheader(_("add_entry"))
+    # ---- ADD ENTRY SECTION WITH FORMULA REMINDER ----
+    # Create a two-column layout: Title on the left, formula reminder on the right
+    col_title, col_formula = st.columns([1, 2])
+    with col_title:
+        st.subheader(_("add_entry"))
+    with col_formula:
+        st.markdown(
+            """
+            <div style='text-align: right; margin-top: 15px;'>
+                <span style='background-color: #d9eaf7; padding: 4px 14px; border-radius: 20px; font-weight: 500; color: #003366; border: 1px solid #99ccff; font-size: 14px;'>
+                    📐 (Net Balance = Sum of all Cash In – Sum of all Expenses)
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    # -----------------------------------------------------
     
     with st.form("reconciliation_form"):
         col1, col2 = st.columns(2)
