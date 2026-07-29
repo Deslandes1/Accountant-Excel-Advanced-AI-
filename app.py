@@ -1165,8 +1165,8 @@ with tab5:
         with col2:
             st.metric(_("balance_htg"), f"G {last_row['balance_htg']:,.2f}")
 
-        # ---------- NEW SUMMARY SECTION ----------
-        st.subheader("📊 Cash In / Expenses Summary")
+        # ---------- AUTOMATED SUMMARY (FROM LEDGER) ----------
+        st.subheader("📊 Cash In / Expenses Summary (from Ledger)")
         # Compute totals
         credit_total_htg = df_rec['credit'].sum()
         expense_total_htg = df_rec['total_htg'].sum()
@@ -1187,7 +1187,35 @@ with tab5:
         with col3:
             st.metric("📊 Net Balance (HTG)", f"G {net_htg:,.2f}", delta=f"{net_htg:,.2f}")
             st.metric("📊 Net Balance (USD)", f"${net_usd:,.2f}", delta=f"{net_usd:,.2f}")
-        # ----------------------------------------
+        # ------------------------------------------------
+
+        # ---------- NEW: STANDALONE MANUAL CALCULATOR ----------
+        st.markdown("---")
+        st.subheader("🧮 Quick Cash Calculator (Manual Entry)")
+        st.caption("Enter any amounts below to calculate Cash In - Expenses. This does NOT affect your ledger.")
+
+        col_curr, col_in, col_exp = st.columns([1, 2, 2])
+        with col_curr:
+            calc_currency = st.selectbox("Currency", ["HTG (G)", "USD ($)"], key="calc_currency")
+        with col_in:
+            calc_cashin = st.number_input("💰 Total Cash In", min_value=0.0, step=100.0, value=0.0, key="calc_cashin")
+        with col_exp:
+            calc_expenses = st.number_input("💸 Total Expenses", min_value=0.0, step=100.0, value=0.0, key="calc_expenses")
+
+        if st.button("🧮 Calculate Net", key="calc_btn"):
+            net = calc_cashin - calc_expenses
+            currency_symbol = "G" if calc_currency == "HTG (G)" else "$"
+            
+            st.markdown("---")
+            col_res1, col_res2 = st.columns(2)
+            with col_res1:
+                st.metric("Cash In", f"{currency_symbol} {calc_cashin:,.2f}")
+                st.metric("Expenses", f"{currency_symbol} {calc_expenses:,.2f}")
+            with col_res2:
+                st.metric("Net Balance (Result)", f"{currency_symbol} {net:,.2f}", 
+                          delta=f"{net:,.2f}", 
+                          delta_color="normal" if net >= 0 else "inverse")
+        # ------------------------------------------------
     else:
         st.info(_("no_data"))
     
