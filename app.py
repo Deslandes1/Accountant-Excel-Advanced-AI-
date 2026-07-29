@@ -1164,6 +1164,30 @@ with tab5:
             st.metric(_("balance_usd"), f"${last_row['balance_usd']:,.2f}")
         with col2:
             st.metric(_("balance_htg"), f"G {last_row['balance_htg']:,.2f}")
+
+        # ---------- NEW SUMMARY SECTION ----------
+        st.subheader("📊 Cash In / Expenses Summary")
+        # Compute totals
+        credit_total_htg = df_rec['credit'].sum()
+        expense_total_htg = df_rec['total_htg'].sum()
+        net_htg = credit_total_htg - expense_total_htg
+
+        credit_total_usd = credit_total_htg / EXCHANGE_RATE
+        expense_total_usd = expense_total_htg / EXCHANGE_RATE
+        net_usd = credit_total_usd - expense_total_usd
+
+        # Display in columns
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("💰 Total Cash In (HTG)", f"G {credit_total_htg:,.2f}")
+            st.metric("💰 Total Cash In (USD)", f"${credit_total_usd:,.2f}")
+        with col2:
+            st.metric("💸 Total Expenses (HTG)", f"G {expense_total_htg:,.2f}")
+            st.metric("💸 Total Expenses (USD)", f"${expense_total_usd:,.2f}")
+        with col3:
+            st.metric("📊 Net Balance (HTG)", f"G {net_htg:,.2f}", delta=f"{net_htg:,.2f}")
+            st.metric("📊 Net Balance (USD)", f"${net_usd:,.2f}", delta=f"{net_usd:,.2f}")
+        # ----------------------------------------
     else:
         st.info(_("no_data"))
     
