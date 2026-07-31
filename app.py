@@ -118,7 +118,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------
-# Translations (minimal – only used for the rest of the app)
+# Translations (for other tabs – Reconciliation uses hardcoded English)
 # ----------------------------------------------------------------------
 translations = {
     "en": {
@@ -227,13 +227,10 @@ translations = {
         "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py."
     },
     "fr": {
-        "app_title": "Comptabilité Avancée Excel",
-        "subtitle": "Suite Professionnelle de Comptabilité et Gestion de Prêts",
-        # ... (for brevity, but you can keep your existing translations; just ensure the voice keys exist)
+        # ... (keep your existing French translations; ensure all keys used in other tabs exist)
     },
     "es": {
-        "app_title": "Contabilidad Avanzada con Excel",
-        # ...
+        # ... (keep your existing Spanish translations)
     }
 }
 
@@ -893,11 +890,11 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ---- Reconciliation Ledger (UPDATED with NET BALANCE only) ----
+# ---- Reconciliation Ledger (HARDCODED ENGLISH – NO TRANSLATION KEYS) ----
 with tab5:
-    st.header(_("reconciliation_title"))
-    st.caption(_("exchange_rate"))
-    st.info("💡 " + _("How it works:") + " " + _("Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce the net balance."))
+    st.header("📋 Reconciliation Ledger")
+    st.caption("Exchange Rate: 1 USD = 100 HTG")
+    st.info("💡 How it works: Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce the net balance.")
 
     # ---- RESET BUTTON ----
     col_reset, _ = st.columns([1, 3])
@@ -968,9 +965,9 @@ with tab5:
                 st.metric("Net Balance (Result)", f"{currency_symbol} {net:,.2f}", 
                           delta=f"{net:,.2f}", delta_color="normal" if net >= 0 else "inverse")
     else:
-        st.info(_("no_data"))
+        st.info("No data available.")
     
-    st.subheader(_("reconciliation_table"))
+    st.subheader("📋 Reconciliation Table")
     
     if not df_rec.empty:
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 
@@ -978,42 +975,42 @@ with tab5:
         df_display = df_rec[display_cols].copy()
         
         col_headers = {
-            'id': _('ID'),
-            'date': _('date'),
-            'credit': _('credit_cash_in'),
-            'description': _('description_item'),
-            'qty': _('qty'),
-            'unit_htg': _('unit_htg'),
-            'unit_usd': _('unit_usd'),
-            'total_htg': _('total_htg'),
-            'total_usd': _('total_usd'),
-            'net_htg': "Net Balance (HTG)",
-            'net_usd': "Net Balance (USD)"
+            'id': 'ID',
+            'date': 'Date',
+            'credit': 'Credit (Cash In HTG)',
+            'description': 'Description / Item Details',
+            'qty': 'Qty',
+            'unit_htg': 'Unit Price (HTG)',
+            'unit_usd': 'Unit Price (USD)',
+            'total_htg': 'Total (HTG)',
+            'total_usd': 'Total (USD)',
+            'net_htg': 'Net Balance (HTG)',
+            'net_usd': 'Net Balance (USD)'
         }
         df_display.rename(columns=col_headers, inplace=True)
         
         column_config = {
-            _('ID'): st.column_config.NumberColumn(_('ID'), format="%d"),
-            _('date'): st.column_config.TextColumn(_('date')),
-            _('credit'): st.column_config.NumberColumn(_('credit'), format="G %,.2f"),
-            _('description'): st.column_config.TextColumn(_('description')),
-            _('qty'): st.column_config.NumberColumn(_('qty'), format="%f"),
-            _('unit_htg'): st.column_config.NumberColumn(_('unit_htg'), format="G %,.2f"),
-            _('unit_usd'): st.column_config.NumberColumn(_('unit_usd'), format="$% ,.2f"),
-            _('total_htg'): st.column_config.NumberColumn(_('total_htg'), format="G %,.2f"),
-            _('total_usd'): st.column_config.NumberColumn(_('total_usd'), format="$% ,.2f"),
-            "Net Balance (HTG)": st.column_config.NumberColumn("Net Balance (HTG)", format="G %,.2f"),
-            "Net Balance (USD)": st.column_config.NumberColumn("Net Balance (USD)", format="$% ,.2f")
+            'ID': st.column_config.NumberColumn('ID', format="%d"),
+            'Date': st.column_config.TextColumn('Date'),
+            'Credit (Cash In HTG)': st.column_config.NumberColumn('Credit (Cash In HTG)', format="G %,.2f"),
+            'Description / Item Details': st.column_config.TextColumn('Description / Item Details'),
+            'Qty': st.column_config.NumberColumn('Qty', format="%f"),
+            'Unit Price (HTG)': st.column_config.NumberColumn('Unit Price (HTG)', format="G %,.2f"),
+            'Unit Price (USD)': st.column_config.NumberColumn('Unit Price (USD)', format="$% ,.2f"),
+            'Total (HTG)': st.column_config.NumberColumn('Total (HTG)', format="G %,.2f"),
+            'Total (USD)': st.column_config.NumberColumn('Total (USD)', format="$% ,.2f"),
+            'Net Balance (HTG)': st.column_config.NumberColumn('Net Balance (HTG)', format="G %,.2f"),
+            'Net Balance (USD)': st.column_config.NumberColumn('Net Balance (USD)', format="$% ,.2f")
         }
         
         st.dataframe(df_display, column_config=column_config, use_container_width=True, hide_index=True)
     else:
-        st.info(_("no_data"))
+        st.info("No data available.")
     
     # ---- ADD ENTRY SECTION WITH FORMULA REMINDER ----
     col_title, col_formula = st.columns([1, 2])
     with col_title:
-        st.subheader(_("add_entry"))
+        st.subheader("➕ Add Entry")
     with col_formula:
         st.markdown(
             """
@@ -1030,12 +1027,12 @@ with tab5:
     with st.form("reconciliation_form"):
         col1, col2 = st.columns(2)
         with col1:
-            date = st.date_input(_("date"), value=datetime.date.today())
-            credit_htg = st.number_input(_("credit"), min_value=0.0, step=0.01, value=0.0)
-            description = st.text_input(_("description_item"))
+            date = st.date_input("Date", value=datetime.date.today())
+            credit_htg = st.number_input("Credit (Cash In HTG)", min_value=0.0, step=0.01, value=0.0)
+            description = st.text_input("Description / Item Details")
         with col2:
-            qty = st.number_input(_("qty"), min_value=0.0, step=0.01, value=0.0, key="qty_input")
-            unit_htg = st.number_input(_("unit_htg"), min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
+            qty = st.number_input("Qty", min_value=0.0, step=0.01, value=0.0, key="qty_input")
+            unit_htg = st.number_input("Unit Price (HTG)", min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
         
         qty_val = st.session_state.get("qty_input", 0.0)
         unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
@@ -1045,31 +1042,31 @@ with tab5:
         total_usd_preview = qty_val * unit_usd_preview
         
         st.markdown("---")
-        st.markdown("**📊 " + _("Preview (will be used when you submit)") + "**")
+        st.markdown("**📊 Preview (will be used when you submit)**")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Credit (USD)", f"${credit_usd:.2f}")
-        col2.metric("unit usd", f"{unit_usd_preview:.2f}")
-        col3.metric("total htg", f"{total_htg_preview:.2f}")
-        col4.metric("total usd", f"{total_usd_preview:.2f}")
+        col2.metric("Unit Price (USD)", f"{unit_usd_preview:.2f}")
+        col3.metric("Total (HTG)", f"{total_htg_preview:.2f}")
+        col4.metric("Total (USD)", f"{total_usd_preview:.2f}")
         
-        submitted = st.form_submit_button(_("add_entry"))
+        submitted = st.form_submit_button("Add Entry")
         if submitted:
             if description.strip() == "":
                 st.error("Description is required.")
             else:
                 add_reconciliation_entry(str(date), credit_htg, description, qty_val, unit_htg_val, unit_usd_preview, total_htg_preview, total_usd_preview)
-                st.success(_("entry_added"))
+                st.success("Entry added!")
                 if st.session_state.get("auto_speak", False):
                     play_voice_explanation()
                 st.rerun()
     
     if not df_rec.empty:
-        st.subheader(_("delete_entry"))
+        st.subheader("🗑️ Delete Entry")
         delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(),
                                  format_func=lambda x: f"ID {x} - {df_rec[df_rec['id']==x]['description'].iloc[0]}")
-        if st.button(_("Delete selected entry"), use_container_width=True):
+        if st.button("Delete selected entry", use_container_width=True):
             if delete_id == 1:
-                st.error(_("cannot_delete_balance"))
+                st.error("Cannot delete the initial balance row.")
             else:
                 delete_reconciliation_entry(delete_id)
                 st.success("Entry deleted.")
@@ -1078,9 +1075,9 @@ with tab5:
                 st.rerun()
     
     if not df_rec.empty:
-        styled_excel = export_styled_excel(df_rec, _("reconciliation_title"))
+        styled_excel = export_styled_excel(df_rec, "Reconciliation July - 2026")
         st.download_button(
-            _("download_reconciliation"),
+            "📥 Download Excel",
             data=styled_excel,
             file_name="reconciliation_ledger.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
