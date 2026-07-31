@@ -250,9 +250,9 @@ translations = {
         "initial_balance_forwarded": "Balance Forwarded from February",
         "delete_entry": "Delete Entry",
         "cannot_delete_balance": "Cannot delete the initial balance row.",
-        # For running balance
-        "available_balance_htg": "Available Balance (HTG)",
-        "available_balance_usd": "Available Balance (USD)",
+        # Renamed for clarity
+        "net_balance_htg": "Net Balance (HTG)",
+        "net_balance_usd": "Net Balance (USD)",
         # Voice explanation texts (full sentences in target language)
         "voice_welcome": "Welcome to Excel Advanced Accounting.",
         "voice_ledger": "This is the Reconciliation Ledger for July 2026.",
@@ -363,9 +363,9 @@ translations = {
         "initial_balance_forwarded": "Solde reporté de Février",
         "delete_entry": "Supprimer une entrée",
         "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial.",
-        # For running balance
-        "available_balance_htg": "Solde disponible (HTG)",
-        "available_balance_usd": "Solde disponible (USD)",
+        # Renamed for clarity
+        "net_balance_htg": "Solde Net (HTG)",
+        "net_balance_usd": "Solde Net (USD)",
         # Voice explanation (French)
         "voice_welcome": "Bienvenue dans Excel Advanced Accounting.",
         "voice_ledger": "Ceci est le Grand Livre de Réconciliation pour Juillet 2026.",
@@ -476,9 +476,9 @@ translations = {
         "initial_balance_forwarded": "Saldo trasladado de Febrero",
         "delete_entry": "Eliminar entrada",
         "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial.",
-        # For running balance
-        "available_balance_htg": "Saldo disponible (HTG)",
-        "available_balance_usd": "Saldo disponible (USD)",
+        # Renamed for clarity
+        "net_balance_htg": "Saldo Neto (HTG)",
+        "net_balance_usd": "Saldo Neto (USD)",
         # Voice explanation (Spanish)
         "voice_welcome": "Bienvenido a Excel Advanced Accounting.",
         "voice_ledger": "Este es el Libro Mayor de Conciliación para Julio de 2026.",
@@ -697,26 +697,26 @@ def get_reconciliation_entries():
         df['balance_usd'] = balance_usd
         df['balance_htg'] = balance_htg
         
-        # NEW: Calculate "Available Balance" (runs forward)
-        available_htg = []
-        available_usd = []
-        running_avail_htg = 0
-        running_avail_usd = 0
+        # NEW: Calculate "Net Balance" (runs forward, starting from cash-in)
+        net_htg = []
+        net_usd = []
+        running_net_htg = 0
+        running_net_usd = 0
         for idx, row in df.iterrows():
-            # Add Cash In (credit) to available balance
-            running_avail_htg += row['credit']
-            running_avail_usd += row['credit'] / 100
-            # Subtract Expenses from available balance
-            running_avail_htg -= row['total_htg']
-            running_avail_usd -= row['total_usd']
-            available_htg.append(running_avail_htg)
-            available_usd.append(running_avail_usd)
-        df['available_htg'] = available_htg
-        df['available_usd'] = available_usd
+            # Add Cash In (credit) to net balance
+            running_net_htg += row['credit']
+            running_net_usd += row['credit'] / 100
+            # Subtract Expenses from net balance
+            running_net_htg -= row['total_htg']
+            running_net_usd -= row['total_usd']
+            net_htg.append(running_net_htg)
+            net_usd.append(running_net_usd)
+        df['net_htg'] = net_htg
+        df['net_usd'] = net_usd
     else:
         df = pd.DataFrame(columns=['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd',
                                    'total_htg', 'total_usd', 'balance_usd', 'balance_htg', 
-                                   'available_htg', 'available_usd'])
+                                   'net_htg', 'net_usd'])
     return df
 
 def add_reconciliation_entry(date, credit_htg, description, qty, unit_htg, unit_usd, total_htg, total_usd):
@@ -872,12 +872,12 @@ def export_styled_excel(df, title):
         headers = [cell.value for cell in worksheet[1]]
         for col_idx, header in enumerate(headers, start=1):
             col_letter = worksheet.cell(row=1, column=col_idx).column_letter
-            if header in ['unit usd', 'total usd', 'Balance USD', 'Credit (Cash In USD)', 'available_usd']:
+            if header in ['unit usd', 'total usd', 'Balance USD', 'Credit (Cash In USD)', 'net_usd']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
                     if cell.value is not None:
                         cell.number_format = currency_fmt
-            elif header in ['unit htg', 'total htg', 'Balance HTG', 'Credit (Cash In HTG)', 'available_htg']:
+            elif header in ['unit htg', 'total htg', 'Balance HTG', 'Credit (Cash In HTG)', 'net_htg']:
                 for row in range(2, worksheet.max_row + 1):
                     cell = worksheet.cell(row=row, column=col_idx)
                     if cell.value is not None:
@@ -1250,10 +1250,10 @@ with tab5:
     st.subheader(_("reconciliation_table"))
     
     if not df_rec.empty:
-        # NEW: Include available_htg and available_usd in display
+        # NEW: Include net_htg and net_usd in display
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd', 
                         'total_htg', 'total_usd', 'balance_usd', 'balance_htg', 
-                        'available_htg', 'available_usd']
+                        'net_htg', 'net_usd']
         df_display = df_rec[display_cols].copy()
         
         col_headers = {
@@ -1268,8 +1268,8 @@ with tab5:
             'total_usd': _('total_usd'),
             'balance_usd': _('balance_usd_col'),
             'balance_htg': _('balance_htg_col'),
-            'available_htg': _('available_balance_htg'),
-            'available_usd': _('available_balance_usd')
+            'net_htg': _('net_balance_htg'),
+            'net_usd': _('net_balance_usd')
         }
         df_display.rename(columns=col_headers, inplace=True)
         
@@ -1285,8 +1285,8 @@ with tab5:
             _('total_usd'): st.column_config.NumberColumn(_('total_usd'), format="$% ,.2f"),
             _('balance_usd'): st.column_config.NumberColumn(_('balance_usd'), format="$% ,.2f"),
             _('balance_htg'): st.column_config.NumberColumn(_('balance_htg'), format="G %,.2f"),
-            _('available_htg'): st.column_config.NumberColumn(_('available_balance_htg'), format="G %,.2f"),
-            _('available_usd'): st.column_config.NumberColumn(_('available_balance_usd'), format="$% ,.2f")
+            _('net_htg'): st.column_config.NumberColumn(_('net_balance_htg'), format="G %,.2f"),
+            _('net_usd'): st.column_config.NumberColumn(_('net_balance_usd'), format="$% ,.2f")
         }
         
         st.dataframe(df_display, column_config=column_config, use_container_width=True, hide_index=True)
