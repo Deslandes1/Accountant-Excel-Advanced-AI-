@@ -111,7 +111,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ====== Translations ======
 translations = {
     "en": {
         "app_title": "Excel Advanced Accounting",
@@ -316,7 +315,6 @@ def init_db():
         total_htg REAL DEFAULT 0,
         total_usd REAL DEFAULT 0
     )""")
-    # NO DEMO DATA – ledger starts empty
     conn.commit()
     conn.close()
 
@@ -430,6 +428,15 @@ def reset_ledger():
     c.execute("DELETE FROM reconciliation_entries")
     conn.commit()
     conn.close()
+    st.cache_data.clear()
+
+def hard_reset_ledger():
+    conn = sqlite3.connect("accounting.db")
+    c = conn.cursor()
+    c.execute("DROP TABLE IF EXISTS reconciliation_entries")
+    conn.commit()
+    conn.close()
+    init_db()
     st.cache_data.clear()
 
 def generate_pdf_report(title, data, columns):
@@ -634,36 +641,87 @@ st.divider()
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
-# ---- Dashboard, Cash, Loans, Reports (unchanged) ----
-# (I'll keep them short here but they work as before)
+# ---- Dashboard, Cash, Loans, Reports (shortened) ----
+with tab1:
+    st.header(_("dashboard"))
+    balance_usd = get_cash_balance()
+    balance_htg = usd_to_htg(balance_usd)
+    c1, c2 = st.columns(2)
+    with c1:
+        st.metric(_("current_balance"), f"${balance_usd:,.2f}")
+    with c2:
+        st.metric(_("current_balance_htg"), f"G {balance_htg:,.2f}")
 
-# ---- Reconciliation Ledger (HARDCODED) ----
+with tab2:
+    st.header(_("cash_tab"))
+    with st.form("cash_form"):
+        date = st.date_input(_("date"), value=datetime.date.today())
+        trans_type = st.selectbox(_("type"), [_("income"), _("expense")])
+        category = st.text_input(_("category"))
+        description = st.text_area(_("description"))
+        amount = st.number_input(_("amount"), min_value=0.01, step=0.01)
+        if st.form_submit_button(_("add_transaction")):
+            add_cash_transaction(str(date), trans_type, category, description, amount)
+            st.success(_("transaction_added"))
+            st.rerun()
+    conn = sqlite3.connect("accounting.db")
+    cash_df = pd.read_sql_query("SELECT * FROM cash_transactions ORDER BY date DESC", conn)
+    conn.close()
+    if not cash_df.empty:
+        cash_df['amount_htg'] = cash_df['amount'].apply(usd_to_htg)
+        st.dataframe(cash_df, use_container_width=True)
+
+with tab3:
+    st.header(_("loan_management"))
+    with st.expander(_("add_new_loan")):
+        with st.form("loan_form"):
+            borrower = st.text_input(_("borrower_name"))
+            amount = st.number_input(_("loan_amount"), min_value=0.01, step=0.01)
+            start_date = st.date_input(_("start_date"), value=datetime.date.today())
+            interest_rate = st.number_input(_("interest_rate"), min_value=0.0, step=0.1, value=0.0)
+            payment_frequency = st.selectbox(_("payment_frequency"), [_("weekly"), _("monthly")])
+            payment_amount = st.number_input(_("payment_amount"), min_value=0.01, step=0.01)
+            total_payments = st.number_input(_("total_payments"), min_value=1, step=1, value=12)
+            if st.form_submit_button(_("create_loan")):
+                add_loan(borrower, amount, str(start_date), interest_rate, payment_frequency, payment_amount, total_payments)
+                st.success(_("loan_created"))
+                st.rerun()
+    loans_df = get_loans()
+    if not loans_df.empty:
+        loans_df['amount_htg'] = loans_df['amount'].apply(usd_to_htg)
+        st.dataframe(loans_df, use_container_width=True)
+
+with tab4:
+    st.header(_("generate_reports"))
+    report_type = st.selectbox(_("report_type"), [_("cash_flow_statement"), _("loan_status_report"), _("payment_history_report")])
+    if report_type == _("cash_flow_statement"):
+        start_date = st.date_input(_("from_date"), value=datetime.date.today() - datetime.timedelta(days=30))
+        end_date = st.date_input(_("to_date"), value=datetime.date.today())
+        if st.button(_("generate")):
+            df = get_cash_flow(str(start_date), str(end_date))
+            if not df.empty:
+                st.dataframe(df, use_container_width=True)
+
+# ====== Reconciliation Ledger with SEPARATE Cash In and Expense buttons ======
 with tab5:
     st.header("📋 Reconciliation Ledger")
     st.caption("Exchange Rate: 1 USD = 100 HTG")
-    st.info("💡 How it works: Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce the net balance.")
+    st.info("💡 Use **'Add Cash In'** for your initial cash. Use **'Add Expense'** for purchases (Credit will be set to 0 automatically).")
 
-    col_reset, col_debug = st.columns([1, 1])
+    # Reset buttons
+    col_reset, col_hard = st.columns(2)
     with col_reset:
-        if st.button("🗑️ Reset Ledger (Clear All Entries)", use_container_width=True):
-            if st.checkbox("⚠️ Confirm: delete ALL entries?"):
+        if st.button("🗑️ Reset Ledger (Clear All)", use_container_width=True):
+            if st.checkbox("⚠️ Confirm delete ALL entries?"):
                 reset_ledger()
-                st.success("Ledger reset! Start adding your own entries.")
+                st.success("Ledger reset!")
                 st.rerun()
-            else:
-                st.warning("Please confirm the deletion.")
-    with col_debug:
-        if st.button("🔧 Hard Reset (Drop & Recreate Table)", use_container_width=True):
-            # This forces a complete reset even if the normal delete fails
-            conn = sqlite3.connect("accounting.db")
-            c = conn.cursor()
-            c.execute("DROP TABLE IF EXISTS reconciliation_entries")
-            conn.commit()
-            conn.close()
-            # Recreate the table with correct schema
-            init_db()
-            st.success("Hard reset complete! All entries removed.")
-            st.rerun()
+    with col_hard:
+        if st.button("🔥 Hard Reset (Drop & Recreate Table)", use_container_width=True):
+            if st.checkbox("⚠️ Confirm HARD RESET? (ALL data lost)"):
+                hard_reset_ledger()
+                st.success("Hard reset complete! Table recreated.")
+                st.rerun()
 
     df_rec = get_reconciliation_entries()
 
@@ -706,8 +764,8 @@ with tab5:
         col_headers = {
             'id': 'ID',
             'date': 'Date',
-            'credit': 'Credit (Cash In HTG)',
-            'description': 'Description / Item Details',
+            'credit': 'Cash In (HTG)',
+            'description': 'Description',
             'qty': 'Qty',
             'unit_htg': 'Unit Price (HTG)',
             'unit_usd': 'Unit Price (USD)',
@@ -717,75 +775,76 @@ with tab5:
             'net_usd': 'Net Balance (USD)'
         }
         df_display.rename(columns=col_headers, inplace=True)
-        column_config = {
-            'ID': st.column_config.NumberColumn('ID', format="%d"),
-            'Date': st.column_config.TextColumn('Date'),
-            'Credit (Cash In HTG)': st.column_config.NumberColumn('Credit (Cash In HTG)', format="G %,.2f"),
-            'Description / Item Details': st.column_config.TextColumn('Description / Item Details'),
-            'Qty': st.column_config.NumberColumn('Qty', format="%f"),
-            'Unit Price (HTG)': st.column_config.NumberColumn('Unit Price (HTG)', format="G %,.2f"),
-            'Unit Price (USD)': st.column_config.NumberColumn('Unit Price (USD)', format="$% ,.2f"),
-            'Total (HTG)': st.column_config.NumberColumn('Total (HTG)', format="G %,.2f"),
-            'Total (USD)': st.column_config.NumberColumn('Total (USD)', format="$% ,.2f"),
-            'Net Balance (HTG)': st.column_config.NumberColumn('Net Balance (HTG)', format="G %,.2f"),
-            'Net Balance (USD)': st.column_config.NumberColumn('Net Balance (USD)', format="$% ,.2f")
-        }
-        st.dataframe(df_display, column_config=column_config, use_container_width=True, hide_index=True)
+        st.dataframe(df_display, use_container_width=True, hide_index=True)
     else:
-        st.info("No entries yet. Add one below.")
+        st.info("No entries yet.")
 
-    # ---- Add Entry ----
-    col_title, col_formula = st.columns([1, 2])
-    with col_title:
-        st.subheader("➕ Add Entry")
-    with col_formula:
-        st.markdown(
-            """
-            <div style='text-align: right; margin-top: 15px;'>
-                <span style='background-color: #d9eaf7; padding: 4px 14px; border-radius: 20px; font-weight: 500; color: #003366; border: 1px solid #99ccff; font-size: 14px;'>
-                    📐 (Net Balance = Sum of all Cash In – Sum of all Expenses)
-                </span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    # ---- Separate forms for Cash In and Expense ----
+    st.subheader("➕ Add New Entry")
 
-    with st.form("reconciliation_form"):
+    # Choose what to add
+    entry_type = st.radio("What are you adding?", ["💰 Cash In", "💸 Expense"], horizontal=True)
+
+    with st.form("add_entry_form"):
         c1, c2 = st.columns(2)
         with c1:
             date = st.date_input("Date", value=datetime.date.today())
-            credit_htg = st.number_input("Credit (Cash In HTG)", min_value=0.0, step=0.01, value=0.0)
-            description = st.text_input("Description / Item Details")
+            description = st.text_input("Description")
+            if entry_type == "💰 Cash In":
+                credit_htg = st.number_input("Cash In Amount (HTG)", min_value=0.0, step=100.0, value=500.0)
+            else:
+                st.info("Credit (Cash In) will be set to 0 automatically")
+                credit_htg = 0.0
+                qty = st.number_input("Quantity", min_value=0.0, step=1.0, value=0.0)
+                unit_htg = st.number_input("Unit Price (HTG)", min_value=0.0, step=0.01, value=0.0)
         with c2:
-            qty = st.number_input("Qty", min_value=0.0, step=0.01, value=0.0, key="qty_input")
-            unit_htg = st.number_input("Unit Price (HTG)", min_value=0.0, step=0.01, value=0.0, key="unit_htg_input")
+            if entry_type == "💸 Expense":
+                st.markdown("### 💸 Expense Details")
+                qty = st.number_input("Quantity", min_value=0.0, step=1.0, value=0.0, key="qty_exp")
+                unit_htg = st.number_input("Unit Price (HTG)", min_value=0.0, step=0.01, value=0.0, key="unit_exp")
+            else:
+                qty = 0.0
+                unit_htg = 0.0
+                st.markdown("### 💰 Cash In Details")
+                st.caption("Cash In amount is set above.")
 
-        qty_val = st.session_state.get("qty_input", 0.0)
-        unit_htg_val = st.session_state.get("unit_htg_input", 0.0)
-        credit_usd = credit_htg / EXCHANGE_RATE
-        unit_usd_preview = unit_htg_val / EXCHANGE_RATE
-        total_htg_preview = qty_val * unit_htg_val
-        total_usd_preview = qty_val * unit_usd_preview
+        # Calculate preview
+        if entry_type == "💸 Expense":
+            total_htg_preview = qty * unit_htg
+            total_usd_preview = total_htg_preview / EXCHANGE_RATE
+        else:
+            total_htg_preview = 0.0
+            total_usd_preview = 0.0
 
         st.markdown("---")
-        st.markdown("**📊 Preview**")
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Credit (USD)", f"${credit_usd:.2f}")
-        c2.metric("Unit Price (USD)", f"{unit_usd_preview:.2f}")
-        c3.metric("Total (HTG)", f"{total_htg_preview:.2f}")
-        c4.metric("Total (USD)", f"{total_usd_preview:.2f}")
+        if entry_type == "💸 Expense":
+            st.metric("💸 Total Expense (HTG)", f"G {total_htg_preview:,.2f}")
+            st.metric("💸 Total Expense (USD)", f"${total_usd_preview:,.2f}")
 
         submitted = st.form_submit_button("Add Entry")
         if submitted:
             if description.strip() == "":
                 st.error("Description is required.")
             else:
-                add_reconciliation_entry(str(date), credit_htg, description, qty_val, unit_htg_val,
-                                         unit_usd_preview, total_htg_preview, total_usd_preview)
-                st.success("Entry added!")
-                if st.session_state.get("auto_speak", False):
-                    play_voice_explanation()
-                st.rerun()
+                if entry_type == "💸 Expense":
+                    if qty <= 0 or unit_htg <= 0:
+                        st.error("For expenses, Qty and Unit Price must be greater than 0.")
+                    else:
+                        add_reconciliation_entry(str(date), 0.0, description, qty, unit_htg, unit_htg/EXCHANGE_RATE,
+                                                total_htg_preview, total_usd_preview)
+                        st.success("Expense added!")
+                        if st.session_state.get("auto_speak", False):
+                            play_voice_explanation()
+                        st.rerun()
+                else:  # Cash In
+                    if credit_htg <= 0:
+                        st.error("Cash In amount must be greater than 0.")
+                    else:
+                        add_reconciliation_entry(str(date), credit_htg, description, 0.0, 0.0, 0.0, 0.0, 0.0)
+                        st.success("Cash In added!")
+                        if st.session_state.get("auto_speak", False):
+                            play_voice_explanation()
+                        st.rerun()
 
     # ---- Delete Entry ----
     if not df_rec.empty:
@@ -793,14 +852,11 @@ with tab5:
         delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(),
                                  format_func=lambda x: f"ID {x} - {df_rec[df_rec['id']==x]['description'].iloc[0]}")
         if st.button("Delete selected entry", use_container_width=True):
-            if delete_id == 1:
-                st.error("Cannot delete the initial balance row.")
-            else:
-                delete_reconciliation_entry(delete_id)
-                st.success("Entry deleted.")
-                if st.session_state.get("auto_speak", False):
-                    play_voice_explanation()
-                st.rerun()
+            delete_reconciliation_entry(delete_id)
+            st.success("Entry deleted.")
+            if st.session_state.get("auto_speak", False):
+                play_voice_explanation()
+            st.rerun()
 
     # ---- Download Excel ----
     if not df_rec.empty:
