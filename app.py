@@ -253,15 +253,15 @@ translations = {
         # Renamed for clarity
         "net_balance_htg": "Net Balance (HTG)",
         "net_balance_usd": "Net Balance (USD)",
-        # Voice explanation texts (full sentences in target language)
+        # Voice explanation texts (enhanced)
         "voice_welcome": "Welcome to Excel Advanced Accounting.",
-        "voice_ledger": "This is the Reconciliation Ledger for July 2026.",
+        "voice_ledger": "Here is your Reconciliation Ledger summary.",
         "voice_entries": "Currently, you have {count} entries.",
-        "voice_credit": "The total credit received in Haitian Gourdes is {credit_htg:,.2f} HTG, which is equivalent to {credit_usd:,.2f} USD.",
-        "voice_expenses": "The total expenses in HTG are {expense_htg:,.2f}, and the total expenses in USD are {expense_usd:,.2f}.",
-        "voice_balance": "Your current balance is {balance_usd:,.2f} USD and {balance_htg:,.2f} HTG.",
-        "voice_how_it_works": "Remember: every cash-in increases your balance, and every purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD equals 100 HTG. You can download a professionally formatted Excel report with just one click.",
-        "voice_closing": "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. Phone: (509)-47385663. Email: deslandes78@gmail.com. This application is now open for public use! To access the full version of Excel Advanced Accounting and other tools from GlobalInternet.py, sign up today at: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Use the password: 20082010 to unlock the application. Thank you for using Excel Advanced Accounting – your professional accounting solution, built in Haiti, for the world."
+        "voice_credit": "Total cash in is {credit_htg:,.2f} HTG, which is {credit_usd:,.2f} USD.",
+        "voice_expenses": "Total expenses are {expense_htg:,.2f} HTG and {expense_usd:,.2f} USD.",
+        "voice_balance": "Your current net balance is {balance_htg:,.2f} HTG and {balance_usd:,.2f} USD. This is calculated as total cash in minus total expenses.",
+        "voice_how_it_works": "Remember: each cash‑in increases your net balance, and each purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD = 100 HTG.",
+        "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py."
     },
     "fr": {
         # UI labels (French)
@@ -368,13 +368,13 @@ translations = {
         "net_balance_usd": "Solde Net (USD)",
         # Voice explanation (French)
         "voice_welcome": "Bienvenue dans Excel Advanced Accounting.",
-        "voice_ledger": "Ceci est le Grand Livre de Réconciliation pour Juillet 2026.",
+        "voice_ledger": "Voici le résumé de votre grand livre de réconciliation.",
         "voice_entries": "Actuellement, vous avez {count} entrées.",
-        "voice_credit": "Le crédit total reçu en Gourdes Haïtiennes est de {credit_htg:,.2f} HTG, ce qui équivaut à {credit_usd:,.2f} USD.",
-        "voice_expenses": "Les dépenses totales en HTG sont de {expense_htg:,.2f}, et les dépenses totales en USD sont de {expense_usd:,.2f}.",
-        "voice_balance": "Votre solde actuel est de {balance_usd:,.2f} USD et {balance_htg:,.2f} HTG.",
-        "voice_how_it_works": "Rappelez-vous : chaque entrée de fonds augmente votre solde, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD en utilisant le taux de change de 1 USD pour 100 HTG. Vous pouvez télécharger un rapport Excel formaté professionnellement en un seul clic.",
-        "voice_closing": "Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py. Téléphone : (509)-47385663. Email : deslandes78@gmail.com. Cette application est désormais ouverte au public ! Pour accéder à la version complète d'Excel Advanced Accounting et à d'autres outils de GlobalInternet.py, inscrivez-vous dès aujourd'hui sur : https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Utilisez le mot de passe : 20082010 pour déverrouiller l'application. Merci d'utiliser Excel Advanced Accounting – votre solution comptable professionnelle, construite en Haïti, pour le monde."
+        "voice_credit": "Les entrées totales sont de {credit_htg:,.2f} HTG, soit {credit_usd:,.2f} USD.",
+        "voice_expenses": "Les dépenses totales sont de {expense_htg:,.2f} HTG et {expense_usd:,.2f} USD.",
+        "voice_balance": "Votre solde net actuel est de {balance_htg:,.2f} HTG et {balance_usd:,.2f} USD. Ceci est calculé comme le total des entrées moins le total des dépenses.",
+        "voice_how_it_works": "Rappelez-vous : chaque entrée augmente votre solde net, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG.",
+        "voice_closing": "Vous pouvez télécharger un rapport Excel formaté professionnellement en un clic. Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py."
     },
     "es": {
         # UI labels (Spanish)
@@ -481,13 +481,13 @@ translations = {
         "net_balance_usd": "Saldo Neto (USD)",
         # Voice explanation (Spanish)
         "voice_welcome": "Bienvenido a Excel Advanced Accounting.",
-        "voice_ledger": "Este es el Libro Mayor de Conciliación para Julio de 2026.",
+        "voice_ledger": "Este es el resumen de su libro mayor de conciliación.",
         "voice_entries": "Actualmente, tiene {count} entradas.",
-        "voice_credit": "El crédito total recibido en Gourdes haitianas es de {credit_htg:,.2f} HTG, que equivale a {credit_usd:,.2f} USD.",
-        "voice_expenses": "Los gastos totales en HTG son {expense_htg:,.2f}, y los gastos totales en USD son {expense_usd:,.2f}.",
-        "voice_balance": "Su saldo actual es de {balance_usd:,.2f} USD y {balance_htg:,.2f} HTG.",
-        "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo, y cada compra lo disminuye. El sistema convierte automáticamente HTG a USD utilizando el tipo de cambio de 1 USD por 100 HTG. Puede descargar un informe de Excel con formato profesional con un solo clic.",
-        "voice_closing": "Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py. Teléfono: (509)-47385663. Correo: deslandes78@gmail.com. ¡Esta aplicación ya está abierta al público! Para acceder a la versión completa de Excel Advanced Accounting y otras herramientas de GlobalInternet.py, regístrese hoy en: https://globalinternetpy-taujseazzkchucspobvsn6.streamlit.app/ Use la contraseña: 20082010 para desbloquear la aplicación. Gracias por usar Excel Advanced Accounting – su solución contable profesional, construida en Haití, para el mundo."
+        "voice_credit": "Las entradas totales son {credit_htg:,.2f} HTG, que son {credit_usd:,.2f} USD.",
+        "voice_expenses": "Los gastos totales son {expense_htg:,.2f} HTG y {expense_usd:,.2f} USD.",
+        "voice_balance": "Su saldo neto actual es {balance_htg:,.2f} HTG y {balance_usd:,.2f} USD. Esto se calcula como ingresos totales menos gastos totales.",
+        "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo neto, y cada compra lo disminuye. El sistema convierte HTG a USD usando la tasa de 1 USD = 100 HTG.",
+        "voice_closing": "Puede descargar un informe de Excel con formato profesional con un solo clic. Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py."
     }
 }
 
@@ -697,18 +697,14 @@ def get_reconciliation_entries():
         df['balance_usd'] = balance_usd
         df['balance_htg'] = balance_htg
         
-        # NEW: Calculate "Net Balance" (runs forward, starting from cash-in)
+        # Calculate net balance (same as running, but we'll keep both)
         net_htg = []
         net_usd = []
         running_net_htg = 0
         running_net_usd = 0
         for idx, row in df.iterrows():
-            # Add Cash In (credit) to net balance
-            running_net_htg += row['credit']
-            running_net_usd += row['credit'] / 100
-            # Subtract Expenses from net balance
-            running_net_htg -= row['total_htg']
-            running_net_usd -= row['total_usd']
+            running_net_htg += row['credit'] - row['total_htg']
+            running_net_usd += (row['credit'] / 100) - row['total_usd']
             net_htg.append(running_net_htg)
             net_usd.append(running_net_usd)
         df['net_htg'] = net_htg
@@ -767,7 +763,7 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ----------------------------------------------------------------------
-# AI Voice Functions – FULL LOCALISATION
+# AI Voice Functions – with enhanced explanation
 # ----------------------------------------------------------------------
 def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     """
@@ -789,7 +785,7 @@ def generate_voice_explanation(entries, balance_usd, balance_htg, lang='en'):
     parts.append(_("voice_entries").format(count=len(entries)))
     parts.append(_("voice_credit").format(credit_htg=total_credit_htg, credit_usd=total_credit_usd))
     parts.append(_("voice_expenses").format(expense_htg=total_expense_htg, expense_usd=total_expense_usd))
-    parts.append(_("voice_balance").format(balance_usd=balance_usd, balance_htg=balance_htg))
+    parts.append(_("voice_balance").format(balance_htg=balance_htg, balance_usd=balance_usd))
     parts.append(_("voice_how_it_works"))
     parts.append(_("voice_closing"))
     
@@ -899,6 +895,25 @@ def export_styled_excel(df, title):
     output.seek(0)
     return output
 
+# ====== Voice playback helper ======
+def play_voice_explanation():
+    df_rec = get_reconciliation_entries()
+    if not df_rec.empty:
+        last_row = df_rec.iloc[-1]
+        balance_usd = last_row['balance_usd']
+        balance_htg = last_row['balance_htg']
+    else:
+        balance_usd = 0
+        balance_htg = 0
+    explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg, selected_lang)
+    try:
+        audio_bytes = text_to_speech(explanation, lang=selected_lang)
+        if audio_bytes:
+            st.audio(audio_bytes, format='audio/mp3')
+            st.success("Voice explanation played with native voice!")
+    except Exception as e:
+        st.error(f"Voice generation failed: {e}")
+
 # ----------------------------------------------------------------------
 # Main UI
 # ----------------------------------------------------------------------
@@ -931,29 +946,15 @@ with st.sidebar:
     # ---- AI Voice Button with status ----
     if EDGE_TTS_AVAILABLE:
         st.success("✅ Native voice engine (edge-tts) is active")
-        voice_button = st.button("🎙️ " + _("Explain Ledger (AI Voice)"))
+        # Auto-speak toggle
+        auto_speak = st.checkbox("🔊 Auto-speak after update", value=st.session_state.get("auto_speak", False))
+        st.session_state.auto_speak = auto_speak
+        
+        if st.button("🎙️ " + _("Explain Ledger (AI Voice)")):
+            play_voice_explanation()
     else:
         st.error("❌ Native voice engine (edge-tts) is NOT installed. Please add 'edge-tts>=6.1.9' to your requirements.txt and redeploy.")
-        voice_button = st.button("🎙️ " + _("Explain Ledger (AI Voice)"), disabled=True)
-    
-    if voice_button and EDGE_TTS_AVAILABLE:
-        with st.spinner("Generating voice explanation with native voices..."):
-            df_rec = get_reconciliation_entries()
-            if not df_rec.empty:
-                last_row = df_rec.iloc[-1]
-                balance_usd = last_row['balance_usd']
-                balance_htg = last_row['balance_htg']
-            else:
-                balance_usd = 0
-                balance_htg = 0
-            explanation = generate_voice_explanation(df_rec, balance_usd, balance_htg, selected_lang)
-            try:
-                audio_bytes = text_to_speech(explanation, lang=selected_lang)
-                if audio_bytes:
-                    st.audio(audio_bytes, format='audio/mp3')
-                    st.success("Voice explanation played with native voice!")
-            except Exception as e:
-                st.error(f"Voice generation failed: {e}")
+        st.button("🎙️ " + _("Explain Ledger (AI Voice)"), disabled=True)
     
     st.markdown("---")
     if st.button(_("logout")):
@@ -1343,6 +1344,9 @@ with tab5:
             else:
                 add_reconciliation_entry(str(date), credit_htg, description, qty_val, unit_htg_val, unit_usd_preview, total_htg_preview, total_usd_preview)
                 st.success(_("entry_added"))
+                # Auto-speak if enabled
+                if st.session_state.get("auto_speak", False):
+                    play_voice_explanation()
                 st.rerun()
     
     if not df_rec.empty:
@@ -1355,6 +1359,9 @@ with tab5:
             else:
                 delete_reconciliation_entry(delete_id)
                 st.success("Entry deleted.")
+                # Auto-speak if enabled
+                if st.session_state.get("auto_speak", False):
+                    play_voice_explanation()
                 st.rerun()
     
     if not df_rec.empty:
