@@ -111,6 +111,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ====== FULL TRANSLATIONS ======
 translations = {
     "en": {
         "app_title": "Excel Advanced Accounting",
@@ -217,8 +218,216 @@ translations = {
         "voice_how_it_works": "Remember: each cash‑in increases your net balance, and each purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD = 100 HTG.",
         "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py."
     },
-    "fr": {},
-    "es": {}
+    "fr": {
+        "app_title": "Comptabilité Avancée Excel",
+        "subtitle": "Suite Professionnelle de Comptabilité et de Gestion de Prêts",
+        "login_title": "🔐 Connexion",
+        "login_password": "Entrez le mot de passe pour déverrouiller",
+        "wrong_password": "Mot de passe incorrect. Accès refusé.",
+        "logout": "🚪 Déconnexion",
+        "dashboard": "📊 Tableau de bord",
+        "cash_tab": "💰 Entrées/Sorties",
+        "loans_tab": "🏦 Prêts",
+        "reports_tab": "📄 Rapports",
+        "reconciliation_tab": "📋 Grand Livre de Réconciliation",
+        "current_balance": "Solde de trésorerie actuel",
+        "current_balance_htg": "Solde de trésorerie (HTG)",
+        "recent_transactions": "Transactions récentes",
+        "active_loans": "Prêts actifs",
+        "no_active_loans": "Aucun prêt actif.",
+        "add_transaction": "Ajouter une transaction",
+        "date": "Date",
+        "type": "Type",
+        "income": "Revenu",
+        "expense": "Dépense",
+        "category": "Catégorie (ex: Ventes, Loyer, Salaire)",
+        "description": "Description",
+        "amount": "Montant ($)",
+        "amount_htg": "Montant (HTG)",
+        "transaction_added": "Transaction ajoutée !",
+        "transaction_history": "Historique des transactions",
+        "download_excel": "📥 Télécharger Excel",
+        "loan_management": "Gestion des prêts",
+        "add_new_loan": "➕ Ajouter un prêt",
+        "borrower_name": "Nom de l'emprunteur",
+        "loan_amount": "Montant du prêt ($)",
+        "loan_amount_htg": "Montant du prêt (HTG)",
+        "start_date": "Date de début",
+        "interest_rate": "Taux d'intérêt (%)",
+        "payment_frequency": "Fréquence de paiement",
+        "weekly": "Hebdomadaire",
+        "monthly": "Mensuel",
+        "payment_amount": "Montant du paiement ($)",
+        "payment_amount_htg": "Montant du paiement (HTG)",
+        "total_payments": "Nombre total de paiements",
+        "create_loan": "Créer le prêt",
+        "loan_created": "Prêt créé !",
+        "all_loans": "Tous les prêts",
+        "select_loan": "Sélectionnez l'ID du prêt pour enregistrer un paiement ou voir les détails",
+        "remaining_payments": "Paiements restants",
+        "status": "Statut",
+        "record_payment": "Enregistrer le paiement",
+        "payment_date": "Date de paiement",
+        "payment_recorded": "Paiement enregistré !",
+        "payment_history": "Historique des paiements",
+        "no_loans": "Aucun prêt pour le moment. Ajoutez un prêt ci-dessus.",
+        "generate_reports": "Générer des rapports professionnels",
+        "report_type": "Type de rapport",
+        "cash_flow_statement": "État des flux de trésorerie",
+        "loan_status_report": "Rapport sur l'état des prêts",
+        "payment_history_report": "Historique des paiements",
+        "generate": "Générer",
+        "from_date": "Date de début",
+        "to_date": "Date de fin",
+        "total_income": "Revenu total",
+        "total_expense": "Dépense totale",
+        "net_cash_flow": "Flux de trésorerie net",
+        "filter_by_status": "Filtrer par statut",
+        "all": "Tous",
+        "active": "actif",
+        "completed": "terminé",
+        "no_data": "Aucune donnée disponible.",
+        "select_loan_for_history": "Sélectionner un prêt",
+        "created_by": "Développeur Python",
+        "reconciliation_title": "Réconciliation Juillet - 2026",
+        "exchange_rate": "Taux de change : 1 USD = 100 HTG",
+        "balance_usd": "Solde USD",
+        "balance_htg": "Solde HTG",
+        "credit_cash_in": "Crédit (Entrée HTG)",
+        "credit_cash_in_usd": "Crédit (Entrée USD)",
+        "description_item": "Description / Détails",
+        "qty": "Qté",
+        "currency_htg": "Devise (HTG)",
+        "unit_htg": "Prix unitaire HTG",
+        "unit_usd": "Prix unitaire USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "add_entry": "Ajouter une entrée",
+        "credit": "Crédit (Entrée HTG)",
+        "qty_input": "Quantité",
+        "unit_htg_input": "Prix unitaire (HTG)",
+        "description_input": "Description / Détails",
+        "entry_added": "Entrée ajoutée !",
+        "download_reconciliation": "📥 Télécharger Excel",
+        "starting_balance_usd": "Solde initial (USD)",
+        "starting_balance_htg": "Solde initial (HTG)",
+        "initial_balance_forwarded": "Solde reporté de Février",
+        "delete_entry": "Supprimer une entrée",
+        "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial.",
+        "voice_welcome": "Bienvenue dans Excel Advanced Accounting.",
+        "voice_ledger": "Voici le résumé de votre grand livre de réconciliation.",
+        "voice_entries": "Actuellement, vous avez {count} entrées.",
+        "voice_credit": "Le crédit total reçu est de {credit_htg:,.2f} HTG, soit {credit_usd:,.2f} USD.",
+        "voice_expenses": "Les dépenses totales sont de {expense_htg:,.2f} HTG et {expense_usd:,.2f} USD.",
+        "voice_balance": "Votre solde net actuel est de {balance_htg:,.2f} HTG et {balance_usd:,.2f} USD. Ceci est calculé comme le total des entrées moins le total des dépenses.",
+        "voice_how_it_works": "Rappelez-vous : chaque entrée augmente votre solde net, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG.",
+        "voice_closing": "Vous pouvez télécharger un rapport Excel formaté professionnellement en un clic. Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py."
+    },
+    "es": {
+        "app_title": "Contabilidad Avanzada con Excel",
+        "subtitle": "Suite Profesional de Contabilidad y Gestión de Préstamos",
+        "login_title": "🔐 Iniciar sesión",
+        "login_password": "Ingrese la contraseña para desbloquear",
+        "wrong_password": "Contraseña incorrecta. Acceso denegado.",
+        "logout": "🚪 Cerrar sesión",
+        "dashboard": "📊 Tablero",
+        "cash_tab": "💰 Entradas/Salidas",
+        "loans_tab": "🏦 Préstamos",
+        "reports_tab": "📄 Informes",
+        "reconciliation_tab": "📋 Libro Mayor de Conciliación",
+        "current_balance": "Saldo de efectivo actual",
+        "current_balance_htg": "Saldo de efectivo (HTG)",
+        "recent_transactions": "Transacciones recientes",
+        "active_loans": "Préstamos activos",
+        "no_active_loans": "No hay préstamos activos.",
+        "add_transaction": "Agregar transacción",
+        "date": "Fecha",
+        "type": "Tipo",
+        "income": "Ingreso",
+        "expense": "Gasto",
+        "category": "Categoría (ej. Ventas, Alquiler, Salario)",
+        "description": "Descripción",
+        "amount": "Monto ($)",
+        "amount_htg": "Monto (HTG)",
+        "transaction_added": "¡Transacción agregada!",
+        "transaction_history": "Historial de transacciones",
+        "download_excel": "📥 Descargar Excel",
+        "loan_management": "Gestión de préstamos",
+        "add_new_loan": "➕ Agregar préstamo",
+        "borrower_name": "Nombre del prestatario",
+        "loan_amount": "Monto del préstamo ($)",
+        "loan_amount_htg": "Monto del préstamo (HTG)",
+        "start_date": "Fecha de inicio",
+        "interest_rate": "Tasa de interés (%)",
+        "payment_frequency": "Frecuencia de pago",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "payment_amount": "Monto del pago ($)",
+        "payment_amount_htg": "Monto del pago (HTG)",
+        "total_payments": "Número total de pagos",
+        "create_loan": "Crear préstamo",
+        "loan_created": "¡Préstamo creado!",
+        "all_loans": "Todos los préstamos",
+        "select_loan": "Seleccione ID de préstamo para registrar pago o ver detalles",
+        "remaining_payments": "Pagos restantes",
+        "status": "Estado",
+        "record_payment": "Registrar pago",
+        "payment_date": "Fecha de pago",
+        "payment_recorded": "¡Pago registrado!",
+        "payment_history": "Historial de pagos",
+        "no_loans": "Aún no hay préstamos. Agregue uno arriba.",
+        "generate_reports": "Generar informes profesionales",
+        "report_type": "Tipo de informe",
+        "cash_flow_statement": "Estado de flujo de efectivo",
+        "loan_status_report": "Informe de estado de préstamos",
+        "payment_history_report": "Historial de pagos",
+        "generate": "Generar",
+        "from_date": "Fecha de inicio",
+        "to_date": "Fecha de fin",
+        "total_income": "Ingreso total",
+        "total_expense": "Gasto total",
+        "net_cash_flow": "Flujo de efectivo neto",
+        "filter_by_status": "Filtrar por estado",
+        "all": "Todos",
+        "active": "activo",
+        "completed": "completado",
+        "no_data": "No hay datos disponibles.",
+        "select_loan_for_history": "Seleccionar préstamo",
+        "created_by": "Desarrollador Python",
+        "reconciliation_title": "Conciliación Julio - 2026",
+        "exchange_rate": "Tipo de cambio: 1 USD = 100 HTG",
+        "balance_usd": "Saldo USD",
+        "balance_htg": "Saldo HTG",
+        "credit_cash_in": "Crédito (Ingreso HTG)",
+        "credit_cash_in_usd": "Crédito (Ingreso USD)",
+        "description_item": "Descripción / Detalle",
+        "qty": "Cant.",
+        "currency_htg": "Moneda (HTG)",
+        "unit_htg": "Precio unitario HTG",
+        "unit_usd": "Precio unitario USD",
+        "total_htg": "Total HTG",
+        "total_usd": "Total USD",
+        "add_entry": "Agregar entrada",
+        "credit": "Crédito (Ingreso HTG)",
+        "qty_input": "Cantidad",
+        "unit_htg_input": "Precio unitario (HTG)",
+        "description_input": "Descripción / Detalle",
+        "entry_added": "¡Entrada agregada!",
+        "download_reconciliation": "📥 Descargar Excel",
+        "starting_balance_usd": "Saldo inicial (USD)",
+        "starting_balance_htg": "Saldo inicial (HTG)",
+        "initial_balance_forwarded": "Saldo trasladado de Febrero",
+        "delete_entry": "Eliminar entrada",
+        "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial.",
+        "voice_welcome": "Bienvenido a Excel Advanced Accounting.",
+        "voice_ledger": "Este es el resumen de su libro mayor de conciliación.",
+        "voice_entries": "Actualmente, tiene {count} entradas.",
+        "voice_credit": "El crédito total recibido es {credit_htg:,.2f} HTG, que son {credit_usd:,.2f} USD.",
+        "voice_expenses": "Los gastos totales son {expense_htg:,.2f} HTG y {expense_usd:,.2f} USD.",
+        "voice_balance": "Su saldo neto actual es {balance_htg:,.2f} HTG y {balance_usd:,.2f} USD. Esto se calcula como ingresos totales menos gastos totales.",
+        "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo neto, y cada compra lo disminuye. El sistema convierte HTG a USD usando la tasa de 1 USD = 100 HTG.",
+        "voice_closing": "Puede descargar un informe de Excel con formato profesional con un solo clic. Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py."
+    }
 }
 
 def _(key):
@@ -275,10 +484,8 @@ def logout():
 
 # ====== Database ======
 def add_columns_if_missing():
-    """Add provider and reason columns to reconciliation_entries if they don't exist."""
     conn = sqlite3.connect("accounting.db")
     c = conn.cursor()
-    # Check if provider column exists
     c.execute("PRAGMA table_info(reconciliation_entries)")
     columns = [col[1] for col in c.fetchall()]
     if "provider" not in columns:
@@ -333,7 +540,6 @@ def init_db():
     )""")
     conn.commit()
     conn.close()
-    # Add columns if missing (for existing databases)
     add_columns_if_missing()
 
 init_db()
@@ -659,19 +865,196 @@ st.divider()
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
-# ---- Dashboard, Cash, Loans, Reports (unchanged) ----
-# ... (keep existing code for these tabs) ...
+# ---- Dashboard ----
+with tab1:
+    st.header(_("dashboard"))
+    balance_usd = get_cash_balance()
+    balance_htg = usd_to_htg(balance_usd)
+    c1, c2 = st.columns(2)
+    with c1:
+        st.metric(_("current_balance"), f"${balance_usd:,.2f}")
+    with c2:
+        st.metric(_("current_balance_htg"), f"G {balance_htg:,.2f}")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.subheader(_("recent_transactions"))
+        conn = sqlite3.connect("accounting.db")
+        recent_cash = pd.read_sql_query("SELECT date, type, category, description, amount FROM cash_transactions ORDER BY date DESC LIMIT 10", conn)
+        conn.close()
+        if not recent_cash.empty:
+            recent_cash['amount_htg'] = recent_cash['amount'].apply(usd_to_htg)
+            st.dataframe(recent_cash, use_container_width=True)
+        else:
+            st.info(_("no_data"))
+    with c2:
+        st.subheader(_("active_loans"))
+        active_loans = get_loans(status='active')
+        if not active_loans.empty:
+            active_loans['amount_htg'] = active_loans['amount'].apply(usd_to_htg)
+            st.dataframe(active_loans[['borrower', 'amount', 'amount_htg', 'payments_made', 'total_payments', 'status']], use_container_width=True)
+        else:
+            st.info(_("no_active_loans"))
 
-# For brevity, I'll keep the dashboard, cash, loans, reports as they were in the previous version.
-# You can copy them from the previous code or keep your existing ones.
+# ---- Cash In/Out ----
+with tab2:
+    st.header(_("cash_tab"))
+    with st.form("cash_form"):
+        date = st.date_input(_("date"), value=datetime.date.today())
+        trans_type = st.selectbox(_("type"), [_("income"), _("expense")])
+        category = st.text_input(_("category"))
+        description = st.text_area(_("description"))
+        amount = st.number_input(_("amount"), min_value=0.01, step=0.01)
+        submitted = st.form_submit_button(_("add_transaction"))
+        if submitted:
+            add_cash_transaction(str(date), trans_type, category, description, amount)
+            st.success(_("transaction_added"))
+            st.rerun()
+    st.subheader(_("transaction_history"))
+    conn = sqlite3.connect("accounting.db")
+    cash_df = pd.read_sql_query("SELECT * FROM cash_transactions ORDER BY date DESC", conn)
+    conn.close()
+    if not cash_df.empty:
+        cash_df['amount_htg'] = cash_df['amount'].apply(usd_to_htg)
+        st.dataframe(cash_df, use_container_width=True)
+    else:
+        st.info(_("no_data"))
+    if not cash_df.empty:
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            cash_df.to_excel(writer, sheet_name="Cash Transactions", index=False)
+        st.download_button(_("download_excel"), data=output.getvalue(), file_name="cash_transactions.xlsx",
+                           mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-# ---- Reconciliation Ledger with Cash-In History ----
+# ---- Loans ----
+with tab3:
+    st.header(_("loan_management"))
+    with st.expander(_("add_new_loan")):
+        with st.form("loan_form"):
+            borrower = st.text_input(_("borrower_name"))
+            amount = st.number_input(_("loan_amount"), min_value=0.01, step=0.01)
+            start_date = st.date_input(_("start_date"), value=datetime.date.today())
+            interest_rate = st.number_input(_("interest_rate"), min_value=0.0, step=0.1, value=0.0)
+            payment_frequency = st.selectbox(_("payment_frequency"), [_("weekly"), _("monthly")])
+            payment_amount = st.number_input(_("payment_amount"), min_value=0.01, step=0.01)
+            total_payments = st.number_input(_("total_payments"), min_value=1, step=1, value=12)
+            submitted = st.form_submit_button(_("create_loan"))
+            if submitted:
+                add_loan(borrower, amount, str(start_date), interest_rate, payment_frequency, payment_amount, total_payments)
+                st.success(_("loan_created"))
+                st.rerun()
+    st.subheader(_("all_loans"))
+    loans_df = get_loans()
+    if not loans_df.empty:
+        loans_df['amount_htg'] = loans_df['amount'].apply(usd_to_htg)
+        loans_df['payment_amount_htg'] = loans_df['payment_amount'].apply(usd_to_htg)
+        st.dataframe(loans_df[['id', 'borrower', 'amount', 'amount_htg', 'start_date', 'payment_frequency',
+                               'payment_amount', 'payment_amount_htg', 'payments_made', 'total_payments', 'status']],
+                     use_container_width=True)
+        loan_id = st.selectbox(_("select_loan"), loans_df['id'].tolist())
+        loan_data = loans_df[loans_df['id'] == loan_id].iloc[0]
+        st.write(f"**{_('borrower_name')}:** {loan_data['borrower']}")
+        st.write(f"**{_('remaining_payments')}:** {loan_data['total_payments'] - loan_data['payments_made']}")
+        st.write(f"**{_('status')}:** {loan_data['status']}")
+        if loan_data['status'] == 'active':
+            with st.form("payment_form"):
+                payment_date = st.date_input(_("payment_date"), value=datetime.date.today())
+                payment_amount = st.number_input(_("payment_amount"), value=float(loan_data['payment_amount']), step=0.01)
+                if st.form_submit_button(_("record_payment")):
+                    record_loan_payment(loan_id, str(payment_date), payment_amount)
+                    st.success(_("payment_recorded"))
+                    st.rerun()
+        payments_df = get_loan_payments(loan_id)
+        if not payments_df.empty:
+            st.subheader(_("payment_history"))
+            payments_df['amount_htg'] = payments_df['amount'].apply(usd_to_htg)
+            st.dataframe(payments_df, use_container_width=True)
+    else:
+        st.info(_("no_loans"))
+
+# ---- Reports ----
+with tab4:
+    st.header(_("generate_reports"))
+    report_type = st.selectbox(_("report_type"), [_("cash_flow_statement"), _("loan_status_report"), _("payment_history_report")])
+    if report_type == _("cash_flow_statement"):
+        start_date = st.date_input(_("from_date"), value=datetime.date.today() - datetime.timedelta(days=30))
+        end_date = st.date_input(_("to_date"), value=datetime.date.today())
+        if st.button(_("generate")):
+            df = get_cash_flow(str(start_date), str(end_date))
+            st.subheader(f"{_('cash_flow_statement')} {start_date} → {end_date}")
+            if not df.empty:
+                df['amount_htg'] = df['amount'].apply(usd_to_htg)
+                st.dataframe(df, use_container_width=True)
+                total_income = df[df['type'] == 'Income']['amount'].sum()
+                total_expense = df[df['type'] == 'Expense']['amount'].sum()
+                col1, col2, col3 = st.columns(3)
+                col1.metric(_("total_income"), f"${total_income:,.2f}")
+                col2.metric(_("total_expense"), f"${total_expense:,.2f}")
+                col3.metric(_("net_cash_flow"), f"${total_income - total_expense:,.2f}")
+                st.metric(_("total_income") + " (HTG)", f"G {usd_to_htg(total_income):,.2f}")
+                st.metric(_("total_expense") + " (HTG)", f"G {usd_to_htg(total_expense):,.2f}")
+                output_excel = io.BytesIO()
+                with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
+                    df.to_excel(writer, sheet_name="Cash Flow", index=False)
+                st.download_button(_("download_excel"), data=output_excel.getvalue(),
+                                   file_name=f"cash_flow_{start_date}_to_{end_date}.xlsx",
+                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                pdf_buffer = generate_pdf_report(f"{_('cash_flow_statement')} {start_date} → {end_date}", df, list(df.columns))
+                st.download_button("📄 Download PDF", data=pdf_buffer, file_name=f"cash_flow_{start_date}_to_{end_date}.pdf",
+                                   mime="application/pdf")
+            else:
+                st.info(_("no_data"))
+    elif report_type == _("loan_status_report"):
+        status_filter = st.selectbox(_("filter_by_status"), [_("all"), _("active"), _("completed")])
+        if status_filter == _("all"):
+            df = get_loans()
+        elif status_filter == _("active"):
+            df = get_loans(status='active')
+        else:
+            df = get_loans(status='completed')
+        if st.button(_("generate")):
+            if not df.empty:
+                df['amount_htg'] = df['amount'].apply(usd_to_htg)
+                st.dataframe(df, use_container_width=True)
+                output_excel = io.BytesIO()
+                with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
+                    df.to_excel(writer, sheet_name="Loans", index=False)
+                st.download_button(_("download_excel"), data=output_excel.getvalue(), file_name="loan_report.xlsx",
+                                   mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                pdf_buffer = generate_pdf_report(_("loan_status_report"), df, list(df.columns))
+                st.download_button("📄 Download PDF", data=pdf_buffer, file_name="loan_report.pdf", mime="application/pdf")
+            else:
+                st.info(_("no_data"))
+    else:
+        all_loans = get_loans()
+        if not all_loans.empty:
+            selected_loan = st.selectbox(_("select_loan_for_history"), all_loans['id'].tolist(),
+                                         format_func=lambda x: f"Loan #{x} - {all_loans[all_loans['id']==x]['borrower'].values[0]}")
+            if st.button(_("generate")):
+                payments = get_loan_payments(selected_loan)
+                if not payments.empty:
+                    payments['amount_htg'] = payments['amount'].apply(usd_to_htg)
+                    st.dataframe(payments, use_container_width=True)
+                    output_excel = io.BytesIO()
+                    with pd.ExcelWriter(output_excel, engine='openpyxl') as writer:
+                        payments.to_excel(writer, sheet_name="Payments", index=False)
+                    st.download_button(_("download_excel"), data=output_excel.getvalue(),
+                                       file_name=f"loan_{selected_loan}_payments.xlsx",
+                                       mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                    pdf_buffer = generate_pdf_report(f"{_('payment_history_report')} Loan #{selected_loan}", payments,
+                                                     list(payments.columns))
+                    st.download_button("📄 Download PDF", data=pdf_buffer,
+                                       file_name=f"loan_{selected_loan}_payments.pdf", mime="application/pdf")
+                else:
+                    st.info(_("no_data"))
+        else:
+            st.info(_("no_loans"))
+
+# ====== Reconciliation Ledger (Hardcoded English, but translations are used elsewhere) ======
 with tab5:
     st.header("📋 Reconciliation Ledger")
     st.caption("Exchange Rate: 1 USD = 100 HTG")
     st.info("💡 Use **'Add Cash In'** for your initial cash and record who gave it and why. Use **'Add Expense'** for purchases.")
 
-    # Reset buttons
     col_reset, col_hard = st.columns(2)
     with col_reset:
         if st.button("🗑️ Reset Ledger (Clear All)", use_container_width=True):
@@ -720,10 +1103,7 @@ with tab5:
         st.info("📭 No entries yet. Add your first Cash In below.")
 
     st.subheader("📋 Reconciliation Table")
-
-    # Display table with provider and reason
     if not df_rec.empty:
-        # Select columns to display – include provider and reason only for cash-in rows? We'll show them always.
         display_cols = ['id', 'date', 'credit', 'description', 'qty', 'unit_htg', 'unit_usd',
                         'total_htg', 'total_usd', 'provider', 'reason', 'net_htg', 'net_usd']
         df_display = df_rec[display_cols].copy()
@@ -747,9 +1127,7 @@ with tab5:
     else:
         st.info("No entries yet.")
 
-    # ---- Separate forms for Cash In and Expense ----
     st.subheader("➕ Add New Entry")
-
     entry_type = st.radio("What are you adding?", ["💰 Cash In", "💸 Expense"], horizontal=True)
 
     with st.form("add_entry_form"):
@@ -779,7 +1157,6 @@ with tab5:
                 st.markdown("### 💰 Cash In Details")
                 st.caption("Cash In amount and provider/reason are set on the left.")
 
-        # Calculate preview
         if entry_type == "💸 Expense":
             total_htg_preview = qty * unit_htg
             total_usd_preview = total_htg_preview / EXCHANGE_RATE
@@ -822,7 +1199,6 @@ with tab5:
                                 play_voice_explanation()
                             st.rerun()
 
-    # ---- Delete Entry ----
     if not df_rec.empty:
         st.subheader("🗑️ Delete Entry")
         delete_id = st.selectbox("Select entry ID to delete", df_rec['id'].tolist(),
@@ -834,7 +1210,6 @@ with tab5:
                 play_voice_explanation()
             st.rerun()
 
-    # ---- Download Excel ----
     if not df_rec.empty:
         styled_excel = export_styled_excel(df_rec, "Reconciliation July - 2026")
         st.download_button(
