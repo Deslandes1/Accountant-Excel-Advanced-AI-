@@ -111,7 +111,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ====== Translations (for other tabs) ======
+# ====== Translations ======
 translations = {
     "en": {
         "app_title": "Excel Advanced Accounting",
@@ -635,7 +635,7 @@ st.divider()
 tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
 
 # ---- Dashboard, Cash, Loans, Reports (unchanged) ----
-# (I will keep them minimal for brevity, but they work as before)
+# (I'll keep them short here but they work as before)
 
 # ---- Reconciliation Ledger (HARDCODED) ----
 with tab5:
@@ -643,7 +643,7 @@ with tab5:
     st.caption("Exchange Rate: 1 USD = 100 HTG")
     st.info("💡 How it works: Enter Credit (Cash In) in HTG. The system converts it to USD at 1 USD = 100 HTG. Expenses reduce the net balance.")
 
-    col_reset, _ = st.columns([1, 3])
+    col_reset, col_debug = st.columns([1, 1])
     with col_reset:
         if st.button("🗑️ Reset Ledger (Clear All Entries)", use_container_width=True):
             if st.checkbox("⚠️ Confirm: delete ALL entries?"):
@@ -652,6 +652,18 @@ with tab5:
                 st.rerun()
             else:
                 st.warning("Please confirm the deletion.")
+    with col_debug:
+        if st.button("🔧 Hard Reset (Drop & Recreate Table)", use_container_width=True):
+            # This forces a complete reset even if the normal delete fails
+            conn = sqlite3.connect("accounting.db")
+            c = conn.cursor()
+            c.execute("DROP TABLE IF EXISTS reconciliation_entries")
+            conn.commit()
+            conn.close()
+            # Recreate the table with correct schema
+            init_db()
+            st.success("Hard reset complete! All entries removed.")
+            st.rerun()
 
     df_rec = get_reconciliation_entries()
 
