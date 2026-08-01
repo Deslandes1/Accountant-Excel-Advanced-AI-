@@ -217,7 +217,10 @@ translations = {
         "voice_expenses": "Total expenses are {expense_htg:,.2f} HTG and {expense_usd:,.2f} USD.",
         "voice_balance": "Your current net balance is {balance_htg:,.2f} HTG and {balance_usd:,.2f} USD. This is calculated as total cash in minus total expenses.",
         "voice_how_it_works": "Remember: each cash‑in increases your net balance, and each purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD = 100 HTG.",
-        "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
+        "voice_salary_intro": "Now, let's look at your salary investment plan.",
+        "voice_salary_currency": "Your monthly salary is {salary:,.2f} {currency}.",
+        "voice_salary_investment": "With this salary, you can generate {invest_200:,.2f} {currency} to start a business, or {invest_10:,.2f} {currency} for a smaller investment. Your emergency fund should be {emergency:,.2f} {currency}, which is 4 times your salary. You should spend no more than {living:,.2f} {currency} per month on living expenses, which is 55 percent of your salary.",
+        "voice_closing": "This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py. Contact us at (509) 4738-5663 or deslandes78@gmail.com. Thank you for using Excel Advanced Accounting – your professional accounting solution, built in Haiti, for the world.",
         # Salary Investment translations
         "salary_title": "💼 Salary Investment Planner",
         "salary_enter": "Enter Your Monthly Salary",
@@ -331,14 +334,17 @@ translations = {
         "initial_balance_forwarded": "Solde reporté de Février",
         "delete_entry": "Supprimer une entrée",
         "cannot_delete_balance": "Impossible de supprimer la ligne de solde initial.",
-        "voice_welcome": "Bienvenue dans Excel Advanced Accounting.",
+        "voice_welcome": "Bienvenue dans Comptabilité Avancée Excel.",
         "voice_ledger": "Voici le résumé de votre grand livre de réconciliation.",
         "voice_entries": "Actuellement, vous avez {count} entrées.",
         "voice_credit": "Le crédit total reçu est de {credit_htg:,.2f} HTG, soit {credit_usd:,.2f} USD.",
         "voice_expenses": "Les dépenses totales sont de {expense_htg:,.2f} HTG et {expense_usd:,.2f} USD.",
         "voice_balance": "Votre solde net actuel est de {balance_htg:,.2f} HTG et {balance_usd:,.2f} USD. Ceci est calculé comme le total des entrées moins le total des dépenses.",
         "voice_how_it_works": "Rappelez-vous : chaque entrée augmente votre solde net, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG.",
-        "voice_closing": "Vous pouvez télécharger un rapport Excel formaté professionnellement en un clic. Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py.",
+        "voice_salary_intro": "Examinons maintenant votre plan d'investissement salarial.",
+        "voice_salary_currency": "Votre salaire mensuel est de {salary:,.2f} {currency}.",
+        "voice_salary_investment": "Avec ce salaire, vous pouvez générer {invest_200:,.2f} {currency} pour démarrer une entreprise, ou {invest_10:,.2f} {currency} pour un petit investissement. Votre fonds d'urgence devrait être de {emergency:,.2f} {currency}, soit 4 fois votre salaire. Vous ne devriez pas dépenser plus de {living:,.2f} {currency} par mois pour vos dépenses de vie, soit 55 pour cent de votre salaire.",
+        "voice_closing": "Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py. Contactez-nous au (509) 4738-5663 ou par email à deslandes78@gmail.com. Merci d'utiliser Comptabilité Avancée Excel – votre solution comptable professionnelle, construite en Haïti, pour le monde.",
         # Salary Investment translations (French)
         "salary_title": "💼 Planificateur d'Investissement Salaire",
         "salary_enter": "Entrez votre salaire mensuel",
@@ -452,14 +458,17 @@ translations = {
         "initial_balance_forwarded": "Saldo trasladado de Febrero",
         "delete_entry": "Eliminar entrada",
         "cannot_delete_balance": "No se puede eliminar la fila de saldo inicial.",
-        "voice_welcome": "Bienvenido a Excel Advanced Accounting.",
+        "voice_welcome": "Bienvenido a Contabilidad Avanzada con Excel.",
         "voice_ledger": "Este es el resumen de su libro mayor de conciliación.",
         "voice_entries": "Actualmente, tiene {count} entradas.",
         "voice_credit": "El crédito total recibido es {credit_htg:,.2f} HTG, que son {credit_usd:,.2f} USD.",
         "voice_expenses": "Los gastos totales son {expense_htg:,.2f} HTG y {expense_usd:,.2f} USD.",
         "voice_balance": "Su saldo neto actual es {balance_htg:,.2f} HTG y {balance_usd:,.2f} USD. Esto se calcula como ingresos totales menos gastos totales.",
         "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo neto, y cada compra lo disminuye. El sistema convierte HTG a USD usando la tasa de 1 USD = 100 HTG.",
-        "voice_closing": "Puede descargar un informe de Excel con formato profesional con un solo clic. Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py.",
+        "voice_salary_intro": "Ahora, veamos su plan de inversión salarial.",
+        "voice_salary_currency": "Su salario mensual es de {salary:,.2f} {currency}.",
+        "voice_salary_investment": "Con este salario, puede generar {invest_200:,.2f} {currency} para iniciar un negocio, o {invest_10:,.2f} {currency} para una inversión más pequeña. Su fondo de emergencia debería ser de {emergency:,.2f} {currency}, que es 4 veces su salario. No debería gastar más de {living:,.2f} {currency} al mes en gastos de vida, que es el 55 por ciento de su salario.",
+        "voice_closing": "Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py. Contáctenos al (509) 4738-5663 o por correo a deslandes78@gmail.com. Gracias por usar Contabilidad Avanzada con Excel – su solución contable profesional, construida en Haití, para el mundo.",
         # Salary Investment translations (Spanish)
         "salary_title": "💼 Planificador de Inversión de Salario",
         "salary_enter": "Ingrese su salario mensual",
@@ -743,23 +752,47 @@ def usd_to_htg(usd):
 EXCHANGE_RATE = 100
 
 # ====== Voice ======
-def generate_voice_explanation(entries, net_htg, net_usd, lang='en'):
-    if entries.empty:
-        return "There are no entries in the ledger. Please add a transaction."
-    total_credit_htg = entries['credit'].sum()
-    total_expense_htg = entries['total_htg'].sum()
-    total_expense_usd = entries['total_usd'].sum()
-    total_credit_usd = total_credit_htg / EXCHANGE_RATE
-    parts = [
-        _("voice_welcome"),
-        _("voice_ledger"),
-        _("voice_entries").format(count=len(entries)),
-        _("voice_credit").format(credit_htg=total_credit_htg, credit_usd=total_credit_usd),
-        _("voice_expenses").format(expense_htg=total_expense_htg, expense_usd=total_expense_usd),
-        _("voice_balance").format(balance_htg=net_htg, balance_usd=net_usd),
-        _("voice_how_it_works"),
-        _("voice_closing")
-    ]
+def generate_voice_explanation(entries, net_htg, net_usd, lang='en',
+                               salary=None, salary_currency='HTG'):
+    parts = []
+    # ---- Reconciliation part ----
+    if not entries.empty:
+        total_credit_htg = entries['credit'].sum()
+        total_expense_htg = entries['total_htg'].sum()
+        total_expense_usd = entries['total_usd'].sum()
+        total_credit_usd = total_credit_htg / EXCHANGE_RATE
+
+        parts.append(_("voice_welcome"))
+        parts.append(_("voice_ledger"))
+        parts.append(_("voice_entries").format(count=len(entries)))
+        parts.append(_("voice_credit").format(credit_htg=total_credit_htg, credit_usd=total_credit_usd))
+        parts.append(_("voice_expenses").format(expense_htg=total_expense_htg, expense_usd=total_expense_usd))
+        parts.append(_("voice_balance").format(balance_htg=net_htg, balance_usd=net_usd))
+        parts.append(_("voice_how_it_works"))
+    else:
+        parts.append(_("voice_welcome"))
+        parts.append("There are no entries in the ledger.")
+
+    # ---- Salary Investment part (if salary provided and > 0) ----
+    if salary is not None and salary > 0:
+        parts.append(_("voice_salary_intro"))
+        currency_symbol = "HTG" if salary_currency == "HTG" else "USD"
+        parts.append(_("voice_salary_currency").format(salary=salary, currency=currency_symbol))
+        invest_200 = salary * 200
+        invest_10 = salary * 0.1
+        emergency = salary * 4
+        living = salary * 0.55
+        parts.append(_("voice_salary_investment").format(
+            invest_200=invest_200,
+            invest_10=invest_10,
+            emergency=emergency,
+            living=living,
+            currency=currency_symbol
+        ))
+
+    # ---- Closing ----
+    parts.append(_("voice_closing"))
+
     return " ".join(parts)
 
 def text_to_speech(text, lang='en'):
@@ -783,6 +816,7 @@ def text_to_speech(text, lang='en'):
         raise RuntimeError(f"edge-tts generation failed: {e}")
 
 def play_voice_explanation():
+    # Get ledger data
     df_rec = get_reconciliation_entries()
     if not df_rec.empty:
         last_row = df_rec.iloc[-1]
@@ -791,7 +825,15 @@ def play_voice_explanation():
     else:
         net_usd = 0
         net_htg = 0
-    explanation = generate_voice_explanation(df_rec, net_htg, net_usd, selected_lang)
+
+    # Get salary from session state (set in salary tab)
+    salary = st.session_state.get("salary_value", None)
+    salary_currency = st.session_state.get("salary_currency", "HTG")
+
+    explanation = generate_voice_explanation(
+        df_rec, net_htg, net_usd, selected_lang,
+        salary=salary, salary_currency=salary_currency
+    )
     try:
         audio_bytes = text_to_speech(explanation, lang=selected_lang)
         if audio_bytes:
@@ -881,11 +923,11 @@ with st.sidebar:
         st.success("✅ Native voice engine (edge-tts) is active")
         auto_speak = st.checkbox("🔊 Auto-speak after update", value=st.session_state.get("auto_speak", False))
         st.session_state.auto_speak = auto_speak
-        if st.button("🎙️ " + _("Explain Ledger (AI Voice)")):
+        if st.button("🎙️ " + _("Explain App (AI Voice)")):
             play_voice_explanation()
     else:
         st.error("❌ Native voice engine (edge-tts) is NOT installed.")
-        st.button("🎙️ " + _("Explain Ledger (AI Voice)"), disabled=True)
+        st.button("🎙️ " + _("Explain App (AI Voice)"), disabled=True)
     st.markdown("---")
     if st.button(_("logout")):
         logout()
@@ -1275,7 +1317,7 @@ with tab5:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-# ====== Salary Investment Tab (NEW) ======
+# ====== Salary Investment Tab ======
 with tab6:
     st.header(_("salary_title"))
     st.info("💡 " + _("investment_strategy") + ": " + _("investment_200_desc") + " " + _("investment_10_desc") + " " + _("emergency_fund_desc") + " " + _("living_expenses_desc"))
@@ -1293,6 +1335,10 @@ with tab6:
             value=50000.0 if salary_currency == "HTG" else 500.0,
             key="salary_input"
         )
+
+    # Store salary in session state for voice
+    st.session_state.salary_value = salary
+    st.session_state.salary_currency = salary_currency
 
     st.markdown("---")
 
@@ -1395,7 +1441,6 @@ with tab6:
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             df_summary.to_excel(writer, sheet_name="Salary Investment", index=False)
-            # Add a second sheet with details
             details = pd.DataFrame({
                 "Metric": ["Monthly Salary", "Investment (×200)", "Small Investment (×0.1)", "Emergency Fund (×4)", "Living Expenses (×0.55)"],
                 "Amount": [
