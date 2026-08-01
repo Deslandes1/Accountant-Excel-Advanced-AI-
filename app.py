@@ -826,8 +826,8 @@ def play_voice_explanation():
         net_usd = 0
         net_htg = 0
 
-    # Get salary from session state (set in salary tab)
-    salary = st.session_state.get("salary_value", None)
+    # Get salary from the widget keys (if they exist)
+    salary = st.session_state.get("salary_input", None)
     salary_currency = st.session_state.get("salary_currency", "HTG")
 
     explanation = generate_voice_explanation(
@@ -1336,9 +1336,8 @@ with tab6:
             key="salary_input"
         )
 
-    # Store salary in session state for voice
-    st.session_state.salary_value = salary
-    st.session_state.salary_currency = salary_currency
+    # Salary is automatically stored in session state via the widget key "salary_input"
+    # and currency via "salary_currency". The voice function reads them from there.
 
     st.markdown("---")
 
