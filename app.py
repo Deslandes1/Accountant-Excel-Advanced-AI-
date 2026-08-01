@@ -125,6 +125,7 @@ translations = {
         "loans_tab": "🏦 Loans",
         "reports_tab": "📄 Reports",
         "reconciliation_tab": "📋 Reconciliation Ledger",
+        "salary_tab": "💼 Salary Investment",
         "current_balance": "Current Cash Balance",
         "current_balance_htg": "Current Cash Balance (HTG)",
         "recent_transactions": "Recent Cash Transactions",
@@ -216,7 +217,22 @@ translations = {
         "voice_expenses": "Total expenses are {expense_htg:,.2f} HTG and {expense_usd:,.2f} USD.",
         "voice_balance": "Your current net balance is {balance_htg:,.2f} HTG and {balance_usd:,.2f} USD. This is calculated as total cash in minus total expenses.",
         "voice_how_it_works": "Remember: each cash‑in increases your net balance, and each purchase decreases it. The system automatically converts HTG to USD using the exchange rate of 1 USD = 100 HTG.",
-        "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py."
+        "voice_closing": "You can download a professionally formatted Excel report with one click. This application was built by Gesner Deslandes, Chief Engineer at GlobalInternet.py.",
+        # Salary Investment translations
+        "salary_title": "💼 Salary Investment Planner",
+        "salary_enter": "Enter Your Monthly Salary",
+        "salary_htg": "Salary (HTG)",
+        "salary_usd": "Salary (USD)",
+        "investment_200": "🚀 Investment to Start Business (Salary × 200)",
+        "investment_200_desc": "Amount you can generate to invest or start your own business.",
+        "investment_10": "💡 Smaller Investment (Salary × 0.1)",
+        "investment_10_desc": "Less amount generated to invest or start your own business.",
+        "emergency_fund": "🛡️ Emergency Fund (Salary × 4)",
+        "emergency_fund_desc": "Amount you must have for emergency fund/savings to get good interest.",
+        "living_expenses": "🏠 Living Expenses (Salary × 0.55)",
+        "living_expenses_desc": "Amount to spend on rent, food, car, and pleasure – never spend more than this per month.",
+        "salary_summary": "📊 Salary Summary",
+        "investment_strategy": "📈 Investment Strategy"
     },
     "fr": {
         "app_title": "Comptabilité Avancée Excel",
@@ -230,6 +246,7 @@ translations = {
         "loans_tab": "🏦 Prêts",
         "reports_tab": "📄 Rapports",
         "reconciliation_tab": "📋 Grand Livre de Réconciliation",
+        "salary_tab": "💼 Investissement Salaire",
         "current_balance": "Solde de trésorerie actuel",
         "current_balance_htg": "Solde de trésorerie (HTG)",
         "recent_transactions": "Transactions récentes",
@@ -321,7 +338,22 @@ translations = {
         "voice_expenses": "Les dépenses totales sont de {expense_htg:,.2f} HTG et {expense_usd:,.2f} USD.",
         "voice_balance": "Votre solde net actuel est de {balance_htg:,.2f} HTG et {balance_usd:,.2f} USD. Ceci est calculé comme le total des entrées moins le total des dépenses.",
         "voice_how_it_works": "Rappelez-vous : chaque entrée augmente votre solde net, et chaque achat le diminue. Le système convertit automatiquement les HTG en USD au taux de 1 USD = 100 HTG.",
-        "voice_closing": "Vous pouvez télécharger un rapport Excel formaté professionnellement en un clic. Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py."
+        "voice_closing": "Vous pouvez télécharger un rapport Excel formaté professionnellement en un clic. Cette application a été construite par Gesner Deslandes, Ingénieur en Chef chez GlobalInternet.py.",
+        # Salary Investment translations (French)
+        "salary_title": "💼 Planificateur d'Investissement Salaire",
+        "salary_enter": "Entrez votre salaire mensuel",
+        "salary_htg": "Salaire (HTG)",
+        "salary_usd": "Salaire (USD)",
+        "investment_200": "🚀 Investissement pour Démarrer une Entreprise (Salaire × 200)",
+        "investment_200_desc": "Montant que vous pouvez générer pour investir ou démarrer votre propre entreprise.",
+        "investment_10": "💡 Petit Investissement (Salaire × 0.1)",
+        "investment_10_desc": "Montant réduit généré pour investir ou démarrer votre entreprise.",
+        "emergency_fund": "🛡️ Fonds d'Urgence (Salaire × 4)",
+        "emergency_fund_desc": "Montant que vous devez avoir pour un fonds d'urgence/épargne afin d'obtenir de bons intérêts.",
+        "living_expenses": "🏠 Dépenses de Vie (Salaire × 0.55)",
+        "living_expenses_desc": "Montant à dépenser pour le loyer, la nourriture, la voiture et les loisirs – ne dépensez jamais plus que cela par mois.",
+        "salary_summary": "📊 Résumé du Salaire",
+        "investment_strategy": "📈 Stratégie d'Investissement"
     },
     "es": {
         "app_title": "Contabilidad Avanzada con Excel",
@@ -335,6 +367,7 @@ translations = {
         "loans_tab": "🏦 Préstamos",
         "reports_tab": "📄 Informes",
         "reconciliation_tab": "📋 Libro Mayor de Conciliación",
+        "salary_tab": "💼 Inversión de Salario",
         "current_balance": "Saldo de efectivo actual",
         "current_balance_htg": "Saldo de efectivo (HTG)",
         "recent_transactions": "Transacciones recientes",
@@ -426,7 +459,22 @@ translations = {
         "voice_expenses": "Los gastos totales son {expense_htg:,.2f} HTG y {expense_usd:,.2f} USD.",
         "voice_balance": "Su saldo neto actual es {balance_htg:,.2f} HTG y {balance_usd:,.2f} USD. Esto se calcula como ingresos totales menos gastos totales.",
         "voice_how_it_works": "Recuerde: cada ingreso aumenta su saldo neto, y cada compra lo disminuye. El sistema convierte HTG a USD usando la tasa de 1 USD = 100 HTG.",
-        "voice_closing": "Puede descargar un informe de Excel con formato profesional con un solo clic. Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py."
+        "voice_closing": "Puede descargar un informe de Excel con formato profesional con un solo clic. Esta aplicación fue construida por Gesner Deslandes, Ingeniero Jefe en GlobalInternet.py.",
+        # Salary Investment translations (Spanish)
+        "salary_title": "💼 Planificador de Inversión de Salario",
+        "salary_enter": "Ingrese su salario mensual",
+        "salary_htg": "Salario (HTG)",
+        "salary_usd": "Salario (USD)",
+        "investment_200": "🚀 Inversión para Iniciar un Negocio (Salario × 200)",
+        "investment_200_desc": "Cantidad que puede generar para invertir o iniciar su propio negocio.",
+        "investment_10": "💡 Pequeña Inversión (Salario × 0.1)",
+        "investment_10_desc": "Cantidad reducida generada para invertir o iniciar su negocio.",
+        "emergency_fund": "🛡️ Fondo de Emergencia (Salario × 4)",
+        "emergency_fund_desc": "Cantidad que debe tener para fondo de emergencia/ahorros y obtener buenos intereses.",
+        "living_expenses": "🏠 Gastos de Vida (Salario × 0.55)",
+        "living_expenses_desc": "Cantidad para gastar en alquiler, comida, coche y ocio – nunca gaste más de esto al mes.",
+        "salary_summary": "📊 Resumen del Salario",
+        "investment_strategy": "📈 Estrategia de Inversión"
     }
 }
 
@@ -863,7 +911,15 @@ with col3:
     """, unsafe_allow_html=True)
 st.divider()
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([_("dashboard"), _("cash_tab"), _("loans_tab"), _("reports_tab"), _("reconciliation_tab")])
+# ---- TABS ----
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    _("dashboard"),
+    _("cash_tab"),
+    _("loans_tab"),
+    _("reports_tab"),
+    _("reconciliation_tab"),
+    _("salary_tab")
+])
 
 # ---- Dashboard ----
 with tab1:
@@ -1049,7 +1105,7 @@ with tab4:
         else:
             st.info(_("no_loans"))
 
-# ====== Reconciliation Ledger (Hardcoded English, but translations are used elsewhere) ======
+# ---- Reconciliation Ledger (Hardcoded English) ----
 with tab5:
     st.header("📋 Reconciliation Ledger")
     st.caption("Exchange Rate: 1 USD = 100 HTG")
@@ -1216,5 +1272,144 @@ with tab5:
             "📥 Download Excel",
             data=styled_excel,
             file_name="reconciliation_ledger.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+# ====== Salary Investment Tab (NEW) ======
+with tab6:
+    st.header(_("salary_title"))
+    st.info("💡 " + _("investment_strategy") + ": " + _("investment_200_desc") + " " + _("investment_10_desc") + " " + _("emergency_fund_desc") + " " + _("living_expenses_desc"))
+
+    st.markdown("---")
+
+    col_curr, col_input = st.columns([1, 2])
+    with col_curr:
+        salary_currency = st.selectbox("Currency", ["HTG", "USD"], key="salary_currency")
+    with col_input:
+        salary = st.number_input(
+            _("salary_enter"),
+            min_value=0.0,
+            step=1000.0,
+            value=50000.0 if salary_currency == "HTG" else 500.0,
+            key="salary_input"
+        )
+
+    st.markdown("---")
+
+    # ---- Calculate the 4 formulas ----
+    investment_200 = salary * 200
+    investment_10 = salary * 0.1
+    emergency_fund = salary * 4
+    living_expenses = salary * 0.55
+
+    currency_symbol = "G" if salary_currency == "HTG" else "$"
+
+    # ---- Display results in 4 columns ----
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            _("investment_200"),
+            f"{currency_symbol} {investment_200:,.2f}",
+            delta=f"{investment_200:,.2f}",
+            delta_color="normal"
+        )
+        st.caption(_("investment_200_desc"))
+
+    with col2:
+        st.metric(
+            _("investment_10"),
+            f"{currency_symbol} {investment_10:,.2f}",
+            delta=f"{investment_10:,.2f}",
+            delta_color="normal"
+        )
+        st.caption(_("investment_10_desc"))
+
+    with col3:
+        st.metric(
+            _("emergency_fund"),
+            f"{currency_symbol} {emergency_fund:,.2f}",
+            delta=f"{emergency_fund:,.2f}",
+            delta_color="normal"
+        )
+        st.caption(_("emergency_fund_desc"))
+
+    with col4:
+        st.metric(
+            _("living_expenses"),
+            f"{currency_symbol} {living_expenses:,.2f}",
+            delta=f"{living_expenses:,.2f}",
+            delta_color="normal"
+        )
+        st.caption(_("living_expenses_desc"))
+
+    st.markdown("---")
+
+    # ---- Summary Table ----
+    st.subheader(_("salary_summary"))
+    summary_data = {
+        "Formula": [
+            "Salary × 200",
+            "Salary × 0.1",
+            "Salary × 4",
+            "Salary × 0.55"
+        ],
+        "Purpose": [
+            _("investment_200"),
+            _("investment_10"),
+            _("emergency_fund"),
+            _("living_expenses")
+        ],
+        "Amount": [
+            f"{currency_symbol} {investment_200:,.2f}",
+            f"{currency_symbol} {investment_10:,.2f}",
+            f"{currency_symbol} {emergency_fund:,.2f}",
+            f"{currency_symbol} {living_expenses:,.2f}"
+        ]
+    }
+    df_summary = pd.DataFrame(summary_data)
+    st.dataframe(df_summary, use_container_width=True, hide_index=True)
+
+    # ---- Investment Strategy Explanation ----
+    st.markdown("---")
+    st.subheader("📈 " + _("investment_strategy"))
+
+    st.markdown(f"""
+    **💰 Monthly Salary:** {currency_symbol} {salary:,.2f}
+
+    **🚀 Start a Business:** {currency_symbol} {investment_200:,.2f}  
+    With this amount, you can invest in equipment, inventory, or marketing to launch your own business.
+
+    **💡 Small Investment:** {currency_symbol} {investment_10:,.2f}  
+    A smaller amount to test the waters, invest in a side project, or start with minimal risk.
+
+    **🛡️ Emergency Fund:** {currency_symbol} {emergency_fund:,.2f}  
+    This is 4 months of your salary. Keep this in a savings account to earn good interest and have a safety net.
+
+    **🏠 Living Expenses:** {currency_symbol} {living_expenses:,.2f}  
+    This is your monthly budget for rent, food, car, and pleasure. Never spend more than this to stay financially healthy.
+    """)
+
+    # ---- Export Option ----
+    if st.button("📥 " + _("download_excel"), key="salary_export"):
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df_summary.to_excel(writer, sheet_name="Salary Investment", index=False)
+            # Add a second sheet with details
+            details = pd.DataFrame({
+                "Metric": ["Monthly Salary", "Investment (×200)", "Small Investment (×0.1)", "Emergency Fund (×4)", "Living Expenses (×0.55)"],
+                "Amount": [
+                    f"{currency_symbol} {salary:,.2f}",
+                    f"{currency_symbol} {investment_200:,.2f}",
+                    f"{currency_symbol} {investment_10:,.2f}",
+                    f"{currency_symbol} {emergency_fund:,.2f}",
+                    f"{currency_symbol} {living_expenses:,.2f}"
+                ]
+            })
+            details.to_excel(writer, sheet_name="Details", index=False)
+        st.download_button(
+            "📥 Download Salary Investment Excel",
+            data=output.getvalue(),
+            file_name=f"salary_investment_{datetime.date.today()}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
